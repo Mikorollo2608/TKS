@@ -4,6 +4,7 @@ import com.mongodb.client.model.Filters;
 import jakarta.validation.UnexpectedTypeException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tks.gv.model.exceptions.UserLoginException;
@@ -16,7 +17,6 @@ import tks.gv.model.logic.users.ResourceAdmin;
 import tks.gv.model.logic.users.User;
 import tks.gv.restapi.data.dto.ClientDTO;
 import tks.gv.restapi.data.mappers.ClientMapper;
-//import tks.gv.security.dto.ChangePasswordDTORequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +30,9 @@ public class ClientService extends UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ClientService(UserMongoRepository userRepository, PasswordEncoder passwordEncoder) {
+    public ClientService(UserMongoRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     public ClientDTO registerClient(String firstName, String lastName, String login, String password, String clientType) {

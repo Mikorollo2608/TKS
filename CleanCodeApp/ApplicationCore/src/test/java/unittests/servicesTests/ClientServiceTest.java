@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ClientServiceTest {
 
     static final UserMongoRepository clientRepository = new UserMongoRepository();
-    static final ClientService cm = new ClientService(clientRepository, null);
+    static final ClientService cm = new ClientService(clientRepository);
     final String testClientType = "normal";
 
     @BeforeAll
