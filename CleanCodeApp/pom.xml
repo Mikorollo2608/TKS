@@ -20,6 +20,7 @@
         <module>ApplicationCore</module>
         <module>Adapters</module>
         <module>ApplicationPorts</module>
+        <module>OLD</module>
     </modules>
 
     <properties>
