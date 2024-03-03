@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tks.gv.model.data.repositories.ReservationMongoRepository;
+import tks.gv.data.repositories.ReservationMongoRepository;
 import tks.gv.model.logic.courts.Court;
 import tks.gv.model.logic.reservations.Reservation;
 import tks.gv.model.logic.users.Client;

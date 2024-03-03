@@ -2,12 +2,12 @@ package unittests.mappersTests;
 
 import tks.gv.model.logic.users.Client;
 import tks.gv.model.logic.courts.Court;
-import tks.gv.model.data.datahandling.entities.ClientEntity;
-import tks.gv.model.data.datahandling.mappers.ClientMapper;
-import tks.gv.model.data.datahandling.entities.CourtEntity;
-import tks.gv.model.data.datahandling.entities.ReservationEntity;
-import tks.gv.model.data.datahandling.mappers.CourtMapper;
-import tks.gv.model.data.datahandling.mappers.ReservationMapper;
+import tks.gv.data.datahandling.entities.ClientEntity;
+import tks.gv.data.datahandling.mappers.ClientMapper;
+import tks.gv.data.datahandling.entities.CourtEntity;
+import tks.gv.data.datahandling.entities.ReservationEntity;
+import tks.gv.data.datahandling.mappers.CourtMapper;
+import tks.gv.data.datahandling.mappers.ReservationMapper;
 import tks.gv.model.logic.reservations.Reservation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

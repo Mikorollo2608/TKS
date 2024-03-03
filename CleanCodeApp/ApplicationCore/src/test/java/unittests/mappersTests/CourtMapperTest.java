@@ -1,8 +1,8 @@
 package unittests.mappersTests;
 
 import tks.gv.model.logic.courts.Court;
-import tks.gv.model.data.datahandling.entities.CourtEntity;
-import tks.gv.model.data.datahandling.mappers.CourtMapper;
+import tks.gv.data.datahandling.entities.CourtEntity;
+import tks.gv.data.datahandling.mappers.CourtMapper;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

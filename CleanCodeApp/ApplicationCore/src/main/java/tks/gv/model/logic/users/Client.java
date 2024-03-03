@@ -61,7 +61,6 @@ public class Client extends User {
             this.clientType = ClientType.NORMAL;
         }
         this.clientTypeName = this.clientType.toString();
-        this.role = Role.CLIENT;
     }
 
     public double applyDiscount() {

@@ -4,7 +4,6 @@ import com.mongodb.client.model.Filters;
 import jakarta.validation.UnexpectedTypeException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tks.gv.model.exceptions.UserLoginException;
@@ -12,12 +11,12 @@ import tks.gv.model.logic.users.Admin;
 import tks.gv.model.logic.users.Client;
 import tks.gv.model.exceptions.UserException;
 import tks.gv.model.exceptions.MyMongoException;
-import tks.gv.model.data.repositories.UserMongoRepository;
+import tks.gv.data.repositories.UserMongoRepository;
 import tks.gv.model.logic.users.ResourceAdmin;
 import tks.gv.model.logic.users.User;
 import tks.gv.restapi.data.dto.ClientDTO;
 import tks.gv.restapi.data.mappers.ClientMapper;
-import tks.gv.restapi.security.dto.ChangePasswordDTORequest;
+//import tks.gv.security.dto.ChangePasswordDTORequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,19 +101,19 @@ public class ClientService extends UserService {
         userRepository.update(UUID.fromString(clientId), "archive", true);
     }
 
-    public void changeClientPassword(String id, ChangePasswordDTORequest changePasswordDTO) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (!passwordEncoder.matches(changePasswordDTO.getActualPassword(), user.getPassword())) {
-            throw new IllegalStateException("Niepoprawne aktualne haslo!");
-        }
-        if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmationPassword())) {
-            throw new IllegalStateException("Podane hasla roznia sie!");
-        }
-
-        userRepository.update(UUID.fromString(id), "password",
-                passwordEncoder.encode(changePasswordDTO.getNewPassword()));
-    }
+//    public void changeClientPassword(String id, ChangePasswordDTORequest changePasswordDTO) {
+//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//
+//        if (!passwordEncoder.matches(changePasswordDTO.getActualPassword(), user.getPassword())) {
+//            throw new IllegalStateException("Niepoprawne aktualne haslo!");
+//        }
+//        if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmationPassword())) {
+//            throw new IllegalStateException("Podane hasla roznia sie!");
+//        }
+//
+//        userRepository.update(UUID.fromString(id), "password",
+//                passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+//    }
 
     @Override
     public int usersSize() {
@@ -136,7 +135,7 @@ public class ClientService extends UserService {
         deactivateClient(clientId.toString());
     }
 
-    public void changeClientPassword(UUID id, ChangePasswordDTORequest changePasswordDTO) {
-        changeClientPassword(id.toString(), changePasswordDTO);
-    }
+//    public void changeClientPassword(UUID id, ChangePasswordDTORequest changePasswordDTO) {
+//        changeClientPassword(id.toString(), changePasswordDTO);
+//    }
 }

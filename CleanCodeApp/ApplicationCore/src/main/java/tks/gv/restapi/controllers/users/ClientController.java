@@ -9,8 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
@@ -32,8 +30,6 @@ import tks.gv.model.exceptions.UserLoginException;
 import tks.gv.restapi.data.dto.ClientDTO;
 import tks.gv.restapi.data.dto.UserDTO.BasicUserValidation;
 import tks.gv.restapi.data.dto.UserDTO.PasswordValidation;
-import tks.gv.restapi.security.dto.ChangePasswordDTORequest;
-import tks.gv.restapi.security.services.JwsService;
 import tks.gv.restapi.services.userservice.ClientService;
 
 import java.util.List;
@@ -42,12 +38,14 @@ import java.util.List;
 @RequestMapping("/clients")
 public class ClientController {
     private final ClientService clientService;
-    private final JwsService jwsService;
+//    private final JwsService jwsService;
 
     @Autowired
-    public ClientController(ClientService clientService, JwsService jwsService) {
+    public ClientController(ClientService clientService
+//            , JwsService jwsService
+    ) {
         this.clientService = clientService;
-        this.jwsService = jwsService;
+//        this.jwsService = jwsService;
     }
 
     @PostMapping("/addClient")
@@ -153,40 +151,40 @@ public class ClientController {
         response.setStatus(HttpStatus.NO_CONTENT.value());
     }
 
-    @PatchMapping("/changePassword/{id}")
-    public ResponseEntity<String> changeClientPassword(@PathVariable("id") String id,
-                                                       @Validated(PasswordValidation.class) @RequestBody ChangePasswordDTORequest body,
-                                                       Errors errors) {
-        if (errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(errors.getAllErrors()
-                            .stream().map(ObjectError::getDefaultMessage)
-                            .toList()
-                            .toString()
-                    );
-        }
-
-        try {
-            clientService.changeClientPassword(id, body);
-        } catch (IllegalStateException ise) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ise.getMessage());
-        }
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
+//    @PatchMapping("/changePassword/{id}")
+//    public ResponseEntity<String> changeClientPassword(@PathVariable("id") String id,
+//                                                       @Validated(PasswordValidation.class) @RequestBody ChangePasswordDTORequest body,
+//                                                       Errors errors) {
+//        if (errors.hasErrors()) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                    .body(errors.getAllErrors()
+//                            .stream().map(ObjectError::getDefaultMessage)
+//                            .toList()
+//                            .toString()
+//                    );
+//        }
+//
+//        try {
+//            clientService.changeClientPassword(id, body);
+//        } catch (IllegalStateException ise) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ise.getMessage());
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//    }
 
     /*---------------------------------------FOR CLIENT-------------------------------------------------------------*/
-    @GetMapping("/get/me")
-    public ClientDTO getClientByLogin(HttpServletResponse response) {
-        ClientDTO client = clientService.getClientByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
-        if (client == null) {
-            response.setStatus(HttpStatus.NO_CONTENT.value());
-            return null;
-        }
-        String etag = jwsService.generateSignatureForClient(client);
-        response.setHeader(HttpHeaders.ETAG, etag);
-        return client;
-    }
+//    @GetMapping("/get/me")
+//    public ClientDTO getClientByLogin(HttpServletResponse response) {
+//        ClientDTO client = clientService.getClientByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
+//        if (client == null) {
+//            response.setStatus(HttpStatus.NO_CONTENT.value());
+//            return null;
+//        }
+//        String etag = jwsService.generateSignatureForClient(client);
+//        response.setHeader(HttpHeaders.ETAG, etag);
+//        return client;
+//    }
 
     @PutMapping("/modifyClient/me")
     public ResponseEntity<String> modifyClient(@RequestHeader(value = HttpHeaders.IF_MATCH) String ifMatch,
@@ -195,10 +193,6 @@ public class ClientController {
 
         if (ifMatch == null || ifMatch.isBlank()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Brak naglowka IF-MATCH!");
-        }
-
-        if (!SecurityContextHolder.getContext().getAuthentication().getName().equals(modifiedClient.getLogin())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nie mozna edytowac danych innego uzytkownika!");
         }
 
         if (errors.hasErrors()) {
@@ -214,11 +208,11 @@ public class ClientController {
             ClientDTO finalModifyClient = new ClientDTO(modifiedClient.getId(), modifiedClient.getFirstName(),
                     modifiedClient.getLastName(), modifiedClient.getLogin(), null, modifiedClient.isArchive(),
                     modifiedClient.getClientType());
-            if (jwsService.verifyClientSignature(ifMatch, finalModifyClient)) {
+//            if (jwsService.verifyClientSignature(ifMatch, finalModifyClient)) {
                 clientService.modifyClient(finalModifyClient);
-            } else {
-                throw new UserException("Proba zmiany niedozwolonego pola!");
-            }
+//            } else {
+//                throw new UserException("Proba zmiany niedozwolonego pola!");
+//            }
 
         } catch (UserLoginException ule) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ule.getMessage());
@@ -229,26 +223,26 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PatchMapping("/changePassword/me")
-    public ResponseEntity<String> changeClientPassword(@Validated(PasswordValidation.class) @RequestBody ChangePasswordDTORequest body,
-                                                       Errors errors) {
-        ClientDTO client = clientService.getClientByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
-        if (errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(errors.getAllErrors()
-                            .stream().map(ObjectError::getDefaultMessage)
-                            .toList()
-                            .toString()
-                    );
-        }
-
-        try {
-            clientService.changeClientPassword(client.getId(), body);
-        } catch (IllegalStateException ise) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ise.getMessage());
-        }
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
+//    @PatchMapping("/changePassword/me")
+//    public ResponseEntity<String> changeClientPassword(@Validated(PasswordValidation.class) @RequestBody ChangePasswordDTORequest body,
+//                                                       Errors errors) {
+//        ClientDTO client = clientService.getClientByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
+//        if (errors.hasErrors()) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                    .body(errors.getAllErrors()
+//                            .stream().map(ObjectError::getDefaultMessage)
+//                            .toList()
+//                            .toString()
+//                    );
+//        }
+//
+//        try {
+//            clientService.changeClientPassword(client.getId(), body);
+//        } catch (IllegalStateException ise) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ise.getMessage());
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//    }
 }
 

@@ -11,7 +11,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
-import tks.gv.model.data.datahandling.entities.Entity;
+import tks.gv.data.datahandling.entities.Entity;
 
 @Getter
 @FieldDefaults(makeFinal = true)

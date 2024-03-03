@@ -1,8 +1,8 @@
 package unittests.mappersTests;
 
-import tks.gv.model.data.datahandling.entities.ClientEntity;
+import tks.gv.data.datahandling.entities.ClientEntity;
 import tks.gv.model.logic.users.Client;
-import tks.gv.model.data.datahandling.mappers.ClientMapper;
+import tks.gv.data.datahandling.mappers.ClientMapper;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

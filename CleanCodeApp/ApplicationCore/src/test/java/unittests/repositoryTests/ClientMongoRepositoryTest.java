@@ -2,8 +2,8 @@ package unittests.repositoryTests;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
-import tks.gv.model.data.datahandling.entities.ClientEntity;
-import tks.gv.model.data.repositories.UserMongoRepository;
+import tks.gv.data.datahandling.entities.ClientEntity;
+import tks.gv.data.repositories.UserMongoRepository;
 import tks.gv.model.exceptions.UserLoginException;
 import tks.gv.model.logic.users.Client;
 import tks.gv.model.exceptions.MyMongoException;

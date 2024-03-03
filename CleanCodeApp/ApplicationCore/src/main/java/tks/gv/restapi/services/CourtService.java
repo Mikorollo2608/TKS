@@ -14,7 +14,7 @@ import tks.gv.model.exceptions.CourtNumberException;
 import tks.gv.model.logic.courts.Court;
 import tks.gv.model.exceptions.CourtException;
 import tks.gv.model.exceptions.MyMongoException;
-import tks.gv.model.data.repositories.CourtMongoRepository;
+import tks.gv.data.repositories.CourtMongoRepository;
 
 import java.util.ArrayList;
 import java.util.List;

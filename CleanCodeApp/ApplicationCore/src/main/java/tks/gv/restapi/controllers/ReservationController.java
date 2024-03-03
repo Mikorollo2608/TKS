@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import tks.gv.model.exceptions.MyMongoException;
 import tks.gv.model.exceptions.ReservationException;
 
 import tks.gv.restapi.data.dto.ReservationDTO;
-import tks.gv.restapi.security.services.JwsService;
 import tks.gv.restapi.services.ReservationService;
 import tks.gv.restapi.services.userservice.ClientService;
 
@@ -33,13 +31,15 @@ public class ReservationController {
 
     private final ReservationService reservationService;
     private final ClientService clientService;
-    private final JwsService jwsService;
+//    private final JwsService jwsService;
 
     @Autowired
-    public ReservationController(ReservationService reservationService, ClientService clientService, JwsService jwsService) {
+    public ReservationController(ReservationService reservationService, ClientService clientService
+//            , JwsService jwsService
+    ) {
         this.reservationService = reservationService;
         this.clientService = clientService;
-        this.jwsService = jwsService;
+//        this.jwsService = jwsService;
     }
 
     @PostMapping("/addReservation")
@@ -176,31 +176,31 @@ public class ReservationController {
     }
 
     /*---------------------------------------FOR CLIENT-------------------------------------------------------------*/
-    @PostMapping("/addReservation/me")
-    public ResponseEntity<String> addReservationByClient(@RequestParam("courtId") String courtId,
-                                                 @RequestParam(value = "date", required = false) String date) {
-        String clientId = clientService.getClientByLogin(
-                SecurityContextHolder.getContext().getAuthentication().getName()).getId();
-        return addReservation(clientId, courtId, date);
-    }
+//    @PostMapping("/addReservation/me")
+//    public ResponseEntity<String> addReservationByClient(@RequestParam("courtId") String courtId,
+//                                                 @RequestParam(value = "date", required = false) String date) {
+//        String clientId = clientService.getClientByLogin(
+//                SecurityContextHolder.getContext().getAuthentication().getName()).getId();
+//        return addReservation(clientId, courtId, date);
+//    }
+//
+//    @GetMapping("/clientReservation/me")
+//    public List<ReservationDTO> getAllClientReservationsByClient(HttpServletResponse response) {
+//        String clientId = clientService.getClientByLogin(
+//                SecurityContextHolder.getContext().getAuthentication().getName()).getId();
+//        return getAllClientReservations(clientId, response);
+//    }
 
-    @GetMapping("/clientReservation/me")
-    public List<ReservationDTO> getAllClientReservationsByClient(HttpServletResponse response) {
-        String clientId = clientService.getClientByLogin(
-                SecurityContextHolder.getContext().getAuthentication().getName()).getId();
-        return getAllClientReservations(clientId, response);
-    }
-
-    @PostMapping("/returnCourt/me")
-    public ResponseEntity<String> returnCourtByClient(@RequestParam("courtId") String courtId, @RequestParam(value = "date", required = false) String date) {
-        String clientId = clientService.getClientByLogin(
-                SecurityContextHolder.getContext().getAuthentication().getName()).getId();
-
-        ReservationDTO reservation = reservationService.getCourtCurrentReservation(UUID.fromString(courtId));
-        if (reservation == null || !reservation.getClient().getId().equals(clientId)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("To boisko nie jest wypozyczone przez aktualnego uzytkownika");
-        }
-
-        return returnCourt(courtId, date);
-    }
+//    @PostMapping("/returnCourt/me")
+//    public ResponseEntity<String> returnCourtByClient(@RequestParam("courtId") String courtId, @RequestParam(value = "date", required = false) String date) {
+//        String clientId = clientService.getClientByLogin(
+//                SecurityContextHolder.getContext().getAuthentication().getName()).getId();
+//
+//        ReservationDTO reservation = reservationService.getCourtCurrentReservation(UUID.fromString(courtId));
+//        if (reservation == null || !reservation.getClient().getId().equals(clientId)) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("To boisko nie jest wypozyczone przez aktualnego uzytkownika");
+//        }
+//
+//        return returnCourt(courtId, date);
+//    }
 }

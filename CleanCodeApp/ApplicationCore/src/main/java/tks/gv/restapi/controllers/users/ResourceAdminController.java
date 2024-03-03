@@ -7,7 +7,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
@@ -27,8 +26,6 @@ import tks.gv.model.exceptions.UserLoginException;
 import tks.gv.restapi.data.dto.ResourceAdminDTO;
 import tks.gv.restapi.data.dto.UserDTO;
 import tks.gv.restapi.data.dto.UserDTO.PasswordValidation;
-import tks.gv.restapi.security.dto.ChangePasswordDTORequest;
-import tks.gv.restapi.security.services.JwsService;
 import tks.gv.restapi.services.userservice.ResourceAdminService;
 
 import java.util.List;
@@ -38,12 +35,14 @@ import java.util.UUID;
 @RequestMapping("/resAdmins")
 public class ResourceAdminController {
     private final ResourceAdminService resourceAdminService;
-    private final JwsService jwsService;
+//    private final JwsService jwsService;
 
     @Autowired
-    public ResourceAdminController(ResourceAdminService resourceAdminService, JwsService jwsService) {
+    public ResourceAdminController(ResourceAdminService resourceAdminService
+//            , JwsService jwsService
+    ) {
         this.resourceAdminService = resourceAdminService;
-        this.jwsService = jwsService;
+//        this.jwsService = jwsService;
     }
 
     @PostMapping("/addResAdmin")
@@ -144,60 +143,60 @@ public class ResourceAdminController {
         response.setStatus(HttpStatus.NO_CONTENT.value());
     }
 
-    @PatchMapping("/changePassword/{id}")
-    public ResponseEntity<String> changeResAdminPassword(@PathVariable("id") String id,
-                                                         @Validated(PasswordValidation.class) @RequestBody ChangePasswordDTORequest body,
-                                                         Errors errors) {
-        if (errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(errors.getAllErrors()
-                            .stream().map(ObjectError::getDefaultMessage)
-                            .toList()
-                            .toString()
-                    );
-        }
-
-        try {
-            resourceAdminService.changeResourceAdminPassword(id, body);
-        } catch (IllegalStateException ise) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ise.getMessage());
-        }
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
+//    @PatchMapping("/changePassword/{id}")
+//    public ResponseEntity<String> changeResAdminPassword(@PathVariable("id") String id,
+//                                                         @Validated(PasswordValidation.class) @RequestBody ChangePasswordDTORequest body,
+//                                                         Errors errors) {
+//        if (errors.hasErrors()) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                    .body(errors.getAllErrors()
+//                            .stream().map(ObjectError::getDefaultMessage)
+//                            .toList()
+//                            .toString()
+//                    );
+//        }
+//
+//        try {
+//            resourceAdminService.changeResourceAdminPassword(id, body);
+//        } catch (IllegalStateException ise) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ise.getMessage());
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//    }
 
     /* me */
-    @GetMapping("/get/me")
-    public ResourceAdminDTO getResAdminByLogin(HttpServletResponse response) {
-        ResourceAdminDTO resAdmin = resourceAdminService.getResourceAdminByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
-        if (resAdmin == null) {
-            response.setStatus(HttpStatus.NO_CONTENT.value());
-            return null;
-        }
-        String etag = "";
-        response.setHeader(HttpHeaders.ETAG, etag);
-        return resAdmin;
-    }
+//    @GetMapping("/get/me")
+//    public ResourceAdminDTO getResAdminByLogin(HttpServletResponse response) {
+//        ResourceAdminDTO resAdmin = resourceAdminService.getResourceAdminByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
+//        if (resAdmin == null) {
+//            response.setStatus(HttpStatus.NO_CONTENT.value());
+//            return null;
+//        }
+//        String etag = "";
+//        response.setHeader(HttpHeaders.ETAG, etag);
+//        return resAdmin;
+//    }
 
-    @PatchMapping("/changePassword/me")
-    public ResponseEntity<String> changeResAdminPassword(@Validated(PasswordValidation.class) @RequestBody ChangePasswordDTORequest body,
-                                                       Errors errors) {
-        ResourceAdminDTO resourceAdminDTO = resourceAdminService.getResourceAdminByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
-        if (errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(errors.getAllErrors()
-                            .stream().map(ObjectError::getDefaultMessage)
-                            .toList()
-                            .toString()
-                    );
-        }
-
-        try {
-            resourceAdminService.changeResourceAdminPassword(resourceAdminDTO.getId(), body);
-        } catch (Exception ise ) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ise.getMessage());
-        }
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
+//    @PatchMapping("/changePassword/me")
+//    public ResponseEntity<String> changeResAdminPassword(@Validated(PasswordValidation.class) @RequestBody ChangePasswordDTORequest body,
+//                                                       Errors errors) {
+//        ResourceAdminDTO resourceAdminDTO = resourceAdminService.getResourceAdminByLogin(SecurityContextHolder.getContext().getAuthentication().getName());
+//        if (errors.hasErrors()) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                    .body(errors.getAllErrors()
+//                            .stream().map(ObjectError::getDefaultMessage)
+//                            .toList()
+//                            .toString()
+//                    );
+//        }
+//
+//        try {
+//            resourceAdminService.changeResourceAdminPassword(resourceAdminDTO.getId(), body);
+//        } catch (Exception ise ) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ise.getMessage());
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//    }
 }

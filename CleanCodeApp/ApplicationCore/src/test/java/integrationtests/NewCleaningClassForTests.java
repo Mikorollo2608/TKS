@@ -7,9 +7,9 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
-import tks.gv.model.data.repositories.CourtMongoRepository;
-import tks.gv.model.data.repositories.ReservationMongoRepository;
-import tks.gv.model.data.repositories.UserMongoRepository;
+import tks.gv.data.repositories.CourtMongoRepository;
+import tks.gv.data.repositories.ReservationMongoRepository;
+import tks.gv.data.repositories.UserMongoRepository;
 
 import tks.gv.restapi.data.dto.AdminDTO;
 import tks.gv.restapi.data.dto.ClientDTO;
@@ -136,7 +136,7 @@ public class NewCleaningClassForTests {
     static AdminDTO admin2;
 
     static void initAdmins() {
-        AdminService adminServiceServiceTest = new AdminService(new UserMongoRepository(), null);
+        AdminService adminServiceServiceTest = new AdminService(new UserMongoRepository());
         cleanUsers();
         admin1 = adminServiceServiceTest.registerAdmin("adminek1@1234", "adminek1@1234");
         admin2 = adminServiceServiceTest.registerAdmin("adminek2@9876", "adminek2@9876");
@@ -147,7 +147,7 @@ public class NewCleaningClassForTests {
     static ResourceAdminDTO adminRes2;
 
     static void initResAdmins() {
-        ResourceAdminService resourceAdminServiceTest = new ResourceAdminService(new UserMongoRepository(), null);
+        ResourceAdminService resourceAdminServiceTest = new ResourceAdminService(new UserMongoRepository());
         cleanUsers();
         adminRes1 = resourceAdminServiceTest.registerResourceAdmin("adminekRes1@1234", "adminekRes1@1234");
         adminRes2 = resourceAdminServiceTest.registerResourceAdmin("adminekRes2@9876", "adminekRes2@9876");

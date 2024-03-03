@@ -6,7 +6,7 @@ import tks.gv.model.logic.users.Client;
 import tks.gv.restapi.data.dto.ClientDTO;
 import tks.gv.restapi.data.mappers.ClientMapper;
 import tks.gv.restapi.services.userservice.ClientService;
-import tks.gv.model.data.repositories.UserMongoRepository;
+import tks.gv.data.repositories.UserMongoRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
