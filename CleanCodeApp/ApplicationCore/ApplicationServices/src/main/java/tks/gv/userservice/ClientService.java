@@ -51,6 +51,7 @@ public class ClientService implements ClientsUseCase {
                 list.add(client);
             }
         }
+
         return list;
     }
 

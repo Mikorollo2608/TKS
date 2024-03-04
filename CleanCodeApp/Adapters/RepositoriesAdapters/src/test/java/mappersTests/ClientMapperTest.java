@@ -2,7 +2,7 @@ package mappersTests;
 
 import org.junit.jupiter.api.Test;
 import tks.gv.data.entities.ClientEntity;
-import tks.gv.data.mappers.ClientMapper;
+import tks.gv.data.mappers.entities.ClientMapper;
 import tks.gv.users.Client;
 
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package tks.gv.data.mappers;
+package tks.gv.data.mappers.entities;
 
 import tks.gv.data.entities.ResourceAdminEntity;
 import tks.gv.users.ResourceAdmin;

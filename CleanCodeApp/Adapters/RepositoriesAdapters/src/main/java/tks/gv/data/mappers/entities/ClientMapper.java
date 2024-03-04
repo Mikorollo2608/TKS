@@ -1,14 +1,18 @@
-package tks.gv.data.mappers;
+package tks.gv.data.mappers.entities;
 
 import tks.gv.data.entities.ClientEntity;
 import tks.gv.users.Client;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class ClientMapper {
 
     public static ClientEntity toUserEntity(Client client) {
-        return new ClientEntity(client.getId().toString(), client.getFirstName(),
+        ///FIXME tymczasowe rozwiazanie
+        return new ClientEntity(Objects.requireNonNullElse(client.getId(), UUID.randomUUID()).toString()
+                , client.getFirstName(),
+//        return new ClientEntity(client.getId().toString(), client.getFirstName(),
                 client.getLastName(), client.getLogin(),
                 client.getPassword(),
                 client.isArchive(),

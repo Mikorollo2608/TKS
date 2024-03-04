@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class UserInMemoryRepository<T> {
+public class InMemoryRepository<T> {
 
     List<T> list = new ArrayList<>();
 

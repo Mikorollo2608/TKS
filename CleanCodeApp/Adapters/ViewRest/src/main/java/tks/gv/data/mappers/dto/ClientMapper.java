@@ -1,4 +1,4 @@
-package tks.gv.data.mappers;
+package tks.gv.data.mappers.dto;
 
 
 
