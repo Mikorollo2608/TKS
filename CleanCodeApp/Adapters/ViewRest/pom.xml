@@ -5,17 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>tks.gv</groupId>
-        <artifactId>CleanCodeApp</artifactId>
+        <artifactId>Adapters</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ApplicationPorts</artifactId>
+    <artifactId>ViewRest</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>tks.gv</groupId>
-            <artifactId>DomainModel</artifactId>
+            <artifactId>ApplicationServices</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

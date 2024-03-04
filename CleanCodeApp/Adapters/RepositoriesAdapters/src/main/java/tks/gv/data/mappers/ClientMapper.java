@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class ClientMapper {
 
-    public static ClientEntity toMongoUser(Client client) {
+    public static ClientEntity toUserEntity(Client client) {
         return new ClientEntity(client.getId().toString(), client.getFirstName(),
                 client.getLastName(), client.getLogin(),
                 client.getPassword(),
@@ -15,7 +15,7 @@ public class ClientMapper {
                 client.getClientTypeName());
     }
 
-    public static Client fromMongoUser(ClientEntity clientDTO) {
+    public static Client fromUserEntity(ClientEntity clientDTO) {
         Client clientModel = new Client(UUID.fromString(clientDTO.getId()), clientDTO.getFirstName(),
                 clientDTO.getLastName(), clientDTO.getLogin(), clientDTO.getPassword(), clientDTO.getClientType());
         clientModel.setArchive(clientDTO.isArchive());

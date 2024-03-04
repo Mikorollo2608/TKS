@@ -15,6 +15,7 @@
 
     <modules>
         <module>RepositoriesAdapters</module>
+        <module>ViewRest</module>
     </modules>
 
 </project>

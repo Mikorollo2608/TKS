@@ -97,7 +97,7 @@ public class UserMongoRepository extends AbstractMongoRepository<User> {
                         "znajduje sie juz w bazie");
             }
 
-            if (!createNew(ClientMapper.toMongoUser((Client) newUser))) {
+            if (!createNew(ClientMapper.toUserEntity((Client) newUser))) {
                 throw new UserException("Nie udalo sie zarejestrowac klienta w bazie! - brak odpowiedzi");
             }
         } else if (initUser instanceof Admin admin) {
@@ -107,7 +107,7 @@ public class UserMongoRepository extends AbstractMongoRepository<User> {
                         "znajduje sie juz w bazie");
             }
 
-            if (!createNew(AdminMapper.toMongoUser((Admin) newUser))) {
+            if (!createNew(AdminMapper.toUserEntity((Admin) newUser))) {
                 throw new UserException("Nie udalo sie zarejestrowac administratora w bazie! - brak odpowiedzi");
             }
         } else if (initUser instanceof ResourceAdmin resourceAdmin) {
@@ -117,7 +117,7 @@ public class UserMongoRepository extends AbstractMongoRepository<User> {
                         "znajduje sie juz w bazie");
             }
 
-            if (!createNew(ResourceAdminMapper.toMongoUser((ResourceAdmin) newUser))) {
+            if (!createNew(ResourceAdminMapper.toUserEntity((ResourceAdmin) newUser))) {
                 throw new UserException("Nie udalo sie zarejestrowac administratora w bazie! - brak odpowiedzi");
             }
         } else {
@@ -139,11 +139,11 @@ public class UserMongoRepository extends AbstractMongoRepository<User> {
         List<User> list = new ArrayList<>();
         for (var userDTO : this.getDatabase().getCollection(COLLECTION_NAME, clazzDTO).find(filter).into(new ArrayList<>())) {
             if (userDTO instanceof ClientEntity clientEntity) {
-                list.add(ClientMapper.fromMongoUser(clientEntity));
+                list.add(ClientMapper.fromUserEntity(clientEntity));
             } else if (userDTO instanceof AdminEntity adminDTO) {
-                list.add(AdminMapper.fromMongoUser(adminDTO));
+                list.add(AdminMapper.fromUserEntity(adminDTO));
             } else if (userDTO instanceof ResourceAdminEntity resourceAdminDTO) {
-                list.add(ResourceAdminMapper.fromMongoUser(resourceAdminDTO));
+                list.add(ResourceAdminMapper.fromUserEntity(resourceAdminDTO));
             }
         }
         return list;
@@ -170,11 +170,11 @@ public class UserMongoRepository extends AbstractMongoRepository<User> {
         UpdateResult result;
 
         if (user instanceof Client client) {
-            result = getCollection().replaceOne(filter, ClientMapper.toMongoUser(client));
+            result = getCollection().replaceOne(filter, ClientMapper.toUserEntity(client));
         } else if (user instanceof Admin admin) {
-            result = getCollection().replaceOne(filter, AdminMapper.toMongoUser(admin));
+            result = getCollection().replaceOne(filter, AdminMapper.toUserEntity(admin));
         } else if (user instanceof ResourceAdmin resourceAdmin) {
-            result = getCollection().replaceOne(filter, ResourceAdminMapper.toMongoUser(resourceAdmin));
+            result = getCollection().replaceOne(filter, ResourceAdminMapper.toUserEntity(resourceAdmin));
         } else {
             throw new UnexpectedTypeException("Typ danego uzytkownika nie pasuje do zadnego z obslugiwanych!");
         }
@@ -202,17 +202,17 @@ public class UserMongoRepository extends AbstractMongoRepository<User> {
     private void init() {
         destroy();
 
-        createNew(ClientMapper.toMongoUser(new Client(UUID.fromString("80e62401-6517-4392-856c-e22ef5f3d6a2"), "Johnny", "Brown", "login", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W", "normal")));
-        createNew(ClientMapper.toMongoUser(new Client(UUID.fromString("b6f5bcb8-7f01-4470-8238-cc3320326157"), "Rose", "Tetris", "login15", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W", "athlete")));
-        createNew(ClientMapper.toMongoUser(new Client(UUID.fromString("6dc63417-0a21-462c-a97a-e0bf6055a3ea"), "John", "Lee", "leeJo15", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W", "coach")));
-        createNew(ClientMapper.toMongoUser(new Client(UUID.fromString("3a722080-9668-42a2-9788-4695a4b9f5a7"), "Krzysztof", "Scala", "scKrzy", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W", "normal")));
-        createNew(ClientMapper.toMongoUser(new Client(UUID.fromString("126778af-0e19-46d4-b329-0b6b92548f9a"), "Adam", "Scout", "scAdam", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W", "normal")));
+        createNew(ClientMapper.toUserEntity(new Client(UUID.fromString("80e62401-6517-4392-856c-e22ef5f3d6a2"), "Johnny", "Brown", "login", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W", "normal")));
+        createNew(ClientMapper.toUserEntity(new Client(UUID.fromString("b6f5bcb8-7f01-4470-8238-cc3320326157"), "Rose", "Tetris", "login15", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W", "athlete")));
+        createNew(ClientMapper.toUserEntity(new Client(UUID.fromString("6dc63417-0a21-462c-a97a-e0bf6055a3ea"), "John", "Lee", "leeJo15", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W", "coach")));
+        createNew(ClientMapper.toUserEntity(new Client(UUID.fromString("3a722080-9668-42a2-9788-4695a4b9f5a7"), "Krzysztof", "Scala", "scKrzy", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W", "normal")));
+        createNew(ClientMapper.toUserEntity(new Client(UUID.fromString("126778af-0e19-46d4-b329-0b6b92548f9a"), "Adam", "Scout", "scAdam", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W", "normal")));
 
-        createNew(AdminMapper.toMongoUser(new Admin(UUID.fromString("3b197615-6931-4aad-941a-44f78f527053"), "mainAdmin1@example", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W")));
-        createNew(AdminMapper.toMongoUser(new Admin(UUID.fromString("4844c398-5cf1-44e0-a6d8-34c8a939d2ea"), "secondAdmin2@example", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W")));
+        createNew(AdminMapper.toUserEntity(new Admin(UUID.fromString("3b197615-6931-4aad-941a-44f78f527053"), "mainAdmin1@example", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W")));
+        createNew(AdminMapper.toUserEntity(new Admin(UUID.fromString("4844c398-5cf1-44e0-a6d8-34c8a939d2ea"), "secondAdmin2@example", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W")));
 
-        createNew(ResourceAdminMapper.toMongoUser(new ResourceAdmin(UUID.fromString("83b29a7a-aa96-4ff2-823d-f3d0d6372c94"), "admRes1@test", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W")));
-        createNew(ResourceAdminMapper.toMongoUser(new ResourceAdmin(UUID.fromString("a2f6cb49-5e9d-4069-ab91-f337224e833a"), "admRes2@test", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W")));
+        createNew(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("83b29a7a-aa96-4ff2-823d-f3d0d6372c94"), "admRes1@test", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W")));
+        createNew(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("a2f6cb49-5e9d-4069-ab91-f337224e833a"), "admRes2@test", "$2a$10$Hs5/PjCvwqCaQ5r9HrQMgOSvu2DI9xOQr9sm6EfodaFYnFFLfyU3W")));
     }
 
     @PreDestroy

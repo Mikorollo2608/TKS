@@ -1,4 +1,4 @@
-package tks.gv.restapi.data.dto;
+package tks.gv.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

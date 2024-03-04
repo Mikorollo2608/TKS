@@ -1,4 +1,4 @@
-//package tks.gv.restapi.data.mappers;
+//package tks.gv.data.mappers;
 //
 //import tks.gv.model.logic.users.Admin;
 //import tks.gv.restapi.data.dto.AdminDTO;
