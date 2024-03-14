@@ -1,4 +1,4 @@
-package tks.gv.restapi.controllers.users;
+package tks.gv.controllers.users;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
