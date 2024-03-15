@@ -34,6 +34,48 @@
 
     <build>
         <plugins>
+<!--            <plugin>-->
+            <!--            <groupId>org.jacoco</groupId>-->
+            <!--            <artifactId>jacoco-maven-plugin</artifactId>-->
+            <!--            <version>0.8.10</version>-->
+            <!--            <executions>-->
+            <!--                <execution>-->
+            <!--                    <id>default-prepare-agent</id>-->
+            <!--                    <goals>-->
+            <!--                        <goal>prepare-agent</goal>-->
+            <!--                    </goals>-->
+            <!--                </execution>-->
+            <!--                <execution>-->
+            <!--                    <id>default-report</id>-->
+            <!--                    <goals>-->
+            <!--                        <goal>report</goal>-->
+            <!--                    </goals>-->
+            <!--                </execution>-->
+            <!--                <execution>-->
+            <!--                    <id>default-check</id>-->
+            <!--                    <goals>-->
+            <!--                        <goal>check</goal>-->
+            <!--                    </goals>-->
+            <!--                    <configuration>-->
+            <!--                        <rules>-->
+            <!--                            <rule>-->
+            <!--                                <element>BUNDLE</element>-->
+            <!--                                <limits>-->
+            <!--                                    <limit>-->
+            <!--                                        <counter>COMPLEXITY</counter>-->
+            <!--                                        <value>COVEREDRATIO</value>-->
+            <!--                                        <minimum>0.02</minimum>-->
+            <!--                                    </limit>-->
+            <!--                                </limits>-->
+            <!--                            </rule>-->
+            <!--                        </rules>-->
+            <!--                        <excludes>-->
+            <!--                            <exclude>tks.gv.AppREST</exclude>-->
+            <!--                        </excludes>-->
+            <!--                    </configuration>-->
+            <!--                </execution>-->
+            <!--            </executions>-->
+            <!--        </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
@@ -67,6 +109,17 @@
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>3.1.1</version>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.jacoco</groupId>-->
+<!--                <artifactId>jacoco-maven-plugin</artifactId>-->
+<!--                <reportSets>-->
+<!--                    <reportSet>-->
+<!--                        <reports>-->
+<!--                            <report>report</report>-->
+<!--                        </reports>-->
+<!--                    </reportSet>-->
+<!--                </reportSets>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
@@ -202,6 +255,13 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
             <version>0.11.5</version>
+        </dependency>
+
+        <!--Swagger-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.2.0</version>
         </dependency>
     </dependencies>
 

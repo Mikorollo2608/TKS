@@ -25,7 +25,6 @@ import tks.gv.users.Client;
 import tks.gv.users.User;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class ClientMongoRepositoryAdapter implements AddUserPort, GetAllUsersPort {
