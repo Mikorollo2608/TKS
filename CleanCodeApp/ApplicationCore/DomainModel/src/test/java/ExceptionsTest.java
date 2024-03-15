@@ -1,11 +1,11 @@
 import org.junit.jupiter.api.Test;
 import tks.gv.exceptions.CourtException;
-import tks.gv.exceptions.JakartaException;
 import tks.gv.exceptions.MainException;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.RepositoryException;
 import tks.gv.exceptions.ReservationException;
 import tks.gv.exceptions.UserException;
+import tks.gv.exceptions.RepositoryAdapterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -48,9 +48,9 @@ public class ExceptionsTest {
     }
 
     @Test
-    void testJakartaException() {
-        RuntimeException jakartaException = new JakartaException("TEST");
-        assertThrows(JakartaException.class, () -> {throw jakartaException;});
+    void testRepositoryAdapterException() {
+        RuntimeException jakartaException = new RepositoryAdapterException("TEST");
+        assertThrows(RepositoryAdapterException.class, () -> {throw jakartaException;});
         assertEquals("TEST", jakartaException.getMessage());
     }
 
