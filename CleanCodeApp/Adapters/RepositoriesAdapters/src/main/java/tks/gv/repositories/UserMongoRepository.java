@@ -88,42 +88,8 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
         } catch (MongoWriteException e) {
             throw new MyMongoException(e.getMessage());
         }
-        return initUser;
 
-//        if (initUser instanceof Client client) {
-//            newUser = new Client(UUID.randomUUID(), client.getFirstName(), client.getLastName(),
-//                    client.getLogin(), client.getPassword(), client.getClientTypeName());
-//            if (!read(Filters.eq("login", client.getLogin())).isEmpty()) {
-//                throw new UserLoginException("Nie udalo sie zarejestrowac klienta w bazie! - klient o tym loginie " +
-//                        "znajduje sie juz w bazie");
-//            }
-//
-//            if (!createNew(ClientMapper.toUserEntity((Client) newUser))) {
-//                throw new UserException("Nie udalo sie zarejestrowac klienta w bazie! - brak odpowiedzi");
-//            }
-//        } else if (initUser instanceof Admin admin) {
-//            newUser = new Admin(UUID.randomUUID(), admin.getLogin(), admin.getPassword());
-//            if (!read(Filters.eq("login", admin.getLogin())).isEmpty()) {
-//                throw new UserLoginException("Nie udalo sie zarejestrowac administratora w bazie! - admin o tym loginie " +
-//                        "znajduje sie juz w bazie");
-//            }
-//
-//            if (!createNew(AdminMapper.toUserEntity((Admin) newUser))) {
-//                throw new UserException("Nie udalo sie zarejestrowac administratora w bazie! - brak odpowiedzi");
-//            }
-//        } else if (initUser instanceof ResourceAdmin resourceAdmin) {
-//            newUser = new ResourceAdmin(UUID.randomUUID(), resourceAdmin.getLogin(), resourceAdmin.getPassword());
-//            if (!read(Filters.eq("login", resourceAdmin.getLogin())).isEmpty()) {
-//                throw new UserLoginException("Nie udalo sie zarejestrowac administratora w bazie! - admin o tym loginie " +
-//                        "znajduje sie juz w bazie");
-//            }
-//
-//            if (!createNew(ResourceAdminMapper.toUserEntity((ResourceAdmin) newUser))) {
-//                throw new UserException("Nie udalo sie zarejestrowac administratora w bazie! - brak odpowiedzi");
-//            }
-//        } else {
-//            throw new UnexpectedTypeException("Typ danego uzytkownika nie pasuje do zadnego z obslugiwanych!");
-//        }
+        return initUser;
     }
 
     @Override
@@ -164,18 +130,6 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
         }
         return list;
     }
-
-//    @Override
-//    public List<UserEntity> readAll() {
-//        return this.read(Filters.empty());
-//    }
-
-//    @Override
-//    public UserEntity readByUUID(UUID uuid) {
-//        Bson filter = Filters.eq("_id", uuid.toString());
-//        var list = this.read(filter);
-//        return !list.isEmpty() ? list.get(0) : null;
-//    }
 
     @Override
     public boolean updateByReplace(UUID uuid, UserEntity user) {
