@@ -3,12 +3,14 @@ package tks.gv.data.mappers.entities;
 import tks.gv.data.entities.AdminEntity;
 import tks.gv.users.Admin;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class AdminMapper {
 
     public static AdminEntity toUserEntity(Admin admin) {
-        return new AdminEntity(admin.getId().toString(), admin.getLogin(),
+        return new AdminEntity(Objects.requireNonNullElse(admin.getId(), "").toString(),
+                admin.getLogin(),
                 admin.getPassword(),
                 admin.isArchive());
     }

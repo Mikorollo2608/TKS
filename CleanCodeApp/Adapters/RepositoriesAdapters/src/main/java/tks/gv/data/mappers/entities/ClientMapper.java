@@ -9,10 +9,8 @@ import java.util.UUID;
 public class ClientMapper {
 
     public static ClientEntity toUserEntity(Client client) {
-        ///FIXME tymczasowe rozwiazanie
-        return new ClientEntity(Objects.requireNonNullElse(client.getId(), UUID.randomUUID()).toString()
-                , client.getFirstName(),
-//        return new ClientEntity(client.getId().toString(), client.getFirstName(),
+        return new ClientEntity(Objects.requireNonNullElse(client.getId(), "").toString(),
+                client.getFirstName(),
                 client.getLastName(), client.getLogin(),
                 client.getPassword(),
                 client.isArchive(),

@@ -11,6 +11,7 @@ import tks.gv.data.mappers.entities.AdminMapper;
 import tks.gv.data.mappers.entities.ClientMapper;
 import tks.gv.data.mappers.entities.ResourceAdminMapper;
 import tks.gv.exceptions.MyMongoException;
+import tks.gv.exceptions.UnexpectedUserTypeException;
 import tks.gv.exceptions.UserLoginException;
 import tks.gv.repositories.UserMongoRepository;
 
@@ -23,6 +24,7 @@ import tks.gv.users.Client;
 
 import java.util.ArrayList;
 import java.util.UUID;
+
 import org.bson.Document;
 import tks.gv.users.ResourceAdmin;
 
@@ -56,9 +58,7 @@ public class UserMongoRepositoryTest {
     void initData() {
         cleanFirstAndLastTimeDB();
         client1 = ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "Adam", "Smith", "12345678901", "12345678901", testClientType));
-
         client2 = ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "Eva", "Smith", "12345678902", "12345678902", testClientType));
-
         client3 = ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "John", "Lenon", "12345678903", "12345678903", testClientType));
     }
 
@@ -66,7 +66,6 @@ public class UserMongoRepositoryTest {
     void testCreatingRepository() {
         UserMongoRepository clientRepository = new UserMongoRepository();
         assertNotNull(clientRepository);
-
     }
 
     @Test
@@ -85,6 +84,90 @@ public class UserMongoRepositoryTest {
         assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
         assertThrows(UserLoginException.class, () -> clientRepository.create(client1));
         assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
+    }
+
+    @Test
+    void testAddingNewDocumentToDBWithNullId() {
+        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
+
+        assertNotNull(clientRepository.create(
+                new ClientEntity(null, "Adam", "Niezgodka", "adasNiezg", "Haslo1234!", false, "normal")));
+        assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
+        assertNotNull(clientRepository.getDatabase()
+                .getCollection(clientRepository.getCollectionName())
+                .find(Filters.eq("login", "adasNiezg"))
+                .into(new ArrayList<>()).get(0)
+                .get("_id")
+        );
+
+        assertNotNull(clientRepository.create(
+                new AdminEntity(null, "tobiaszTrab", "Haslo1234!",false)));
+        assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
+        assertNotNull(clientRepository.getDatabase()
+                .getCollection(clientRepository.getCollectionName())
+                .find(Filters.eq("login", "tobiaszTrab"))
+                .into(new ArrayList<>()).get(0)
+                .get("_id")
+        );
+
+
+        assertNotNull(clientRepository.create(
+                new ResourceAdminEntity(null, "tobiaszTrabRes", "Haslo1234!", false)));
+        assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
+        assertNotNull(clientRepository.getDatabase()
+                .getCollection(clientRepository.getCollectionName())
+                .find(Filters.eq("login", "tobiaszTrabRes"))
+                .into(new ArrayList<>()).get(0)
+                .get("_id")
+        );
+    }
+
+    @Test
+    void testAddingNewDocumentToDBWithEmptyStringId() {
+        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
+
+        assertNotNull(clientRepository.create(
+                new ClientEntity("", "Adam", "Niezgodka", "adasNiezg", "Haslo1234!", false, "normal")));
+        assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
+        assertNotNull(clientRepository.getDatabase()
+                .getCollection(clientRepository.getCollectionName())
+                .find(Filters.eq("login", "adasNiezg"))
+                .into(new ArrayList<>()).get(0)
+                .get("_id")
+        );
+
+        assertNotNull(clientRepository.create(
+                new AdminEntity("", "tobiaszTrab", "Haslo1234!",false)));
+        assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
+        assertNotNull(clientRepository.getDatabase()
+                .getCollection(clientRepository.getCollectionName())
+                .find(Filters.eq("login", "tobiaszTrab"))
+                .into(new ArrayList<>()).get(0)
+                .get("_id")
+        );
+
+
+        assertNotNull(clientRepository.create(
+                new ResourceAdminEntity("", "tobiaszTrabRes", "Haslo1234!", false)));
+        assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
+        assertNotNull(clientRepository.getDatabase()
+                .getCollection(clientRepository.getCollectionName())
+                .find(Filters.eq("login", "tobiaszTrabRes"))
+                .into(new ArrayList<>()).get(0)
+                .get("_id")
+        );
+    }
+
+    @Test
+    void testAddingNewDocumentToDBWithEmptyStringIdNewUserType() {
+        class NewUserEnt extends UserEntity {
+            public NewUserEnt(String id, String login, String password, boolean archive) {
+                super(id, login, password, archive);
+            }
+        }
+
+        assertThrows(UnexpectedUserTypeException.class,
+                () -> clientRepository.create(new NewUserEnt("", "tobiaszTrabRes", "Haslo1234!", false)));
     }
 
     @Test

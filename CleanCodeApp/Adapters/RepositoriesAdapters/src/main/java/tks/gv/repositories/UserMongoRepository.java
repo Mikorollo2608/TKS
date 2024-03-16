@@ -28,6 +28,7 @@ import tks.gv.data.mappers.entities.ClientMapper;
 import tks.gv.data.mappers.entities.ResourceAdminMapper;
 import tks.gv.exceptions.MyMongoException;
 
+import tks.gv.exceptions.UnexpectedUserTypeException;
 import tks.gv.exceptions.UserException;
 import tks.gv.exceptions.UserLoginException;
 import tks.gv.users.Admin;
@@ -73,9 +74,38 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
         return COLLECTION_NAME;
     }
 
-    //FIXME zmiana na boolean/void
     @Override
     public UserEntity create(UserEntity initUser) {
+        if (initUser.getId() == null || initUser.getId().isBlank()) {
+            if (initUser instanceof ClientEntity clientEntity) {
+                initUser = new ClientEntity(
+                        UUID.randomUUID().toString(),
+                        clientEntity.getFirstName(),
+                        clientEntity.getLastName(),
+                        clientEntity.getLogin(),
+                        clientEntity.getPassword(),
+                        clientEntity.isArchive(),
+                        clientEntity.getClientType()
+                );
+            } else if (initUser instanceof AdminEntity adminEntity) {
+                initUser = new AdminEntity(
+                        UUID.randomUUID().toString(),
+                        adminEntity.getLogin(),
+                        adminEntity.getPassword(),
+                        adminEntity.isArchive()
+                );
+            } else if (initUser instanceof ResourceAdminEntity resourceAdminEntity) {
+                initUser = new AdminEntity(
+                        UUID.randomUUID().toString(),
+                        resourceAdminEntity.getLogin(),
+                        resourceAdminEntity.getPassword(),
+                        resourceAdminEntity.isArchive()
+                );
+            } else {
+                throw new UnexpectedUserTypeException("Typ danego uzytkownika nie pasuje do zadnego z obslugiwanych!");
+            }
+        }
+
         try {
             if (!read(Filters.eq("login", initUser.getLogin())).isEmpty()) {
                 throw new UserLoginException("Nie udalo sie zarejestrowac uzytkownika w bazie! - uzytkownik o tym loginie " +
