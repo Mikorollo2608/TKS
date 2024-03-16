@@ -48,9 +48,9 @@ public class UserMongoRepositoryAdapter implements
     }
 
     @Override
-    public void addUser(User user) {
+    public User addUser(User user) {
         try {
-            repository.create(autoMap(user));
+            return autoMap(repository.create(autoMap(user)));
         } catch (MyMongoException e) {
             throw new RepositoryAdapterException(this.getClass().getSimpleName() + " " + e.getMessage());
         }

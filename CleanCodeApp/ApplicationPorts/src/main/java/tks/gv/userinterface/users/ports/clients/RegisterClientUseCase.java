@@ -4,5 +4,5 @@ import tks.gv.users.Client;
 
 public interface RegisterClientUseCase {
 
-    void registerClient(Client client);
+    Client registerClient(Client client);
 }

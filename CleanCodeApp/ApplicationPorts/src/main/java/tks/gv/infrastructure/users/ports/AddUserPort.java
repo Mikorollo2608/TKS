@@ -4,5 +4,5 @@ import tks.gv.users.User;
 
 public interface AddUserPort {
 
-    void addUser(User user);
+    User addUser(User user);
 }
