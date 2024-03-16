@@ -62,82 +62,82 @@ public class CourtController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-//    @GetMapping
-//    public List<CourtDTO> getAllCourts(HttpServletResponse response) {
-//        List<CourtDTO> resultList = courtService.getAllCourts();
-//        if (resultList.isEmpty()) {
-//            resultList = null;
-//            response.setStatus(HttpStatus.NO_CONTENT.value());
-//        }
-//        return resultList;
-//    }
-//
-//    @GetMapping("/{id}")
-//    public CourtDTO getCourtById(@PathVariable("id") String id, HttpServletResponse response) {
-//        CourtDTO court = courtService.getCourtById(UUID.fromString(id));
-//        if (court == null) {
-//            response.setStatus(HttpStatus.NO_CONTENT.value());
-//        }
-//        return court;
-//    }
-//
-//    @GetMapping("/get")
-//    public CourtDTO getCourtByCourtNumber(@RequestParam("number") String number, HttpServletResponse response) {
-//        CourtDTO court = courtService.getCourtByCourtNumber(Integer.parseInt(number));
-//        if (court == null) {
-//            response.setStatus(HttpStatus.NO_CONTENT.value());
-//        }
-//        return court;
-//    }
-//
-//    @PutMapping("/modifyCourt/{id}")
-//    public ResponseEntity<String> modifyCourt(@PathVariable("id") String id,
-//                                              @Validated({CourtDTO.BasicCourtValidation.class}) @RequestBody CourtDTO modifiedCourt,
-//                                              Errors errors) {
-//        if (errors.hasErrors()) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//                    .body(errors.getAllErrors()
-//                            .stream().map(ObjectError::getDefaultMessage)
-//                            .toList()
-//                            .toString()
-//                    );
-//        }
-//
-//        try {
-//            CourtDTO finalModifyCourt = new CourtDTO(id, modifiedCourt.getArea(), modifiedCourt.getBaseCost(),
-//                    modifiedCourt.getCourtNumber(), modifiedCourt.isArchive(), modifiedCourt.isRented());
-//            courtService.modifyCourt(finalModifyCourt);
-//        } catch (CourtNumberException cne) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body(cne.getMessage());
-//        } catch (CourtException ce) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ce.getMessage());
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-//    }
-//
-//    @PostMapping("/activate/{id}")
-//    public void activateCourt(@PathVariable("id") String id, HttpServletResponse response) {
-//        courtService.activateCourt(UUID.fromString(id));
-//        response.setStatus(HttpStatus.NO_CONTENT.value());
-//    }
-//
-//    @PostMapping("/deactivate/{id}")
-//    public void archiveCourt(@PathVariable("id") String id, HttpServletResponse response) {
-//        courtService.deactivateCourt(UUID.fromString(id));
-//        response.setStatus(HttpStatus.NO_CONTENT.value());
-//    }
-//
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity<String> deleteCourt(@PathVariable("id") String id) {
-//        try {
-//            courtService.deleteCourt(UUID.fromString(id));
-//        } catch (CourtException ce) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body(ce.getMessage());
-//        } catch (MyMongoException mme) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mme.getMessage());
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-//    }
+    @GetMapping
+    public List<CourtDTO> getAllCourts(HttpServletResponse response) {
+        List<CourtDTO> resultList = courtService.getAllCourts().stream().map(CourtMapper::toJsonCourt).toList();
+        if (resultList.isEmpty()) {
+            resultList = null;
+            response.setStatus(HttpStatus.NO_CONTENT.value());
+        }
+        return resultList;
+    }
+
+    @GetMapping("/{id}")
+    public CourtDTO getCourtById(@PathVariable("id") String id, HttpServletResponse response) {
+        CourtDTO court = CourtMapper.toJsonCourt(courtService.getCourtById(UUID.fromString(id)));
+        if (court == null) {
+            response.setStatus(HttpStatus.NO_CONTENT.value());
+        }
+        return court;
+    }
+
+    @GetMapping("/get")
+    public CourtDTO getCourtByCourtNumber(@RequestParam("number") String number, HttpServletResponse response) {
+        CourtDTO court = CourtMapper.toJsonCourt(courtService.getCourtByCourtNumber(Integer.parseInt(number)));
+        if (court == null) {
+            response.setStatus(HttpStatus.NO_CONTENT.value());
+        }
+        return court;
+    }
+
+    @PutMapping("/modifyCourt/{id}")
+    public ResponseEntity<String> modifyCourt(@PathVariable("id") String id,
+                                              @Validated({CourtDTO.BasicCourtValidation.class}) @RequestBody CourtDTO modifiedCourt,
+                                              Errors errors) {
+        if (errors.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(errors.getAllErrors()
+                            .stream().map(ObjectError::getDefaultMessage)
+                            .toList()
+                            .toString()
+                    );
+        }
+
+        try {
+            CourtDTO finalModifyCourt = new CourtDTO(id, modifiedCourt.getArea(), modifiedCourt.getBaseCost(),
+                    modifiedCourt.getCourtNumber(), modifiedCourt.isArchive(), modifiedCourt.isRented());
+            courtService.modifyCourt(CourtMapper.fromJsonCourt(finalModifyCourt));
+        } catch (CourtNumberException cne) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(cne.getMessage());
+        } catch (CourtException ce) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ce.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PostMapping("/activate/{id}")
+    public void activateCourt(@PathVariable("id") String id, HttpServletResponse response) {
+        courtService.activateCourt(UUID.fromString(id));
+        response.setStatus(HttpStatus.NO_CONTENT.value());
+    }
+
+    @PostMapping("/deactivate/{id}")
+    public void archiveCourt(@PathVariable("id") String id, HttpServletResponse response) {
+        courtService.deactivateCourt(UUID.fromString(id));
+        response.setStatus(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteCourt(@PathVariable("id") String id) {
+        try {
+            courtService.deleteCourt(UUID.fromString(id));
+        } catch (CourtException ce) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ce.getMessage());
+        } catch (MyMongoException mme) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mme.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

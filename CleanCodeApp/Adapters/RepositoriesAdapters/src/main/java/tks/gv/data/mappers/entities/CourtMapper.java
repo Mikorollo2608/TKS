@@ -17,6 +17,7 @@ public class CourtMapper {
     }
 
     public static Court fromMongoCourt(CourtEntity courtMapper) {
+        if (courtMapper == null) return null;
         Court courtModel = new Court(UUID.fromString(courtMapper.getId()),
                 courtMapper.getArea(),
                 courtMapper.getBaseCost(),

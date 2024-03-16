@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public class CourtMapper {
     public static CourtDTO toJsonCourt(Court court) {
+        if (court == null) return null;
         return new CourtDTO(court.getId().toString(),
                 court.getArea(),
                 court.getBaseCost(),

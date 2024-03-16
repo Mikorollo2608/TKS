@@ -117,7 +117,7 @@ public class CourtMongoRepository extends AbstractMongoRepository<CourtEntity> {
             clientSession.startTransaction();
             var reservation = this.getDatabase().getCollection(ReservationMongoRepository.COLLECTION_NAME, ReservationEntity.class).find(filter).first();
             if (reservation != null) {
-                throw new IllegalStateException();
+                throw new CourtException("Nie można usunąć boiska z którym powiązane jest wypożyczenie.");
             }
             boolean result = super.delete(uuid);
             if (result) {
