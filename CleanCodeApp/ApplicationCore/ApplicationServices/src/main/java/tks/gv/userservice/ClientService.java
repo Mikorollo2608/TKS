@@ -1,17 +1,13 @@
 package tks.gv.userservice;
 
-import com.mongodb.client.model.Filters;
-import jakarta.validation.UnexpectedTypeException;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tks.gv.exceptions.UnexpectedUserTypeException;
 import tks.gv.exceptions.UserException;
-import tks.gv.exceptions.MyMongoException;
 
-import tks.gv.exceptions.UserReadException;
+import tks.gv.exceptions.UserReadServiceException;
 import tks.gv.infrastructure.users.ports.AddUserPort;
 import tks.gv.infrastructure.users.ports.ChangeUserStatusPort;
 import tks.gv.infrastructure.users.ports.GetAllUsersPort;
@@ -27,6 +23,7 @@ import tks.gv.userinterface.users.ports.clients.ModifyClientUseCase;
 import tks.gv.userinterface.users.ports.clients.RegisterClientUseCase;
 
 import tks.gv.users.Client;
+import tks.gv.users.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,8 +61,8 @@ public class ClientService implements
     @Override
     public Client registerClient(Client client) {
         try {
-            return (Client) addUserPort.addUser(client);
-        } catch (MyMongoException | UnexpectedUserTypeException exception) {
+            return userProjection(addUserPort.addUser(client));
+        } catch (UnexpectedUserTypeException exception) {
             throw new UserException("Nie udalo sie zarejestrowac klienta w bazie! - " + exception.getMessage());
         }
     }
@@ -73,9 +70,9 @@ public class ClientService implements
     @Override
     public Client getClientById(UUID clientId) {
         try {
-            return (Client) getUserByIdPort.getUserById(clientId);
-        } catch (UnexpectedTypeException e) {
-            throw new UserReadException("Proba odczytu niewspieranego typu klienta z bazy! - " + e.getMessage());
+            return userProjection(getUserByIdPort.getUserById(clientId));
+        } catch (UnexpectedUserTypeException e) {
+            throw new UserReadServiceException("Proba odczytu niewspieranego typu klienta z bazy! - " + e.getMessage());
         }
     }
 
@@ -94,9 +91,9 @@ public class ClientService implements
     @Override
     public Client getClientByLogin(String login) {
         try {
-            return (Client) getUserByLoginPort.getUserByLogin(login);
-        } catch (UnexpectedTypeException e) {
-            throw new UserReadException("Proba odczytu niewspieranego typu klienta z bazy! - " + e.getMessage());
+            return userProjection(getUserByLoginPort.getUserByLogin(login));
+        } catch (UnexpectedUserTypeException e) {
+            throw new UserReadServiceException("Proba odczytu niewspieranego typu klienta z bazy! - " + e.getMessage());
         }
     }
 
@@ -110,38 +107,24 @@ public class ClientService implements
                 }
             }
             return list;
-        } catch (UnexpectedTypeException e) {
-            throw new UserReadException("Proba odczytu niewspieranego typu klienta z bazy! - " + e.getMessage());
+        } catch (UnexpectedUserTypeException e) {
+            throw new UserReadServiceException("Proba odczytu niewspieranego typu klienta z bazy! - " + e.getMessage());
         }
     }
 
     @Override
     public void modifyClient(Client modifiedClient) {
-        throw new RuntimeException();
-//        var list = userRepository.read(Filters.and(
-//                Filters.eq("login", modifiedClient.getLogin()),
-//                Filters.ne("_id", modifiedClient.getId())), Client.class);
-//        if (!list.isEmpty()) {
-//            throw new UserLoginException("Nie udalo sie zmodyfikowac podanego klienta - " +
-//                    "proba zmiany loginu na login wystepujacy juz u innego klienta");
-//        }
-//
-//        if (!userRepository.updateByReplace(UUID.fromString(modifiedClient.getId()),
-//                ClientMapper.fromJsonUser(modifiedClient))) {
-//            throw new UserException("Nie udalo sie zmodyfikowac podanego klienta.");
-//        }
+        modifyUserPort.modifyUser(modifiedClient);
     }
 
     @Override
     public void activateClient(UUID clientId) {
-        throw new RuntimeException();
-//        userRepository.update(UUID.fromString(clientId), "archive", false);
+        changeUserStatusPort.activateUser(clientId);
     }
 
     @Override
     public void deactivateClient(UUID clientId) {
-        throw new RuntimeException();
-//        userRepository.update(UUID.fromString(clientId), "archive", true);
+        changeUserStatusPort.deactivateUser(clientId);
     }
 
 ////    public void changeClientPassword(String id, ChangePasswordDTORequest changePasswordDTO) {
@@ -176,4 +159,8 @@ public class ClientService implements
 ////    public void changeClientPassword(UUID id, ChangePasswordDTORequest changePasswordDTO) {
 ////        changeClientPassword(id.toString(), changePasswordDTO);
 ////    }
+
+    private Client userProjection(User user) {
+        return user != null ? (Client) user : null;
+    }
 }
