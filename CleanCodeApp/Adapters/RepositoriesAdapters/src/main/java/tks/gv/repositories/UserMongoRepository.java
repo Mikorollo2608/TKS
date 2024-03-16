@@ -133,7 +133,7 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
 
     @Override
     public boolean updateByReplace(UUID uuid, UserEntity user) {
-        ///FIXME oblsuzyc gdzie to jebane haslo
+        ///FIXME oblsuzyc gdzie to haslo
 //        if (user.getPassword() == null || user.getPassword().isBlank()) {
 //            var list = this.getDatabase().getCollection(COLLECTION_NAME, Document.class).find(Filters.eq("_id", uuid.toString())).into(new ArrayList<>());
 //            if (list.isEmpty()) {

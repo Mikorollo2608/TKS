@@ -4,5 +4,5 @@ import tks.gv.users.User;
 
 public interface ModifyUserPort {
 
-    boolean modifyUser(User user);
+    void modifyUser(User user);
 }

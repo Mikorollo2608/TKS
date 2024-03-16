@@ -17,6 +17,8 @@ import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.RepositoryAdapterException;
 import tks.gv.exceptions.UnexpectedUserTypeException;
 
+import tks.gv.exceptions.UserException;
+import tks.gv.exceptions.UserLoginException;
 import tks.gv.infrastructure.users.ports.AddUserPort;
 import tks.gv.infrastructure.users.ports.ChangeUserStatusPort;
 import tks.gv.infrastructure.users.ports.GetAllUsersPort;
@@ -81,18 +83,28 @@ public class UserMongoRepositoryAdapter implements
     }
 
     @Override
-    public boolean modifyUser(User user) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED YET");
+    public void modifyUser(User modifiedUser) {
+        var list = repository.read(Filters.and(
+                Filters.eq("login", modifiedUser.getLogin()),
+                Filters.ne("_id", modifiedUser.getId().toString())));
+        if (!list.isEmpty()) {
+            throw new UserLoginException("Nie udalo sie zmodyfikowac podanego uzytkownika - " +
+                    "proba zmiany loginu na login wystepujacy juz u innego uzytkownika");
+        }
+
+        if (!repository.updateByReplace(modifiedUser.getId(), autoMap(modifiedUser))) {
+            throw new UserException("Nie udalo sie zmodyfikowac podanego uzytkownika.");
+        }
     }
 
     @Override
     public void activateUser(UUID id) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED YET");
+        repository.update(id, "archive", false);
     }
 
     @Override
     public void deactivateUser(UUID id) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED YET");
+        repository.update(id, "archive", true);
     }
 
     ///TODO static or non static, oto jest pytanie

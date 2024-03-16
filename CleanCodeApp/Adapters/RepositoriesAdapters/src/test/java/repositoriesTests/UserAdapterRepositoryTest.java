@@ -1,6 +1,7 @@
 package repositoriesTests;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,7 @@ import tks.gv.data.mappers.entities.ResourceAdminMapper;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.RepositoryAdapterException;
 import tks.gv.exceptions.UnexpectedUserTypeException;
+import tks.gv.exceptions.UserLoginException;
 import tks.gv.repositories.UserMongoRepository;
 
 import tks.gv.users.Admin;
@@ -25,7 +27,6 @@ import tks.gv.users.ResourceAdmin;
 import tks.gv.users.User;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,6 +43,13 @@ public class UserAdapterRepositoryTest {
     Client testClient;
     Admin testAdmin;
     ResourceAdmin testResourceAdmin;
+
+    @BeforeAll
+    static void cleanDB() {
+        for (var user : repository.readAll()) {
+            repository.delete(UUID.fromString(user.getId()));
+        }
+    }
 
     @BeforeEach
     void init() {
@@ -92,7 +100,8 @@ public class UserAdapterRepositoryTest {
 
     @Test
     void testAddNewUserType() {
-        class NewUser extends User {}
+        class NewUser extends User {
+        }
 
         assertEquals(0, repository.readAll().size());
         assertThrows(UnexpectedUserTypeException.class, () -> adapter.addUser(new NewUser()));
@@ -183,8 +192,29 @@ public class UserAdapterRepositoryTest {
         );
 
         assertEquals("Adam", ((Client) adapter.getUserById(testClient.getId())).getFirstName());
-        assertThrows(UnsupportedOperationException.class, () -> adapter.modifyUser(modifiedClient));
-//        assertEquals("Artur", ((Client) adapter.getUserById(testClient.getId())).getFirstName());
+        adapter.modifyUser(modifiedClient);
+        assertEquals("Artur", ((Client) adapter.getUserById(testClient.getId())).getFirstName());
+    }
+
+    @Test
+    void testModifyUserLoginToOccupiedLogin() {
+        assertEquals(0, repository.readAll().size());
+        adapter.addUser(testClient);
+        adapter.addUser(testAdmin);
+        adapter.addUser(testResourceAdmin);
+        assertEquals(3, repository.readAll().size());
+        Client modifiedClient = new Client(
+                testClient.getId(),
+                testClient.getFirstName(),
+                testClient.getLastName(),
+                "testLoginAdmin",
+                testClient.getPassword(),
+                testClient.getClientTypeName()
+        );
+
+        assertEquals("testLoginKlient", ((Client) adapter.getUserById(testClient.getId())).getLogin());
+        assertThrows(UserLoginException.class, () -> adapter.modifyUser(modifiedClient));
+        assertEquals("testLoginKlient", ((Client) adapter.getUserById(testClient.getId())).getLogin());
 
     }
 
@@ -198,8 +228,8 @@ public class UserAdapterRepositoryTest {
         assertEquals(3, repository.readAll().size());
 
         assertTrue(adapter.getUserById(testClient.getId()).isArchive());
-        assertThrows(UnsupportedOperationException.class, () -> adapter.activateUser(testClient.getId()));
-//        assertFalse(adapter.getUserById(testClient.getId()).isArchive());
+        adapter.activateUser(testClient.getId());
+        assertFalse(adapter.getUserById(testClient.getId()).isArchive());
     }
 
     @Test
@@ -211,8 +241,8 @@ public class UserAdapterRepositoryTest {
         assertEquals(3, repository.readAll().size());
 
         assertFalse(adapter.getUserById(testClient.getId()).isArchive());
-        assertThrows(UnsupportedOperationException.class, () -> adapter.deactivateUser(testClient.getId()));
-//        assertTrue(adapter.getUserById(testClient.getId()).isArchive());
+        adapter.deactivateUser(testClient.getId());
+        assertTrue(adapter.getUserById(testClient.getId()).isArchive());
     }
 
 }
