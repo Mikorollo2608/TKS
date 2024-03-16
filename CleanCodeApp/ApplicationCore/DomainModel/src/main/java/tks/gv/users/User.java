@@ -1,5 +1,6 @@
 package tks.gv.users;
 
+import com.google.common.base.Objects;
 import jakarta.validation.constraints.NotBlank;
 
 import lombok.Getter;
@@ -25,5 +26,13 @@ public abstract class User {
         this.id = id;
         this.login = login;
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equal(id, user.id);
     }
 }

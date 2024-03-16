@@ -58,7 +58,7 @@ public class UserMongoRepositoryAdapter implements
     public List<User> getAllUsers() {
         return repository.readAll()
                 .stream()
-                .map(UserMongoRepositoryAdapter::autoMap)
+                .map(this::autoMap)
                 .toList();
     }
 
@@ -68,15 +68,15 @@ public class UserMongoRepositoryAdapter implements
     }
 
     @Override
-    public User getClientByLogin(String login) {
+    public User getUserByLogin(String login) {
         return autoMap(repository.read(Filters.eq("login", login)).get(0));
     }
 
     @Override
-    public List<User> getClientByLoginMatching(String login) {
+    public List<User> getUserByLoginMatching(String login) {
         return repository.read(Filters.and(Filters.regex("login", ".*%s.*".formatted(login))))
                 .stream()
-                .map(UserMongoRepositoryAdapter::autoMap)
+                .map(this::autoMap)
                 .toList();
     }
 
@@ -95,7 +95,8 @@ public class UserMongoRepositoryAdapter implements
         throw new UnsupportedOperationException("NOT IMPLEMENTED YET");
     }
 
-    private static User autoMap(UserEntity userEntity) {
+    ///TODO static or non static, oto jest pytanie
+    protected User autoMap(UserEntity userEntity) {
         if (userEntity == null) {
             return null;
         }
@@ -112,7 +113,7 @@ public class UserMongoRepositoryAdapter implements
         throw new UnexpectedUserTypeException("Typ danego uzytkownika nie pasuje do zadnego z obslugiwanych!");
     }
 
-    private static UserEntity autoMap(User user) {
+    protected UserEntity autoMap(User user) {
         if (user == null) {
             return null;
         }

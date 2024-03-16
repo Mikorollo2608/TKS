@@ -13,10 +13,10 @@ public class ResourceAdminMapper {
                 resourceAdmin.isArchive());
     }
 
-    public static ResourceAdmin fromUserEntity(ResourceAdminEntity resourceAdminDTO) {
-        ResourceAdmin newResourceAdmin = new ResourceAdmin(UUID.fromString(resourceAdminDTO.getId()),
-                resourceAdminDTO.getLogin(), resourceAdminDTO.getPassword());
-        newResourceAdmin.setArchive(resourceAdminDTO.isArchive());
+    public static ResourceAdmin fromUserEntity(ResourceAdminEntity resourceAdminEntity) {
+        ResourceAdmin newResourceAdmin = new ResourceAdmin(UUID.fromString(resourceAdminEntity.getId()),
+                resourceAdminEntity.getLogin(), resourceAdminEntity.getPassword());
+        newResourceAdmin.setArchive(resourceAdminEntity.isArchive());
         return newResourceAdmin;
     }
 }

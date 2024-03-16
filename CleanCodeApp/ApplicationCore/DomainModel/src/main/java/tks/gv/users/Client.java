@@ -71,14 +71,6 @@ public class Client extends User {
         return clientType.getMaxHours();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Client client = (Client) o;
-        return Objects.equals(getId(), client.getId());
-    }
-
     public void setClientTypeName(@NotNull String clientType) {
         if (clientType != null) {
             this.clientType = switch (clientType.toLowerCase()) {

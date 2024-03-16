@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface GetUserByLoginPort {
 
-    User getClientByLogin(String login);
+    User getUserByLogin(String login);
 
-    List<User> getClientByLoginMatching(String login);
+    List<User> getUserByLoginMatching(String login);
 }

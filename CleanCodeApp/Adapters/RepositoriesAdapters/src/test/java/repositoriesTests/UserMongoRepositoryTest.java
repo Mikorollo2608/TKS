@@ -3,9 +3,13 @@ package repositoriesTests;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 
+import tks.gv.data.entities.AdminEntity;
 import tks.gv.data.entities.ClientEntity;
+import tks.gv.data.entities.ResourceAdminEntity;
 import tks.gv.data.entities.UserEntity;
+import tks.gv.data.mappers.entities.AdminMapper;
 import tks.gv.data.mappers.entities.ClientMapper;
+import tks.gv.data.mappers.entities.ResourceAdminMapper;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.UserLoginException;
 import tks.gv.repositories.UserMongoRepository;
@@ -14,19 +18,23 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tks.gv.users.Admin;
 import tks.gv.users.Client;
 
 import java.util.ArrayList;
 import java.util.UUID;
 import org.bson.Document;
+import tks.gv.users.ResourceAdmin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ClientMongoRepositoryTest {
+public class UserMongoRepositoryTest {
     static final UserMongoRepository clientRepository = new UserMongoRepository();
     ClientEntity client1;
     ClientEntity client2;
@@ -126,7 +134,7 @@ public class ClientMongoRepositoryTest {
     void testFindingByUUID() {
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
         ClientEntity client1 = (ClientEntity) clientRepository.create(this.client1);
-        assertNotNull(clientRepository.create(this.client2));
+        clientRepository.create(this.client2);
         ClientEntity client3 = (ClientEntity) clientRepository.create(this.client3);
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
 
@@ -137,6 +145,15 @@ public class ClientMongoRepositoryTest {
         UserEntity clMapper3 = clientRepository.readByUUID(UUID.fromString(client3.getId()));
         assertNotNull(clMapper3);
         assertEquals(client3, clMapper3);
+    }
+
+    @Test
+    void testFindingByUUIDNeg() {
+        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
+        clientRepository.create(this.client2);
+        assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
+
+        assertNull(clientRepository.readByUUID(UUID.randomUUID()));
     }
 
     @Test
@@ -208,15 +225,95 @@ public class ClientMongoRepositoryTest {
     @Test
     void testUpdatingDocumentsInDBNegative() {
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
-        assertNotNull(clientRepository.create(client1));
-        assertNotNull(clientRepository.create(client2));
-        ClientEntity client = (ClientEntity) clientRepository.create(client3);
+        clientRepository.create(client1);
+        clientRepository.create(client2);
+        clientRepository.create(client3);
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
 
         assertThrows(MyMongoException.class,
-                () -> clientRepository.update(UUID.fromString(client.getId()),
+                () -> clientRepository.update(UUID.fromString(client3.getId()),
                         "_id", UUID.randomUUID().toString()));
 
         assertFalse(clientRepository.update(UUID.randomUUID(), "firstname", "Harry"));
     }
+
+    @Test
+    void testUpdateByReplace() {
+        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
+        clientRepository.create(client1);
+        assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
+
+        assertEquals(client1, clientRepository.readByUUID(UUID.fromString(client1.getId())));
+
+        ClientEntity clientEntity = new ClientEntity(client1.getId(), "AAA", "BBB",
+                "loginek2134124", "Haslo1234!", false, "normal");
+
+        assertTrue(clientRepository.updateByReplace(UUID.fromString(client1.getId()), clientEntity));
+
+        assertNotEquals(client1, clientRepository.readByUUID(UUID.fromString(client1.getId())));
+        assertEquals(clientEntity, clientRepository.readByUUID(UUID.fromString(client1.getId())));
+    }
+
+    @Test
+    void testGetCollectionNameMethod() {
+        //Get collection name
+        assertEquals("users", clientRepository.getCollectionName());
+    }
+
+    @Test
+    void testAddingNewDocumentAdminToDBPositive() {
+        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
+        assertNotNull(clientRepository.create(
+                AdminMapper.toUserEntity(new Admin(UUID.randomUUID(), "testowyAdmin", "Haslo1234!"))));
+        assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
+        assertNotNull(clientRepository.create(
+                AdminMapper.toUserEntity(new Admin(UUID.randomUUID(), "testowyAdmin2", "Haslo1234!"))));
+        assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
+    }
+
+    @Test
+    void testReadingDocumentAdminFromDB() {
+        // Adding Admin document
+        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
+        AdminEntity testAdminEnt = AdminMapper.toUserEntity(
+                new Admin(UUID.randomUUID(), "testowyAdmin", "Haslo1234!"));
+        assertNotNull(clientRepository.create(testAdminEnt));
+        assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
+
+        // Test reading
+        assertEquals(testAdminEnt,
+                (AdminEntity) clientRepository.read(Filters.eq("login", "testowyAdmin")).get(0));
+    }
+
+    @Test
+    void testAddingNewDocumentResAdminToDBPositive() {
+        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
+        assertNotNull(clientRepository.create(
+                ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.randomUUID(), "testowyResAdmin", "Haslo1234!"))));
+        assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
+        assertNotNull(clientRepository.create(
+                ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.randomUUID(), "testowyResAdmin2", "Haslo1234!"))));
+        assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
+    }
+
+    @Test
+    void testReadingDocumentResAdminFromDB() {
+        // Adding Admin document
+        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
+        ResourceAdminEntity testResAdminEnt = ResourceAdminMapper.toUserEntity(
+                new ResourceAdmin(UUID.randomUUID(), "testowyResAdmin", "Haslo1234!"));
+        assertNotNull(clientRepository.create(testResAdminEnt));
+        assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
+
+        // Test reading
+        assertEquals(testResAdminEnt,
+                (ResourceAdminEntity) clientRepository.read(Filters.eq("login", "testowyResAdmin")).get(0));
+    }
+
+    @Test
+    void testCreatingNewCollection() {
+        getTestCollection().drop();
+        assertNotNull(new UserMongoRepository());
+    }
+
 }
