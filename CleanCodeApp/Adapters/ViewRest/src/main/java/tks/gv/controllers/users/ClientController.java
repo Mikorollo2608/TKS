@@ -1,7 +1,8 @@
 package tks.gv.controllers.users;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -23,7 +24,11 @@ import tks.gv.data.mappers.dto.ClientMapper;
 import tks.gv.exceptions.UserException;
 import tks.gv.exceptions.UserLoginException;
 
+import tks.gv.userinterface.users.ports.clients.ChangeClientStatusUseCase;
 import tks.gv.userinterface.users.ports.clients.GetAllClientsUseCase;
+import tks.gv.userinterface.users.ports.clients.GetClientByIdUseCase;
+import tks.gv.userinterface.users.ports.clients.GetClientByLoginUseCase;
+import tks.gv.userinterface.users.ports.clients.ModifyClientUseCase;
 import tks.gv.userinterface.users.ports.clients.RegisterClientUseCase;
 import tks.gv.users.Client;
 
@@ -31,19 +36,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/clients")
+@RequiredArgsConstructor
 public class ClientController {
     private final RegisterClientUseCase registerClientUseCase;
     private final GetAllClientsUseCase getAllClientsUseCase;
+    private final GetClientByIdUseCase getClientByIdUseCase;
+    private final GetClientByLoginUseCase getClientByLoginUseCase;
+    private final ModifyClientUseCase modifyClientUseCase;
+    private final ChangeClientStatusUseCase changeClientStatusUseCase;
 //    private final JwsService jwsService;
 
-    @Autowired
-    public ClientController(RegisterClientUseCase registerClientUseCase, GetAllClientsUseCase getAllClientsUseCase
-//            , JwsService jwsService
-    ) {
-        this.registerClientUseCase = registerClientUseCase;
-        this.getAllClientsUseCase = getAllClientsUseCase;
-//        this.jwsService = jwsService;
-    }
+//    @Autowired
+//    public ClientController(RegisterClientUseCase registerClientUseCase, GetAllClientsUseCase getAllClientsUseCase
+////            , JwsService jwsService
+//    ) {
+//        this.registerClientUseCase = registerClientUseCase;
+//        this.getAllClientsUseCase = getAllClientsUseCase;
+////        this.jwsService = jwsService;
+//    }
 
     @PostMapping("/addClient")
     public ResponseEntity<String> addClient(@Validated({BasicUserValidation.class, PasswordValidation.class}) @RequestBody ClientDTO client,
