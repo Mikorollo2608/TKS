@@ -11,8 +11,8 @@ import tks.gv.exceptions.MyMongoException;
 import tks.gv.infrastructure.users.ports.AddUserPort;
 import tks.gv.infrastructure.users.ports.GetAllUsersPort;
 
-import tks.gv.userinterface.users.ports.ClientsUseCase;
-
+import tks.gv.userinterface.users.ports.clients.GetAllClientsUseCase;
+import tks.gv.userinterface.users.ports.clients.RegisterClientUseCase;
 import tks.gv.users.Client;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
 
 @Service
 @NoArgsConstructor
-public class ClientService implements ClientsUseCase {
+public class ClientService implements RegisterClientUseCase, GetAllClientsUseCase {
 
     private AddUserPort addUserPort;
     private GetAllUsersPort getAllUsersPort;
@@ -31,6 +31,7 @@ public class ClientService implements ClientsUseCase {
         this.getAllUsersPort = getAllUsersPort;
     }
 
+    @Override
     public void registerClient(Client client) {
         try {
             addUserPort.addUser(client);
@@ -44,6 +45,7 @@ public class ClientService implements ClientsUseCase {
 //        return client != null ? ClientMapper.toJsonUser((Client) client) : null;
 //    }
 
+    @Override
     public List<Client> getAllClients() {
         List<Client> list = new ArrayList<>();
         for (var user : getAllUsersPort.getAllUsers()) {

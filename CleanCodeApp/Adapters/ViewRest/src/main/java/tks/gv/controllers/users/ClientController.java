@@ -23,7 +23,8 @@ import tks.gv.data.mappers.dto.ClientMapper;
 import tks.gv.exceptions.UserException;
 import tks.gv.exceptions.UserLoginException;
 
-import tks.gv.userinterface.users.ports.ClientsUseCase;
+import tks.gv.userinterface.users.ports.clients.GetAllClientsUseCase;
+import tks.gv.userinterface.users.ports.clients.RegisterClientUseCase;
 import tks.gv.users.Client;
 
 import java.util.List;
@@ -31,14 +32,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/clients")
 public class ClientController {
-    private final ClientsUseCase clientService;
+    private final RegisterClientUseCase registerClientUseCase;
+    private final GetAllClientsUseCase getAllClientsUseCase;
 //    private final JwsService jwsService;
 
     @Autowired
-    public ClientController(ClientsUseCase clientService
+    public ClientController(RegisterClientUseCase registerClientUseCase, GetAllClientsUseCase getAllClientsUseCase
 //            , JwsService jwsService
     ) {
-        this.clientService = clientService;
+        this.registerClientUseCase = registerClientUseCase;
+        this.getAllClientsUseCase = getAllClientsUseCase;
 //        this.jwsService = jwsService;
     }
 
@@ -56,7 +59,7 @@ public class ClientController {
         }
 
         try {
-            clientService.registerClient(ClientMapper.fromUserDTO(client));
+            registerClientUseCase.registerClient(ClientMapper.fromUserDTO(client));
         } catch (UserLoginException ule) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ule.getMessage());
         } catch (UserException ue) {
@@ -68,7 +71,7 @@ public class ClientController {
 
     @GetMapping
     public List<ClientDTO> getAllClients(HttpServletResponse response) {
-        List<Client> resultList = clientService.getAllClients();
+        List<Client> resultList = getAllClientsUseCase.getAllClients();
 
         if (resultList.isEmpty()) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
