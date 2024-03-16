@@ -23,8 +23,7 @@ import tks.gv.data.mappers.dto.CourtMapper;
 import tks.gv.exceptions.CourtException;
 import tks.gv.exceptions.CourtNumberException;
 import tks.gv.exceptions.MyMongoException;
-import tks.gv.infrastructure.courts.ports.AddCourtPort;
-import tks.gv.userinterface.courts.ports.CourtsUseCase;
+import tks.gv.userinterface.courts.ports.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,11 +31,29 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/courts")
 public class CourtController {
-    private final CourtsUseCase courtService;
+    private final ActivateCourtUseCase activateCourt;
+    private final AddCourtUseCase addCourt;
+    private final DeactivateUseCase deactivateCourt;
+    private final DeleteCourtUseCase deleteCourt;
+    private final GetAllCourtsUseCase getAllCourts;
+    private final GetCourtByIdUseCase getCourtById;
+    private final GetCourtByCourtNumberUseCase getCourtByCourtNumber;
+    private final ModifyCourtUseCase modifyCourt;
 
     @Autowired
-    public CourtController(CourtsUseCase courtService) {
-        this.courtService = courtService;
+    public CourtController(ActivateCourtUseCase activateCourt, AddCourtUseCase addCourt,
+                           DeactivateUseCase deactivateCourt, DeleteCourtUseCase deleteCourt,
+                           GetAllCourtsUseCase getAllCourts, GetCourtByIdUseCase getCourtById,
+                           GetCourtByCourtNumberUseCase getCourtByCourtNumber,
+                           ModifyCourtUseCase modifyCourt) {
+        this.activateCourt = activateCourt;
+        this.addCourt = addCourt;
+        this.deactivateCourt = deactivateCourt;
+        this.deleteCourt = deleteCourt;
+        this.getAllCourts = getAllCourts;
+        this.getCourtById = getCourtById;
+        this.getCourtByCourtNumber = getCourtByCourtNumber;
+        this.modifyCourt = modifyCourt;
     }
 
     @PostMapping("/addCourt")
@@ -52,7 +69,7 @@ public class CourtController {
         }
 
         try {
-            courtService.addCourt(CourtMapper.fromJsonCourt(court));
+            addCourt.addCourt(CourtMapper.fromJsonCourt(court));
         } catch (CourtNumberException cne) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(cne.getMessage());
         } catch (CourtException ce) {
@@ -64,7 +81,7 @@ public class CourtController {
 
     @GetMapping
     public List<CourtDTO> getAllCourts(HttpServletResponse response) {
-        List<CourtDTO> resultList = courtService.getAllCourts().stream().map(CourtMapper::toJsonCourt).toList();
+        List<CourtDTO> resultList = getAllCourts.getAllCourts().stream().map(CourtMapper::toJsonCourt).toList();
         if (resultList.isEmpty()) {
             resultList = null;
             response.setStatus(HttpStatus.NO_CONTENT.value());
@@ -74,7 +91,7 @@ public class CourtController {
 
     @GetMapping("/{id}")
     public CourtDTO getCourtById(@PathVariable("id") String id, HttpServletResponse response) {
-        CourtDTO court = CourtMapper.toJsonCourt(courtService.getCourtById(UUID.fromString(id)));
+        CourtDTO court = CourtMapper.toJsonCourt(getCourtById.getCourtById(UUID.fromString(id)));
         if (court == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
         }
@@ -83,7 +100,7 @@ public class CourtController {
 
     @GetMapping("/get")
     public CourtDTO getCourtByCourtNumber(@RequestParam("number") String number, HttpServletResponse response) {
-        CourtDTO court = CourtMapper.toJsonCourt(courtService.getCourtByCourtNumber(Integer.parseInt(number)));
+        CourtDTO court = CourtMapper.toJsonCourt(getCourtByCourtNumber.getCourtByCourtNumber(Integer.parseInt(number)));
         if (court == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
         }
@@ -106,7 +123,7 @@ public class CourtController {
         try {
             CourtDTO finalModifyCourt = new CourtDTO(id, modifiedCourt.getArea(), modifiedCourt.getBaseCost(),
                     modifiedCourt.getCourtNumber(), modifiedCourt.isArchive(), modifiedCourt.isRented());
-            courtService.modifyCourt(CourtMapper.fromJsonCourt(finalModifyCourt));
+            modifyCourt.modifyCourt(CourtMapper.fromJsonCourt(finalModifyCourt));
         } catch (CourtNumberException cne) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(cne.getMessage());
         } catch (CourtException ce) {
@@ -118,20 +135,20 @@ public class CourtController {
 
     @PostMapping("/activate/{id}")
     public void activateCourt(@PathVariable("id") String id, HttpServletResponse response) {
-        courtService.activateCourt(UUID.fromString(id));
+        activateCourt.activateCourt(UUID.fromString(id));
         response.setStatus(HttpStatus.NO_CONTENT.value());
     }
 
     @PostMapping("/deactivate/{id}")
     public void archiveCourt(@PathVariable("id") String id, HttpServletResponse response) {
-        courtService.deactivateCourt(UUID.fromString(id));
+        deactivateCourt.deactivateCourt(UUID.fromString(id));
         response.setStatus(HttpStatus.NO_CONTENT.value());
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteCourt(@PathVariable("id") String id) {
         try {
-            courtService.deleteCourt(UUID.fromString(id));
+            deleteCourt.deleteCourt(UUID.fromString(id));
         } catch (CourtException ce) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ce.getMessage());
         } catch (MyMongoException mme) {

@@ -1,16 +1,18 @@
 package tks.gv.courtservice;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tks.gv.courts.Court;
 import tks.gv.infrastructure.courts.ports.*;
-import tks.gv.userinterface.courts.ports.CourtsUseCase;
+import tks.gv.userinterface.courts.ports.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
-public class CourtService implements CourtsUseCase {
+public class CourtService implements DeleteCourtUseCase, ActivateCourtUseCase,
+                                    DeactivateUseCase, ModifyCourtUseCase,
+                                    GetCourtByCourtNumberUseCase, GetCourtByIdUseCase,
+                                    GetAllCourtsUseCase, AddCourtUseCase  {
 
     AddCourtPort addCourtPort;
     GetAllCourtsPort getAllCourtsPort;
