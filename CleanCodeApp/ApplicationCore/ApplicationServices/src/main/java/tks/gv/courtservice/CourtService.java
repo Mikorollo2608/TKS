@@ -1,5 +1,7 @@
 package tks.gv.courtservice;
 
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tks.gv.courts.Court;
 import tks.gv.infrastructure.courts.ports.*;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@NoArgsConstructor
 public class CourtService implements DeleteCourtUseCase, ActivateCourtUseCase,
                                     DeactivateUseCase, ModifyCourtUseCase,
                                     GetCourtByCourtNumberUseCase, GetCourtByIdUseCase,
@@ -20,20 +23,21 @@ public class CourtService implements DeleteCourtUseCase, ActivateCourtUseCase,
     GetCourtByCourtNumberPort getCourtByCourtNumberPort;
     ModifyCourtPort modifyCourtPort;
     ActivateCourtPort activateCourtPort;
-    DeactivateCourt deactivateCourt;
+    DeactivateCourt deactivateCourtPort;
     DeleteCourtPort deleteCourtPort;
 
+    @Autowired
     public CourtService(AddCourtPort addCourtPort, GetAllCourtsPort getAllCourtsPort,
                         GetCourtByIdPort getCourtByIdPort, GetCourtByCourtNumberPort getCourtByCourtNumberPort,
                         ModifyCourtPort modifyCourtPort, ActivateCourtPort activateCourtPort,
-                        DeactivateCourt deactivateCourt, DeleteCourtPort deleteCourtPort) {
+                        DeactivateCourt deactivateCourtPort, DeleteCourtPort deleteCourtPort) {
         this.addCourtPort = addCourtPort;
         this.getAllCourtsPort = getAllCourtsPort;
         this.getCourtByIdPort = getCourtByIdPort;
         this.getCourtByCourtNumberPort = getCourtByCourtNumberPort;
         this.modifyCourtPort = modifyCourtPort;
         this.activateCourtPort = activateCourtPort;
-        this.deactivateCourt = deactivateCourt;
+        this.deactivateCourtPort = deactivateCourtPort;
         this.deleteCourtPort = deleteCourtPort;
     }
 
@@ -69,7 +73,7 @@ public class CourtService implements DeleteCourtUseCase, ActivateCourtUseCase,
 
     @Override
     public void deactivateCourt(UUID id) {
-        deactivateCourt.deactivateCourt(id);
+        deactivateCourtPort.deactivateCourt(id);
     }
 
     @Override
