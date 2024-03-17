@@ -17,14 +17,14 @@ public class CourtService implements DeleteCourtUseCase, ActivateCourtUseCase,
                                     GetCourtByCourtNumberUseCase, GetCourtByIdUseCase,
                                     GetAllCourtsUseCase, AddCourtUseCase  {
 
-    AddCourtPort addCourtPort;
-    GetAllCourtsPort getAllCourtsPort;
-    GetCourtByIdPort getCourtByIdPort;
-    GetCourtByCourtNumberPort getCourtByCourtNumberPort;
-    ModifyCourtPort modifyCourtPort;
-    ActivateCourtPort activateCourtPort;
-    DeactivateCourt deactivateCourtPort;
-    DeleteCourtPort deleteCourtPort;
+    private AddCourtPort addCourtPort;
+    private GetAllCourtsPort getAllCourtsPort;
+    private GetCourtByIdPort getCourtByIdPort;
+    private GetCourtByCourtNumberPort getCourtByCourtNumberPort;
+    private ModifyCourtPort modifyCourtPort;
+    private ActivateCourtPort activateCourtPort;
+    private DeactivateCourt deactivateCourtPort;
+    private DeleteCourtPort deleteCourtPort;
 
     @Autowired
     public CourtService(AddCourtPort addCourtPort, GetAllCourtsPort getAllCourtsPort,
