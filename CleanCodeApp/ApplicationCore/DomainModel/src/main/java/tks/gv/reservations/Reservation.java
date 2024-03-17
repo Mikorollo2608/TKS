@@ -1,6 +1,5 @@
 package tks.gv.reservations;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import tks.gv.courts.Court;

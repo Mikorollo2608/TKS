@@ -1,10 +1,8 @@
 package tks.gv.controllers.users;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -50,7 +48,7 @@ public class ClientController {
     private final ModifyClientUseCase modifyClientUseCase;
     private final ChangeClientStatusUseCase changeClientStatusUseCase;
 
-    @PostMapping(value = "/addClient", consumes = "application/json")
+    @PostMapping(value = "/addClient")
     public ResponseEntity<String> addClient(@Validated({UserDTO.BasicUserValidation.class, UserDTO.PasswordValidation.class}) @RequestBody ClientDTO client,
                                             Errors errors) {
         if (errors.hasErrors()) {
