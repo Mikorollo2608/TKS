@@ -7,5 +7,5 @@ import java.util.UUID;
 
 public interface GetAllCurrentReservationsUseCase {
 
-    List<Reservation> getAllCurrentReservations(UUID clientId);
+    List<Reservation> getAllCurrentReservations();
 }
