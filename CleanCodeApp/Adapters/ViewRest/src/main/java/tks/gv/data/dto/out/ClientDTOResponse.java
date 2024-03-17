@@ -1,9 +1,8 @@
-package tks.gv.data.dto;
+package tks.gv.data.dto.out;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
@@ -14,7 +13,7 @@ import java.util.Objects;
 @Getter
 @FieldDefaults(makeFinal = true)
 @JsonPropertyOrder({"archive", "id", "login", "clientTypeName", "firstName", "lastName"})
-public class ClientDTO extends UserDTO {
+public class ClientDTOResponse extends UserDTOResponse {
     @JsonProperty("firstName")
     @NotBlank(groups = {BasicUserValidation.class})
     private String firstName;
@@ -25,14 +24,13 @@ public class ClientDTO extends UserDTO {
     private String clientType;
 
     @JsonCreator
-    public ClientDTO(@JsonProperty("id") String id,
-                     @JsonProperty("firstName") String firstName,
-                     @JsonProperty("lastName") String lastName,
-                     @JsonProperty("login") String login,
-                     @JsonProperty("password") String password,
-                     @JsonProperty("archive") boolean archive,
-                     @JsonProperty("clientTypeName") String clientType) {
-        super(id, login, password, archive);
+    public ClientDTOResponse(@JsonProperty("id") String id,
+                             @JsonProperty("firstName") String firstName,
+                             @JsonProperty("lastName") String lastName,
+                             @JsonProperty("login") String login,
+                             @JsonProperty("archive") boolean archive,
+                             @JsonProperty("clientTypeName") String clientType) {
+        super(id, login, archive);
         this.firstName = firstName;
         this.lastName = lastName;
         this.clientType = clientType;
@@ -42,7 +40,7 @@ public class ClientDTO extends UserDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ClientDTO that = (ClientDTO) o;
+        ClientDTOResponse that = (ClientDTOResponse) o;
         return isArchive() == that.isArchive() &&
                 Objects.equals(getId(), that.getId()) &&
                 Objects.equals(firstName, that.firstName) &&

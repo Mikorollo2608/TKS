@@ -12,7 +12,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,10 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import tks.gv.data.dto.ClientDTO;
-import tks.gv.data.dto.UserDTO.BasicUserValidation;
-import tks.gv.data.dto.UserDTO.PasswordValidation;
+import tks.gv.data.dto.in.ClientDTORequest;
+import tks.gv.data.dto.in.ClientRegisterDTORequest;
+import tks.gv.data.dto.in.UserDTORequest.BasicUserValidation;
+import tks.gv.data.dto.in.UserDTORequest.PasswordValidation;
 
+import tks.gv.data.dto.out.ClientDTOResponse;
 import tks.gv.data.mappers.dto.ClientMapper;
 import tks.gv.exceptions.UserException;
 import tks.gv.exceptions.UserLoginException;
@@ -50,8 +51,8 @@ public class ClientController {
     private final ModifyClientUseCase modifyClientUseCase;
     private final ChangeClientStatusUseCase changeClientStatusUseCase;
 
-    @PostMapping("/addClient")
-    public ResponseEntity<String> addClient(@Validated({BasicUserValidation.class, PasswordValidation.class}) @RequestBody ClientDTO client,
+    @PostMapping(value = "/addClient", consumes = "application/json")
+    public ResponseEntity<String> addClient(@Validated({BasicUserValidation.class, PasswordValidation.class}) @RequestBody ClientRegisterDTORequest client,
                                             Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -75,7 +76,7 @@ public class ClientController {
     }
 
     @GetMapping
-    public List<ClientDTO> getAllClients(HttpServletResponse response) {
+    public List<ClientDTOResponse> getAllClients(HttpServletResponse response) {
         List<Client> resultList = getAllClientsUseCase.getAllClients();
 
         if (resultList.isEmpty()) {
@@ -89,7 +90,7 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ClientDTO getClientById(@PathVariable("id") String id, HttpServletResponse response) {
+    public ClientDTOResponse getClientById(@PathVariable("id") String id, HttpServletResponse response) {
         Client client = getClientByIdUseCase.getClientById(id);
         if (client == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
@@ -98,7 +99,7 @@ public class ClientController {
     }
 
     @GetMapping("/get")
-    public ClientDTO getClientByLogin(@RequestParam("login") String login, HttpServletResponse response) {
+    public ClientDTOResponse getClientByLogin(@RequestParam("login") String login, HttpServletResponse response) {
         Client client = getClientByLoginUseCase.getClientByLogin(login);
         if (client == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
@@ -107,7 +108,7 @@ public class ClientController {
     }
 
     @GetMapping("/match")
-    public List<ClientDTO> getClientByLoginMatching(@RequestParam("login") String login, HttpServletResponse response) {
+    public List<ClientDTOResponse> getClientByLoginMatching(@RequestParam("login") String login, HttpServletResponse response) {
         List<Client> resultList = getClientByLoginUseCase.getClientByLoginMatching(login);
         if (resultList.isEmpty()) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
@@ -120,8 +121,7 @@ public class ClientController {
     }
 
     @PutMapping("/modifyClient")
-    public ResponseEntity<String> modifyClient(HttpServletRequest httpServletRequest,
-                                               @Validated(BasicUserValidation.class) @RequestBody ClientDTO modifiedClient,
+    public ResponseEntity<String> modifyClient(@Validated(BasicUserValidation.class) @RequestBody ClientDTORequest modifiedClient,
                                                Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -134,7 +134,7 @@ public class ClientController {
 
         try {
             modifyClientUseCase.modifyClient(ClientMapper.fromUserDTO(
-                    new ClientDTO(
+                    new ClientDTORequest(
                             modifiedClient.getId(),
                             modifiedClient.getFirstName(),
                             modifiedClient.getLastName(),

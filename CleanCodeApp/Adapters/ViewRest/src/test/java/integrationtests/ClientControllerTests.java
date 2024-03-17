@@ -10,8 +10,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tks.gv.data.dto.ClientDTO;
-import tks.gv.users.Client;
+import tks.gv.data.dto.in.ClientDTORequest;
+import tks.gv.data.dto.in.ClientRegisterDTORequest;
+import tks.gv.data.dto.out.ClientDTOResponse;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -55,7 +56,7 @@ public class ClientControllerTests {
         Response response = request.get(new URI(appUrlClient));
 
         ObjectMapper objectMapper = new ObjectMapper();
-        List<ClientDTO> clientDTOList = objectMapper.readValue(response.asString(), new TypeReference<>() {
+        List<ClientDTOResponse> clientDTOList = objectMapper.readValue(response.asString(), new TypeReference<>() {
         });
         assertEquals(4, clientDTOList.size());
 
@@ -84,21 +85,19 @@ public class ClientControllerTests {
         ObjectMapper objectMapper = new ObjectMapper();
 
         String JSON = objectMapper.writeValueAsString(
-                new ClientDTO(
-                        null,
+                new ClientRegisterDTORequest(
                         "John",
                         "Bravo",
                         "johnBravo",
-                        "johnBravo1!",
-                        false,
-                        "normal"
+                        "johnBravo1!"
                 )
-        );
-        System.out.println(JSON);
+        ).replace("\"id\":null,", "");
 
         RequestSpecification requestPost = RestAssured.given();
         requestPost.contentType("application/json");
         requestPost.body(JSON);
+
+        System.out.println(JSON);
 
         RequestSpecification requestGet = RestAssured.given();
         String responseString = requestGet.get(new URI(appUrlClient)).asString();
@@ -107,17 +106,17 @@ public class ClientControllerTests {
 
         Response responsePost = requestPost.post(appUrlClient + "/addClient");
 
-        System.out.println(responsePost.asString());
         assertEquals(201, responsePost.getStatusCode());
 
         responseString = requestGet.get(new URI(appUrlClient)).asString();
 
-        ClientDTO clientDTO = objectMapper.readValue(responseString, ClientDTO.class);
+        List<ClientDTORequest> clientDTOList = objectMapper.readValue(responseString, new TypeReference<>() {});
 
-        assertEquals("John", clientDTO.getFirstName());
-        assertEquals("Bravo", clientDTO.getLastName());
-        assertEquals("johnBravo", clientDTO.getLogin());
-        assertEquals("normal", clientDTO.getClientType());
+        assertEquals("John", clientDTOList.get(0).getFirstName());
+        assertEquals("Bravo", clientDTOList.get(0).getLastName());
+        assertEquals("johnBravo", clientDTOList.get(0).getLogin());
+        assertFalse(clientDTOList.get(0).isArchive());
+        assertEquals("normal", clientDTOList.get(0).getClientType());
     }
 
     @Test

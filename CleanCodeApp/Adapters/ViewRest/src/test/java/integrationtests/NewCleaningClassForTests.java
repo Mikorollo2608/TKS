@@ -11,13 +11,14 @@ import tks.gv.aggregates.CourtMongoRepositoryAdapter;
 import tks.gv.aggregates.UserMongoRepositoryAdapter;
 import tks.gv.courts.Court;
 import tks.gv.courtservice.CourtService;
-import tks.gv.data.dto.AdminDTO;
+import tks.gv.data.dto.in.AdminDTORequest;
 import tks.gv.data.dto.CourtDTO;
-import tks.gv.data.dto.ResourceAdminDTO;
+import tks.gv.data.dto.in.ResourceAdminDTORequest;
+import tks.gv.data.dto.out.ClientDTOResponse;
 import tks.gv.data.mappers.dto.AdminMapper;
 import tks.gv.data.mappers.dto.ClientMapper;
 
-import tks.gv.data.dto.ClientDTO;
+import tks.gv.data.dto.in.ClientDTORequest;
 
 import tks.gv.data.mappers.dto.CourtMapper;
 import tks.gv.data.mappers.dto.ResourceAdminMapper;
@@ -71,10 +72,10 @@ public class NewCleaningClassForTests {
         mongoDatabase.getCollection("reservations").deleteMany(Filters.empty());
     }
 
-    static ClientDTO client1;
-    static ClientDTO client2;
-    static ClientDTO client3;
-    static ClientDTO client4;
+    static ClientDTOResponse client1;
+    static ClientDTOResponse client2;
+    static ClientDTOResponse client3;
+    static ClientDTOResponse client4;
 
     static final String testPass = "P@ssword!";
 
@@ -165,8 +166,8 @@ public class NewCleaningClassForTests {
 ////
 ////    /*----------------------------------------------------------------------------------------------------------------*/
 
-    static AdminDTO admin1;
-    static AdminDTO admin2;
+    static AdminDTORequest admin1;
+    static AdminDTORequest admin2;
 
     static void initAdmins() {
         AdminService adminServiceServiceTest = new AdminService(userAdapter, userAdapter, userAdapter, userAdapter, userAdapter, userAdapter);
@@ -175,8 +176,8 @@ public class NewCleaningClassForTests {
         admin2 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("6f736fcc-d19d-4bcc-b1da-966b3c7c9758"), "adminek2@9876", testPass)));
     }
 
-    static ResourceAdminDTO adminRes1;
-    static ResourceAdminDTO adminRes2;
+    static ResourceAdminDTORequest adminRes1;
+    static ResourceAdminDTORequest adminRes2;
 
     static void initResAdmins() {
         ResourceAdminService resourceAdminServiceTest = new ResourceAdminService(userAdapter, userAdapter, userAdapter, userAdapter, userAdapter, userAdapter);
