@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-public class CourtMongoRepositoryAdapterPortPort implements AddCourtPort, GetAllCourtsPort, GetCourtByIdPort,
+public class CourtMongoRepositoryAdapter implements AddCourtPort, GetAllCourtsPort, GetCourtByIdPort,
         GetCourtByCourtNumberPort, ModifyCourtPort, ActivateCourtPort, DeactivateCourt, DeleteCourtPort {
     private final CourtMongoRepository repository;
 
     @Autowired
-    public CourtMongoRepositoryAdapterPortPort(CourtMongoRepository repository) {
+    public CourtMongoRepositoryAdapter(CourtMongoRepository repository) {
         this.repository = repository;
     }
 
@@ -52,7 +52,6 @@ public class CourtMongoRepositoryAdapterPortPort implements AddCourtPort, GetAll
                 Filters.eq("courtnumber", court.getCourtNumber()),
                 Filters.ne("_id", court.getId().toString())));
         if (!list.isEmpty()) {
-            System.out.println(list.get(0).getCourtNumber() + " " + list.get(0).getId() +" "+  court.getId());
             throw new CourtNumberException("Nie udalo sie zmodyfikowac podanego boiska - " +
                     "proba zmiany numeru boiska na numer wystepujacy juz u innego boiska");
         }
