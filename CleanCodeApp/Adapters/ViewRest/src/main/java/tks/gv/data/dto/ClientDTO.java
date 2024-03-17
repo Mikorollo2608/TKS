@@ -43,8 +43,11 @@ public class ClientDTO extends UserDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClientDTO that = (ClientDTO) o;
-        return isArchive() == that.isArchive() && Objects.equals(getId(), that.getId()) && Objects.equals(firstName,
-                that.firstName) && Objects.equals(lastName, that.lastName)
-                && Objects.equals(getLogin(), that.getLogin()) && Objects.equals(clientType, that.clientType);
+        return isArchive() == that.isArchive() &&
+                Objects.equals(getId(), that.getId()) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(getLogin(), that.getLogin()) &&
+                Objects.equals(clientType, that.clientType);
     }
 }

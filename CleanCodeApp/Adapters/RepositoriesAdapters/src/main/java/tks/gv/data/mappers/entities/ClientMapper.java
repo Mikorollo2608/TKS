@@ -17,10 +17,10 @@ public class ClientMapper {
                 client.getClientTypeName());
     }
 
-    public static Client fromUserEntity(ClientEntity clientDTO) {
-        Client clientModel = new Client(UUID.fromString(clientDTO.getId()), clientDTO.getFirstName(),
-                clientDTO.getLastName(), clientDTO.getLogin(), clientDTO.getPassword(), clientDTO.getClientType());
-        clientModel.setArchive(clientDTO.isArchive());
+    public static Client fromUserEntity(ClientEntity clientEntity) {
+        Client clientModel = new Client(UUID.fromString(clientEntity.getId()), clientEntity.getFirstName(),
+                clientEntity.getLastName(), clientEntity.getLogin(), clientEntity.getPassword(), clientEntity.getClientType());
+        clientModel.setArchive(clientEntity.isArchive());
         return clientModel;
     }
 }
