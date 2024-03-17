@@ -70,6 +70,14 @@ public class CourtMongoRepositoryAdapterTest {
     }
 
     @Test
+    void testGetCourtByCourtId(){
+        Mockito.when(repository.readByUUID(eq(court1.getId())))
+                .thenReturn(CourtMapper.toMongoCourt(court1));
+        Court retCourt = adapter.getCourtById(court1.getId());
+        assertEquals(court1, retCourt);
+    }
+
+    @Test
     void testGetCourtByCourtNumberCourtFound(){
         Mockito.when(repository.read(eq(Filters.eq("courtnumber",1))))
                 .thenReturn(Arrays.asList(CourtMapper.toMongoCourt(court1)));
