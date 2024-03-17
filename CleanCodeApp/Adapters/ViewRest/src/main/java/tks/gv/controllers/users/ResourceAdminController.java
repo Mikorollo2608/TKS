@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import tks.gv.data.dto.in.ResourceAdminDTORequest;
-import tks.gv.data.dto.in.UserDTORequest;
+import tks.gv.data.dto.ResourceAdminDTO;
+import tks.gv.data.dto.UserDTO;
 import tks.gv.data.mappers.dto.ResourceAdminMapper;
 
 import tks.gv.exceptions.UserException;
@@ -51,7 +51,7 @@ public class ResourceAdminController {
     private final ChangeResourceAdminStatusUseCase changeResourceAdminStatusUseCase;
 
     @PostMapping("/addResAdmin")
-    public ResponseEntity<String> addResAdmin(@Validated({UserDTORequest.BasicUserValidation.class, UserDTORequest.PasswordValidation.class}) @RequestBody ResourceAdminDTORequest resourceAdmin,
+    public ResponseEntity<String> addResAdmin(@Validated({UserDTO.BasicUserValidation.class, UserDTO.PasswordValidation.class}) @RequestBody ResourceAdminDTO resourceAdmin,
                                               Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -74,7 +74,7 @@ public class ResourceAdminController {
     }
 
     @GetMapping
-    public List<ResourceAdminDTORequest> getAllResAdmins(HttpServletResponse response) {
+    public List<ResourceAdminDTO> getAllResAdmins(HttpServletResponse response) {
         List<ResourceAdmin> resultList = getAllResourceAdminsUseCase.getAllResourceAdmins();
 
         if (resultList.isEmpty()) {
@@ -88,7 +88,7 @@ public class ResourceAdminController {
     }
 
     @GetMapping("/{id}")
-    public ResourceAdminDTORequest getResAdminById(@PathVariable("id") String id, HttpServletResponse response) {
+    public ResourceAdminDTO getResAdminById(@PathVariable("id") String id, HttpServletResponse response) {
         ResourceAdmin resourceAdmin = getResourceAdminByIdUseCase.getResourceAdminById(UUID.fromString(id));
         if (resourceAdmin == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
@@ -97,7 +97,7 @@ public class ResourceAdminController {
     }
 
     @GetMapping("/get")
-    public ResourceAdminDTORequest getResAdminByLogin(@RequestParam("login") String login, HttpServletResponse response) {
+    public ResourceAdminDTO getResAdminByLogin(@RequestParam("login") String login, HttpServletResponse response) {
         ResourceAdmin resourceAdmin = getResourceAdminByLoginUseCase.getResourceAdminByLogin(login);
         if (resourceAdmin == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
@@ -106,7 +106,7 @@ public class ResourceAdminController {
     }
 
     @GetMapping("/match")
-    public List<ResourceAdminDTORequest> getResAdminByLoginMatching(@RequestParam("login") String login, HttpServletResponse response) {
+    public List<ResourceAdminDTO> getResAdminByLoginMatching(@RequestParam("login") String login, HttpServletResponse response) {
         List<ResourceAdmin> resultList = getResourceAdminByLoginUseCase.getResourceAdminByLoginMatching(login);
         if (resultList.isEmpty()) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
@@ -119,7 +119,7 @@ public class ResourceAdminController {
     }
 
     @PutMapping("/modifyResAdmin")
-    public ResponseEntity<String> modifyResAdmin(@Validated(UserDTORequest.BasicUserValidation.class) @RequestBody ResourceAdminDTORequest modifyResourceAdmin,
+    public ResponseEntity<String> modifyResAdmin(@Validated(UserDTO.BasicUserValidation.class) @RequestBody ResourceAdminDTO modifyResourceAdmin,
                                                  Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -132,7 +132,7 @@ public class ResourceAdminController {
 
         try {
             modifyResourceAdminUseCase.modifyResourceAdmin(ResourceAdminMapper.fromUserDTO(
-                    new ResourceAdminDTORequest(
+                    new ResourceAdminDTO(
                             modifyResourceAdmin.getId(),
                             modifyResourceAdmin.getLogin(),
                             null,

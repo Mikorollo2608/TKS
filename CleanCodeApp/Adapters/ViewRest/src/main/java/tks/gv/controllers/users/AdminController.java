@@ -19,8 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import tks.gv.data.dto.in.AdminDTORequest;
-import tks.gv.data.dto.in.UserDTORequest;
+
+import tks.gv.data.dto.AdminDTO;
+import tks.gv.data.dto.UserDTO;
 import tks.gv.data.mappers.dto.AdminMapper;
 
 import tks.gv.exceptions.UserLoginException;
@@ -49,7 +50,7 @@ public class AdminController {
     private final ChangeAdminStatusUseCase changeAdminStatusUseCase;
     
     @PostMapping("/addAdmin")
-    public ResponseEntity<String> addAdmin(@Validated({UserDTORequest.BasicUserValidation.class, UserDTORequest.PasswordValidation.class}) @RequestBody AdminDTORequest admin,
+    public ResponseEntity<String> addAdmin(@Validated({UserDTO.BasicUserValidation.class, UserDTO.PasswordValidation.class}) @RequestBody AdminDTO admin,
                                            Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -72,7 +73,7 @@ public class AdminController {
     }
 
     @GetMapping
-    public List<AdminDTORequest> getAllAdmins(HttpServletResponse response) {
+    public List<AdminDTO> getAllAdmins(HttpServletResponse response) {
         List<Admin> resultList = getAllAdminsUseCase.getAllAdmins();
 
         if (resultList.isEmpty()) {
@@ -86,7 +87,7 @@ public class AdminController {
     }
 
     @GetMapping("/{id}")
-    public AdminDTORequest getAdminById(@PathVariable("id") String id, HttpServletResponse response) {
+    public AdminDTO getAdminById(@PathVariable("id") String id, HttpServletResponse response) {
         Admin admin = getAdminByIdUseCase.getAdminById(id);
         if (admin == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
@@ -95,7 +96,7 @@ public class AdminController {
     }
 
     @GetMapping("/get")
-    public AdminDTORequest getAdminByLogin(@RequestParam("login") String login, HttpServletResponse response) {
+    public AdminDTO getAdminByLogin(@RequestParam("login") String login, HttpServletResponse response) {
         Admin admin = getAdminByLoginUseCase.getAdminByLogin(login);
         if (admin == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
@@ -104,7 +105,7 @@ public class AdminController {
     }
 
     @GetMapping("/match")
-    public List<AdminDTORequest> getAdminByLoginMatching(@RequestParam("login") String login, HttpServletResponse response) {
+    public List<AdminDTO> getAdminByLoginMatching(@RequestParam("login") String login, HttpServletResponse response) {
         List<Admin> resultList = getAdminByLoginUseCase.getAdminByLoginMatching(login);
         if (resultList.isEmpty()) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
@@ -117,7 +118,7 @@ public class AdminController {
     }
 
     @PutMapping("/modifyAdmin")
-    public ResponseEntity<String> modifyAdmin(@Validated(UserDTORequest.BasicUserValidation.class) @RequestBody AdminDTORequest modifiedAdmin,
+    public ResponseEntity<String> modifyAdmin(@Validated(UserDTO.BasicUserValidation.class) @RequestBody AdminDTO modifiedAdmin,
                                               Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -130,7 +131,7 @@ public class AdminController {
 
         try {
             modifyAdminUseCase.modifyAdmin(AdminMapper.fromUserDTO(
-                    new AdminDTORequest(
+                    new AdminDTO(
                             modifiedAdmin.getId(),
                             modifiedAdmin.getLogin(),
                             null,

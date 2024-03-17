@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -20,12 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import tks.gv.data.dto.in.ClientDTORequest;
-import tks.gv.data.dto.in.ClientRegisterDTORequest;
-import tks.gv.data.dto.in.UserDTORequest.BasicUserValidation;
-import tks.gv.data.dto.in.UserDTORequest.PasswordValidation;
+import tks.gv.data.dto.ClientDTO;
+import tks.gv.data.dto.UserDTO;
 
-import tks.gv.data.dto.out.ClientDTOResponse;
+
 import tks.gv.data.mappers.dto.ClientMapper;
 import tks.gv.exceptions.UserException;
 import tks.gv.exceptions.UserLoginException;
@@ -52,7 +51,7 @@ public class ClientController {
     private final ChangeClientStatusUseCase changeClientStatusUseCase;
 
     @PostMapping(value = "/addClient", consumes = "application/json")
-    public ResponseEntity<String> addClient(@Validated({BasicUserValidation.class, PasswordValidation.class}) @RequestBody ClientRegisterDTORequest client,
+    public ResponseEntity<String> addClient(@Validated({UserDTO.BasicUserValidation.class, UserDTO.PasswordValidation.class}) @RequestBody ClientDTO client,
                                             Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -76,7 +75,7 @@ public class ClientController {
     }
 
     @GetMapping
-    public List<ClientDTOResponse> getAllClients(HttpServletResponse response) {
+    public List<ClientDTO> getAllClients(HttpServletResponse response) {
         List<Client> resultList = getAllClientsUseCase.getAllClients();
 
         if (resultList.isEmpty()) {
@@ -90,7 +89,7 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ClientDTOResponse getClientById(@PathVariable("id") String id, HttpServletResponse response) {
+    public ClientDTO getClientById(@PathVariable("id") String id, HttpServletResponse response) {
         Client client = getClientByIdUseCase.getClientById(id);
         if (client == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
@@ -99,7 +98,7 @@ public class ClientController {
     }
 
     @GetMapping("/get")
-    public ClientDTOResponse getClientByLogin(@RequestParam("login") String login, HttpServletResponse response) {
+    public ClientDTO getClientByLogin(@RequestParam("login") String login, HttpServletResponse response) {
         Client client = getClientByLoginUseCase.getClientByLogin(login);
         if (client == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
@@ -108,7 +107,7 @@ public class ClientController {
     }
 
     @GetMapping("/match")
-    public List<ClientDTOResponse> getClientByLoginMatching(@RequestParam("login") String login, HttpServletResponse response) {
+    public List<ClientDTO> getClientByLoginMatching(@RequestParam("login") String login, HttpServletResponse response) {
         List<Client> resultList = getClientByLoginUseCase.getClientByLoginMatching(login);
         if (resultList.isEmpty()) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
@@ -121,7 +120,7 @@ public class ClientController {
     }
 
     @PutMapping("/modifyClient")
-    public ResponseEntity<String> modifyClient(@Validated(BasicUserValidation.class) @RequestBody ClientDTORequest modifiedClient,
+    public ResponseEntity<String> modifyClient(@Validated(UserDTO.BasicUserValidation.class) @RequestBody ClientDTO modifiedClient,
                                                Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -134,7 +133,7 @@ public class ClientController {
 
         try {
             modifyClientUseCase.modifyClient(ClientMapper.fromUserDTO(
-                    new ClientDTORequest(
+                    new ClientDTO(
                             modifiedClient.getId(),
                             modifiedClient.getFirstName(),
                             modifiedClient.getLastName(),

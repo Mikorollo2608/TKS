@@ -35,7 +35,7 @@ public class ReservationMongoRepositoryAdapter implements AddReservationPort, Ch
 
     @Override
     public Reservation addReservation(Reservation reservation) {
-
+        return null;
     }
 
     @Override

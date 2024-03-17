@@ -1,27 +1,29 @@
 package tks.gv.data.mappers.dto;
 
-import tks.gv.data.dto.in.ClientDTORequest;
-import tks.gv.data.dto.out.ClientDTOResponse;
+
+
+import tks.gv.data.dto.ClientDTO;
 import tks.gv.users.Client;
 
 import java.util.UUID;
 
 public class ClientMapper {
 
-    public static ClientDTOResponse toUserDTO(Client client) {
+    public static ClientDTO toUserDTO(Client client) {
         if (client == null) {
             return null;
         }
 
-        return new ClientDTOResponse(client.getId().toString(),
+        return new ClientDTO(client.getId().toString(),
                 client.getFirstName(),
                 client.getLastName(),
                 client.getLogin(),
+                client.getPassword(),
                 client.isArchive(),
                 client.getClientTypeName());
     }
 
-    public static Client fromUserDTO(ClientDTORequest clientDTO) {
+    public static Client fromUserDTO(ClientDTO clientDTO) {
         if (clientDTO == null) {
             return null;
         }

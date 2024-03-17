@@ -1,24 +1,24 @@
 package tks.gv.data.mappers.dto;
 
-import tks.gv.data.dto.in.ResourceAdminDTORequest;
+import tks.gv.data.dto.ResourceAdminDTO;
 import tks.gv.users.ResourceAdmin;
 
 import java.util.UUID;
 
 public class ResourceAdminMapper {
 
-    public static ResourceAdminDTORequest toUserDTO(ResourceAdmin resourceAdmin) {
+    public static ResourceAdminDTO toUserDTO(ResourceAdmin resourceAdmin) {
         if (resourceAdmin == null) {
             return null;
         }
 
-        return new ResourceAdminDTORequest(resourceAdmin.getId().toString(),
+        return new ResourceAdminDTO(resourceAdmin.getId().toString(),
                 resourceAdmin.getLogin(),
                 resourceAdmin.getPassword(),
                 resourceAdmin.isArchive());
     }
 
-    public static ResourceAdmin fromUserDTO(ResourceAdminDTORequest resourceAdminDTO) {
+    public static ResourceAdmin fromUserDTO(ResourceAdminDTO resourceAdminDTO) {
         if (resourceAdminDTO == null) {
             return null;
         }
