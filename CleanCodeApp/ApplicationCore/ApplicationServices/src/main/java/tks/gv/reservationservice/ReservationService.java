@@ -1,4 +1,122 @@
-//package tks.gv.restapi.services;
+package tks.gv.reservationservice;
+
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import tks.gv.reservations.Reservation;
+import tks.gv.infrastructure.reservations.ports.*;
+import tks.gv.userinterface.reservations.ports.*;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@NoArgsConstructor
+public class ReservationService implements AddReservationUseCase, CheckClientReservationBalanceUseCase,
+                                    DeleteReservationUseCase, GetAllArchiveReservationsUseCase,
+                                    GetAllClientReservationsUseCase, GetAllCurrentReservationsUseCase,
+                                    GetClientCurrentReservationsUseCase, GetClientEndedReservationsUseCase,
+                                    GetCourtCurrentReservationUseCase, GetCourtEndedReservationUseCase,
+                                    GetReservationByIdUseCase, ReturnCourtUseCase {
+
+    private AddReservationPort addReservationPort;
+    private CheckClientReservationBalancePort checkClientReservationBalancePort;
+    private DeleteReservationPort deleteReservationPort;
+    private GetAllArchiveReservationsPort getAllArchiveReservationsPort;
+    private GetAllClientReservationsPort getAllClientReservationsPort;
+    private GetAllCurrentReservationsPort getAllCurrentReservationsPort;
+    private GetClientCurrentReservationsPort getClientCurrentReservationsPort;
+    private GetClientEndedReservationsPort getClientEndedReservationsPort;
+    private GetCourtCurrentReservationPort getCourtCurrentReservationPort;
+    private GetCourtEndedReservationPort getCourtEndedReservationPort;
+    private GetReservationByIdPort getReservationByIdPort;
+    private ReturnCourtPort returnCourtPort;
+
+
+    @Autowired
+    public ReservationService(AddReservationPort addReservationPort, CheckClientReservationBalancePort checkClientReservationBalancePort,
+                              DeleteReservationPort deleteReservationPort, GetAllArchiveReservationsPort getAllArchiveReservationsPort,
+                              GetAllClientReservationsPort getAllClientReservationsPort, GetAllCurrentReservationsPort getAllCurrentReservationsPort,
+                              GetClientCurrentReservationsPort getClientCurrentReservationsPort, GetClientEndedReservationsPort getClientEndedReservationsPort,
+                              GetCourtCurrentReservationPort getCourtCurrentReservationPort, GetCourtEndedReservationPort getCourtEndedReservationPort,
+                              GetReservationByIdPort getReservationByIdPort, ReturnCourtPort returnCourtPort) {
+
+        this.addReservationPort = addReservationPort;
+        this.checkClientReservationBalancePort = checkClientReservationBalancePort;
+        this.deleteReservationPort = deleteReservationPort;
+        this.getAllArchiveReservationsPort = getAllArchiveReservationsPort;
+        this.getAllClientReservationsPort = getAllClientReservationsPort;
+        this.getAllCurrentReservationsPort = getAllCurrentReservationsPort;
+        this.getClientCurrentReservationsPort = getClientCurrentReservationsPort;
+        this.getClientEndedReservationsPort = getClientEndedReservationsPort;
+        this.getCourtCurrentReservationPort = getCourtCurrentReservationPort;
+        this.getCourtEndedReservationPort = getCourtEndedReservationPort;
+        this.getReservationByIdPort = getReservationByIdPort;
+        this.returnCourtPort = returnCourtPort;
+
+    }
+
+    @Override
+    public Reservation addReservation(Reservation reservation) {
+        return addReservationPort.addReservation(reservation);
+    }
+
+    @Override
+    public double checkClientReservationBalance(UUID clientId) {
+        return checkClientReservationBalancePort.checkClientReservationBalance(clientId);
+    }
+
+    @Override
+    public void deleteReservation(UUID uuid) {
+        deleteReservationPort.deleteReservation(uuid);
+    }
+
+    @Override
+    public List<Reservation> getAllArchiveReservations() {
+        return getAllArchiveReservationsPort.getAllArchiveReservations();
+    }
+
+    @Override
+    public List<Reservation> getAllClientReservations(UUID clientId) {
+        return getAllClientReservationsPort.getAllClientReservations(clientId);
+    }
+
+    @Override
+    public List<Reservation> getAllCurrentReservations(UUID clientId) {
+        return getAllCurrentReservationsPort.getAllCurrentReservations(clientId);
+    }
+
+    @Override
+    public List<Reservation> getClientCurrentReservations(UUID clientId) {
+        return getClientCurrentReservationsPort.getClientCurrentReservations(clientId);
+    }
+
+    @Override
+    public List<Reservation> getClientEndedReservation(UUID clientId) {
+        return getClientEndedReservationsPort.getClientEndedReservation(clientId);
+    }
+
+    @Override
+    public Reservation getCourtCurrentReservation(UUID courtId) {
+        return getCourtCurrentReservationPort.getCourtCurrentReservation(courtId);
+    }
+
+    @Override
+    public Reservation getCourtEndedReservation(UUID courtId) {
+        return getCourtEndedReservationPort.getCourtEndedReservation(courtId);
+    }
+
+    @Override
+    public Reservation getReservationById(UUID uuid) {
+        return getReservationByIdPort.getReservationById(uuid);
+    }
+
+    @Override
+    public void returnCourt(UUID courtId) {
+        returnCourtPort.returnCourt(courtId);
+
+    }
+}
 //
 //import com.mongodb.client.model.Filters;
 //
