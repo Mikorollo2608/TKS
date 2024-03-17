@@ -9,7 +9,6 @@ import tks.gv.courts.Court;
 
 import tks.gv.courtservice.CourtService;
 import tks.gv.infrastructure.courts.ports.*;
-import tks.gv.userinterface.courts.ports.*;
 
 import java.util.ArrayList;
 import java.util.List;
