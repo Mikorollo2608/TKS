@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Getter
-@JsonPropertyOrder({"beginTime", "client", "court", "endTime", "id", "reservationCost", "reservationHours"})
 public class Reservation {
     private final UUID id;
 
