@@ -56,6 +56,14 @@ public class CourtServiceTest {
     }
 
     @Test
+    void testConstructor(){
+        CourtService cs = new CourtService(addCourtPort,getAllCourtsPort, getCourtByIdPort,
+                getCourtByCourtNumberPort, modifyCourtPort, activateCourtPort,
+                deactivateCourtPort, deleteCourtPort);
+        assertNotNull(cs);
+    }
+
+    @Test
     void testGetAllCourts(){
         Mockito.when(getAllCourtsPort.getAllCourts()).thenReturn(courtList);
 

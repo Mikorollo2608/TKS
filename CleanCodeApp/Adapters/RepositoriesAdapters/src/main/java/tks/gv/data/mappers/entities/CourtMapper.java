@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class CourtMapper {
     public static CourtEntity toMongoCourt(Court court) {
-        return new CourtEntity(Objects.requireNonNullElse(court.getId(), UUID.randomUUID()).toString(),
+        return new CourtEntity(Objects.requireNonNullElse(court.getId(), "").toString(),
                 court.getArea(),
                 court.getBaseCost(),
                 court.getCourtNumber(),
