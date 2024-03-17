@@ -82,8 +82,8 @@ public class ReservationService implements AddReservationUseCase, CheckClientRes
     }
 
     @Override
-    public List<Reservation> getAllCurrentReservations(UUID clientId) {
-        return getAllCurrentReservationsPort.getAllCurrentReservations(clientId);
+    public List<Reservation> getAllCurrentReservations() {
+        return getAllCurrentReservationsPort.getAllCurrentReservations();
     }
 
     @Override

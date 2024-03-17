@@ -1,3 +1,168 @@
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import tks.gv.courts.Court;
+import tks.gv.infrastructure.reservations.ports.*;
+import tks.gv.reservations.Reservation;
+import tks.gv.reservationservice.ReservationService;
+import tks.gv.users.Client;
+import tks.gv.userservice.ClientService;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+
+@ExtendWith(MockitoExtension.class)
+public class ReservationServiceTest {
+    @Mock
+    AddReservationPort addReservationPort;
+    @Mock
+    CheckClientReservationBalancePort checkClientReservationBalancePort;
+    @Mock
+    DeleteReservationPort deleteReservationPort;
+    @Mock
+    GetAllArchiveReservationsPort getAllArchiveReservationsPort;
+    @Mock
+    GetAllClientReservationsPort getAllClientReservationsPort;
+    @Mock
+    GetAllCurrentReservationsPort getAllCurrentReservationsPort;
+    @Mock
+    GetClientCurrentReservationsPort getClientCurrentReservationsPort;
+    @Mock
+    GetClientEndedReservationsPort getClientEndedReservationsPort;
+    @Mock
+    GetCourtCurrentReservationPort getCourtCurrentReservationPort;
+    @Mock
+    GetCourtEndedReservationPort getCourtEndedReservationPort;
+    @Mock
+    GetReservationByIdPort getReservationByIdPort;
+    @Mock
+    ReturnCourtPort returnCourtPort;
+
+    @InjectMocks
+    final ReservationService reservationService = new ReservationService();
+
+    Reservation getTestReservation;
+    Reservation testReservation1;
+    Reservation testReservation2;
+    Reservation testReservation3;
+    Reservation testReservation4;
+
+
+    Client testClient1;
+    Client testClient2;
+    Client testClient3;
+
+    String UserUUID1 = "6d4eaba3-7277-4364-9d77-0030ca3d9529";
+    String UserUUID2 = "1e83883c-4d8f-46ad-b6b9-19d125d5599f";
+    String UserUUID3 = "e7e364a9-0183-4f46-b8c0-7ab248adbc1d";
+
+    String CourtUUID1 = "7a3eda80-be8e-4ff6-a788-18da81387a87";
+
+    LocalDateTime rightNow1 = LocalDateTime.now();
+
+    Client client1;
+    Client client2;
+    Client client3;
+    Client client4;
+    Client testClient = new Client(UUID.randomUUID(), "Adam", "Niezgodka", "testKlient", testClientPass, testClientType);
+
+
+    Court court1;
+    Court court2;
+    Court court3;
+    Court court4;
+
+
+
+    @BeforeEach
+    void init() {
+
+        testReservation1 = new Reservation(UUID.randomUUID(),client1,court1, rightNow1);
+        testReservation2 = new Reservation(UUID.randomUUID(),client2, court2, rightNow1);
+        testReservation3 = new Reservation(UUID.randomUUID(),testClient, court3, rightNow1 );
+        testReservation4 = new Reservation(UUID.randomUUID(),testClient, court4, rightNow1 );
+    }
+
+    @Test
+    void testCreatingClientManagerNoArgs() {
+        ReservationService reservationService = new ReservationService();
+        assertNotNull(reservationService);
+    }
+
+    @Test
+    void testCreatingClientManagerAllArgs() {
+        ReservationService reservationService = new ReservationService(addReservationPort, checkClientReservationBalancePort,
+                                                                        deleteReservationPort, getAllArchiveReservationsPort,
+                                                                        getAllClientReservationsPort, getAllCurrentReservationsPort,
+                                                                        getClientCurrentReservationsPort, getClientEndedReservationsPort,
+                                                                        getCourtCurrentReservationPort, getCourtEndedReservationPort,
+                                                                        getReservationByIdPort, returnCourtPort);
+        assertNotNull(reservationService);
+    }
+
+    @Test
+    void testGetAllCurrentReservations() {
+        Mockito.when(getAllCurrentReservationsPort.getAllCurrentReservations()).thenReturn(List.of(testReservation1,testReservation2, testReservation3));
+
+        List<Reservation> reservationList = reservationService.getAllCurrentReservations();
+        assertEquals(reservationList.size(), 3);
+        assertEquals(testReservation1, reservationList.get(0));
+        assertEquals(testReservation2, reservationList.get(1));
+        assertEquals(testReservation3, reservationList.get(2));
+    }
+
+//    @Test
+//    void testAddReservation() {
+//        Mockito.when(addReservationPort.addReservation(UserUUID1, CourtUUID1, rightNow1)).thenReturn(testReservation);
+//
+//        assertEquals(testReservation1, reservationService.addReservation(testReservation));
+//    }
+
+    @Test
+    void testGetReservationByIdNull() {
+        Mockito.when(getReservationByIdPort.getReservationById(any())).thenReturn(null);
+
+        assertNull(reservationService.getReservationById(UUID.randomUUID()));
+    }
+
+    @Test
+    void testGetReservationById() {
+        Mockito.when(getAllCurrentReservationsPort.getAllCurrentReservations()).thenReturn(List.of(testReservation1,testReservation2, testReservation3));
+        Mockito.when(getReservationByIdPort.getReservationById(testReservation1.getId())).thenReturn(testReservation1);
+
+        List<Reservation> reservationList = reservationService.getAllCurrentReservations();
+        assertEquals(reservationList.size(), 3);
+
+        assertEquals(testReservation1, reservationService.getReservationById(reservationList.get(0).getId()));
+    }
+
+//    @Test
+//    void testGetAllClientReservations(){
+//        Mockito.when(getAllClientReservationsPort.getAllClientReservations(testClient.getId())).thenReturn(List.of(testReservation3,testReservation4));
+//
+//        List<Reservation> reservationList = reservationService.getAllClientReservations(testClient.getId());
+//        assertEquals(reservationList.size(), 2);
+//        assertEquals(testReservation3, reservationList.get(0));
+//        assertEquals(testReservation4, reservationList.get(1));
+//
+//    }
+    @Test
+    void testDeleteReservations() {
+        Mockito.doNothing().when(deleteReservationPort).deleteReservation(any(UUID.class));
+        reservationService.deleteReservation(testReservation1.getId());
+        Mockito.verify(deleteReservationPort, Mockito.times(1)).deleteReservation(testReservation1.getId());
+    }
+
+}
+
 //package unittests.servicesTests;
 //
 //import com.mongodb.client.model.Filters;

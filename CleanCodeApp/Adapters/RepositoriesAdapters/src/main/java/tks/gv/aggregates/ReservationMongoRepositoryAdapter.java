@@ -59,7 +59,7 @@ public class ReservationMongoRepositoryAdapter implements AddReservationPort, Ch
     }
 
     @Override
-    public List<Reservation> getAllCurrentReservations(UUID clientId) {
+    public List<Reservation> getAllCurrentReservations() {
         return null;
     }
 
