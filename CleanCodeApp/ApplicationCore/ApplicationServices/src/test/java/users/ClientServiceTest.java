@@ -1,3 +1,5 @@
+package users;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -219,33 +221,42 @@ public class ClientServiceTest {
         Mockito.doNothing().when(modifyUserPort).modifyUser(any(User.class));
 
         cm.modifyClient(testClient);
+        Mockito.verify(modifyUserPort, Mockito.times(1)).modifyUser(testClient);
     }
 
     @Test
     void testActivateClient() {
         Mockito.doNothing().when(changeUserStatusPort).activateUser(any(UUID.class));
 
-        cm.activateClient(UUID.randomUUID());
+        UUID id = UUID.randomUUID();
+        cm.activateClient(id);
+        Mockito.verify(changeUserStatusPort, Mockito.times(1)).activateUser(id);
     }
 
     @Test
     void testActivateClientStringId() {
         Mockito.doNothing().when(changeUserStatusPort).activateUser(any(UUID.class));
 
-        cm.activateClient(UUID.randomUUID().toString());
+        UUID id = UUID.randomUUID();
+        cm.activateClient(id.toString());
+        Mockito.verify(changeUserStatusPort, Mockito.times(1)).activateUser(id);
     }
 
     @Test
     void testDeactivateClient() {
         Mockito.doNothing().when(changeUserStatusPort).deactivateUser(any(UUID.class));
 
-        cm.deactivateClient(UUID.randomUUID());
+        UUID id = UUID.randomUUID();
+        cm.deactivateClient(id);
+        Mockito.verify(changeUserStatusPort, Mockito.times(1)).deactivateUser(id);
     }
 
     @Test
     void testDeactivateClientStringId() {
         Mockito.doNothing().when(changeUserStatusPort).deactivateUser(any(UUID.class));
 
-        cm.deactivateClient(UUID.randomUUID().toString());
+        UUID id = UUID.randomUUID();
+        cm.deactivateClient(id.toString());
+        Mockito.verify(changeUserStatusPort, Mockito.times(1)).deactivateUser(id);
     }
 }

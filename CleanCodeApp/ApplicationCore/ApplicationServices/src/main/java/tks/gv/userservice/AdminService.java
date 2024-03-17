@@ -1,105 +1,133 @@
-//package tks.gv.userservice;
-//
-//import com.mongodb.client.model.Filters;
-//import jakarta.validation.UnexpectedTypeException;
-//import lombok.NoArgsConstructor;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.stereotype.Service;
-//import tks.gv.data.repositories.UserMongoRepository;
-//import tks.gv.model.exceptions.MyMongoException;
-//import tks.gv.model.exceptions.UserException;
-//import tks.gv.model.exceptions.UserLoginException;
-//import tks.gv.model.logic.users.Admin;
-//import tks.gv.model.logic.users.Client;
-//import tks.gv.model.logic.users.ResourceAdmin;
-//import tks.gv.model.logic.users.User;
-//import tks.gv.restapi.data.dto.AdminDTO;
-//import tks.gv.restapi.data.mappers.AdminMapper;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.UUID;
-//
-//@Service
-//@NoArgsConstructor
-//public class AdminService implements UserService {
-//
-//    private UserMongoRepository userRepository;
-//    private PasswordEncoder passwordEncoder;
-//
-//    @Autowired
-//    public AdminService(UserMongoRepository userRepository) {
-//        this.userRepository = userRepository;
-//        this.passwordEncoder = new BCryptPasswordEncoder();;
-//    }
-//
-//    public AdminDTO registerAdmin(String login, String password) {
-//        try {
-//            return AdminMapper.toJsonUser((Admin) userRepository.create(
-//                    new Admin(null, login, passwordEncoder.encode(password)))
-//            );
-//        } catch (MyMongoException | UnexpectedTypeException exception) {
-//            throw new UserException("Nie udalo sie zarejestrowac administratora w bazie! - " + exception.getMessage());
-//        }
-//    }
-//
-//    public AdminDTO getAdminById(String adminId) {
-//        User admin = userRepository.readByUUID(UUID.fromString(adminId), Admin.class);
-//        return admin != null ? AdminMapper.toJsonUser((Admin) admin) : null;
-//    }
-//
-//    public List<AdminDTO> getAllAdmins() {
-//        List<AdminDTO> list = new ArrayList<>();
-//        for (var user : userRepository.readAll(Admin.class)) {
-//            if (user instanceof Admin admin) {
-//                list.add(AdminMapper.toJsonUser(admin));
-//            }
-//        }
-//        return list;
-//    }
-//
-//    public AdminDTO getAdminByLogin(String login) {
-//        var list = userRepository.read(Filters.eq("login", login), Admin.class);
-//        if (list.isEmpty() || (list.get(0) instanceof ResourceAdmin || list.get(0) instanceof Client)) {
-//            return null;
-//        }
-//        return AdminMapper.toJsonUser((Admin) list.get(0));
-//    }
-//
-//    public List<AdminDTO> getAdminByLoginMatching(String login) {
-//        List<AdminDTO> list = new ArrayList<>();
-//        for (var user : userRepository.read(Filters.and(Filters.regex("login", ".*%s.*".formatted(login)),
-//                Filters.eq("_clazz", "admin")), Admin.class)) {
-//            list.add(AdminMapper.toJsonUser((Admin) user));
-//        }
-//        return list;
-//    }
-//
-//    public void modifyAdmin(AdminDTO modifiedAdmin) {
-//        var list = userRepository.read(Filters.and(
-//                Filters.eq("login", modifiedAdmin.getLogin()),
-//                Filters.ne("_id", modifiedAdmin.getId())), Admin.class);
-//        if (!list.isEmpty()) {
-//            throw new UserLoginException("Nie udalo sie zmodyfikowac podanego administratora - " +
-//                    "proba zmiany loginu na login wystepujacy juz u innego administratora");
-//        }
-//
-//        if (!userRepository.updateByReplace(UUID.fromString(modifiedAdmin.getId()),
-//                AdminMapper.fromJsonUser(modifiedAdmin))) {
-//            throw new UserException("Nie udalo sie zmodyfikowac podanego administratora.");
-//        }
-//    }
-//
-//    public void activateAdmin(String adminId) {
-//        userRepository.update(UUID.fromString(adminId), "archive", false);
-//    }
-//
-//    public void deactivateAdmin(String adminId) {
-//        userRepository.update(UUID.fromString(adminId), "archive", true);
-//    }
-//
+package tks.gv.userservice;
+
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import tks.gv.exceptions.UnexpectedUserTypeException;
+import tks.gv.exceptions.UserException;
+
+import tks.gv.exceptions.UserReadServiceException;
+import tks.gv.infrastructure.users.ports.AddUserPort;
+import tks.gv.infrastructure.users.ports.ChangeUserStatusPort;
+import tks.gv.infrastructure.users.ports.GetAllUsersPort;
+
+import tks.gv.infrastructure.users.ports.GetUserByIdPort;
+import tks.gv.infrastructure.users.ports.GetUserByLoginPort;
+import tks.gv.infrastructure.users.ports.ModifyUserPort;
+
+import tks.gv.userinterface.users.ports.admins.ChangeAdminStatusUseCase;
+import tks.gv.userinterface.users.ports.admins.GetAllAdminsUseCase;
+import tks.gv.userinterface.users.ports.admins.GetAdminByIdUseCase;
+import tks.gv.userinterface.users.ports.admins.GetAdminByLoginUseCase;
+import tks.gv.userinterface.users.ports.admins.ModifyAdminUseCase;
+import tks.gv.userinterface.users.ports.admins.RegisterAdminUseCase;
+
+import tks.gv.users.Admin;
+import tks.gv.users.User;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@NoArgsConstructor
+public class AdminService implements
+        RegisterAdminUseCase,
+        GetAllAdminsUseCase,
+        GetAdminByIdUseCase,
+        GetAdminByLoginUseCase,
+        ModifyAdminUseCase,
+        ChangeAdminStatusUseCase {
+
+    private AddUserPort addUserPort;
+    private GetAllUsersPort getAllUsersPort;
+    private GetUserByIdPort getUserByIdPort;
+    private GetUserByLoginPort getUserByLoginPort;
+    private ModifyUserPort modifyUserPort;
+    private ChangeUserStatusPort changeUserStatusPort;
+
+    @Autowired
+    public AdminService(AddUserPort addUserPort, GetAllUsersPort getAllUsersPort, GetUserByIdPort getUserByIdPort,
+                         GetUserByLoginPort getUserByLoginPort, ModifyUserPort modifyUserPort,
+                         ChangeUserStatusPort changeUserStatusPort) {
+        this.addUserPort = addUserPort;
+        this.getAllUsersPort = getAllUsersPort;
+        this.getUserByIdPort = getUserByIdPort;
+        this.getUserByLoginPort = getUserByLoginPort;
+        this.modifyUserPort = modifyUserPort;
+        this.changeUserStatusPort = changeUserStatusPort;
+    }
+
+    @Override
+    public Admin registerAdmin(Admin admin) {
+        try {
+            return userProjection(addUserPort.addUser(admin));
+        } catch (UnexpectedUserTypeException exception) {
+            throw new UserException("Nie udalo sie zarejestrowac admina w bazie! - " + exception.getMessage());
+        }
+    }
+
+    @Override
+    public Admin getAdminById(UUID adminId) {
+        try {
+            return userProjection(getUserByIdPort.getUserById(adminId));
+        } catch (UnexpectedUserTypeException e) {
+            throw new UserReadServiceException("Proba odczytu niewspieranego typu admina z bazy! - " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Admin> getAllAdmins() {
+        List<Admin> list = new ArrayList<>();
+        for (var user : getAllUsersPort.getAllUsers()) {
+            if (user instanceof Admin admin) {
+                list.add(admin);
+            }
+        }
+
+        return list;
+    }
+
+    @Override
+    public Admin getAdminByLogin(String login) {
+        try {
+            return userProjection(getUserByLoginPort.getUserByLogin(login));
+        } catch (UnexpectedUserTypeException e) {
+            throw new UserReadServiceException("Proba odczytu niewspieranego typu admina z bazy! - " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Admin> getAdminByLoginMatching(String login) {
+        try {
+            List<Admin> list = new ArrayList<>();
+            for (var user : getUserByLoginPort.getUserByLoginMatching(login)) {
+                if (user instanceof Admin admin) {
+                    list.add(admin);
+                }
+            }
+            return list;
+        } catch (UnexpectedUserTypeException e) {
+            throw new UserReadServiceException("Proba odczytu niewspieranego typu admina z bazy! - " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void modifyAdmin(Admin modifiedAdmin) {
+        modifyUserPort.modifyUser(modifiedAdmin);
+    }
+
+    @Override
+    public void activateAdmin(UUID adminId) {
+        changeUserStatusPort.activateUser(adminId);
+    }
+
+    @Override
+    public void deactivateAdmin(UUID adminId) {
+        changeUserStatusPort.deactivateUser(adminId);
+    }
+
 ////    public void changeAdminPassword(String id, ChangePasswordDTORequest changePasswordDTO) {
 ////        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 ////
@@ -113,28 +141,15 @@
 ////        userRepository.update(UUID.fromString(id), "password",
 ////                passwordEncoder.encode(changePasswordDTO.getNewPassword()));
 ////    }
-//
-//    @Override
-//    public int usersSize() {
-//        return userRepository.readAll(User.class).size();
-//    }
-//
-//
-//    /*----------------------------------------------HANDLE UUID----------------------------------------------*/
-//
-//    public AdminDTO getAdminById(UUID adminId) {
-//        return getAdminById(adminId.toString());
-//    }
-//
-//    public void activateAdmin(UUID adminId) {
-//        activateAdmin(adminId.toString());
-//    }
-//
-//    public void deactivateAdmin(UUID adminId) {
-//        deactivateAdmin(adminId.toString());
-//    }
-//
+
 ////    public void changeAdminPassword(UUID id, ChangePasswordDTORequest changePasswordDTO) {
 ////        changeAdminPassword(id.toString(), changePasswordDTO);
 ////    }
-//}
+
+    private Admin userProjection(User user) {
+        if (user instanceof Admin admin) {
+            return admin;
+        }
+        return null;
+    }
+}

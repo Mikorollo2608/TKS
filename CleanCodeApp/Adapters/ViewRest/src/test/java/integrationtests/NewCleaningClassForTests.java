@@ -1,67 +1,68 @@
-//import com.mongodb.ConnectionString;
-//import com.mongodb.MongoClientSettings;
-//import com.mongodb.MongoCredential;
-//import com.mongodb.client.MongoClients;
-//import com.mongodb.client.MongoDatabase;
-//import com.mongodb.client.model.Filters;
-//
-////FIXME do wywalenia repo :<
-//import tks.gv.repositories.UserMongoRepository;
-//
-//import tks.gv.data.dto.AdminDTO;
-//import tks.gv.data.dto.ClientDTO;
-//import tks.gv.data.dto.ResourceAdminDTO;
-//
-//import tks.gv.userservice.ClientService;
-////import tks.gv.userservice.AdminService;
-////import tks.gv.userservice.ResourceAdminService;
-//
-//import org.bson.UuidRepresentation;
-//import org.bson.codecs.configuration.CodecRegistries;
-//import org.bson.codecs.configuration.CodecRegistry;
-//import org.bson.codecs.pojo.Conventions;
-//import org.bson.codecs.pojo.PojoCodecProvider;
-//import org.junit.jupiter.api.Test;
-//
-//import java.time.LocalDateTime;
-//import java.time.Month;
-//import java.util.List;
-//
-//public class NewCleaningClassForTests {
-//    private static final CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder()
-//            .automatic(true)
-//            .conventions(List.of(Conventions.ANNOTATION_CONVENTION))
-//            .build());
-//
-//    private static final MongoClientSettings settings = MongoClientSettings.builder()
-//            .credential(MongoCredential.createCredential("admin", "admin", "adminpassword".toCharArray()))
-//            .applyConnectionString(new ConnectionString("mongodb://localhost:27017,localhost:27018,localhost:27019/?replicaSet=replica_set_single"))
-//            .uuidRepresentation(UuidRepresentation.STANDARD)
-//            .codecRegistry(CodecRegistries.fromRegistries(
-//                    MongoClientSettings.getDefaultCodecRegistry(),
-//                    pojoCodecRegistry
-//            ))
-//            .build();
-//    private static final MongoDatabase mongoDatabase = MongoClients.create(settings).getDatabase("reserveACourt");
-//
-//    static void cleanUsers() {
-//        mongoDatabase.getCollection("users").deleteMany(Filters.empty());
-//    }
-//
-//    static void cleanCourts() {
-//        mongoDatabase.getCollection("courts").deleteMany(Filters.empty());
-//    }
-//
-//    static void cleanReservations() {
-//        mongoDatabase.getCollection("reservations").deleteMany(Filters.empty());
-//    }
-//
-//    static ClientDTO client1;
-//    static ClientDTO client2;
-//    static ClientDTO client3;
-//    static ClientDTO client4;
-//
-//////    static CourtDTO court1;
+package integrationtests;
+
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCredential;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+
+import tks.gv.aggregates.UserMongoRepositoryAdapter;
+import tks.gv.data.mappers.dto.ClientMapper;
+
+import tks.gv.data.dto.ClientDTO;
+
+import tks.gv.repositories.UserMongoRepository;
+import tks.gv.users.Client;
+import tks.gv.userservice.ClientService;
+
+import org.bson.UuidRepresentation;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.Conventions;
+import org.bson.codecs.pojo.PojoCodecProvider;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.UUID;
+
+public class NewCleaningClassForTests {
+    private static final CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder()
+            .automatic(true)
+            .conventions(List.of(Conventions.ANNOTATION_CONVENTION))
+            .build());
+
+    private static final MongoClientSettings settings = MongoClientSettings.builder()
+            .credential(MongoCredential.createCredential("admin", "admin", "adminpassword".toCharArray()))
+            .applyConnectionString(new ConnectionString("mongodb://localhost:27017,localhost:27018,localhost:27019/?replicaSet=replica_set_single"))
+            .uuidRepresentation(UuidRepresentation.STANDARD)
+            .codecRegistry(CodecRegistries.fromRegistries(
+                    MongoClientSettings.getDefaultCodecRegistry(),
+                    pojoCodecRegistry
+            ))
+            .build();
+    private static final MongoDatabase mongoDatabase = MongoClients.create(settings).getDatabase("reserveACourt");
+
+    static void cleanUsers() {
+        mongoDatabase.getCollection("users").deleteMany(Filters.empty());
+    }
+
+    static void cleanCourts() {
+        mongoDatabase.getCollection("courts").deleteMany(Filters.empty());
+    }
+
+    static void cleanReservations() {
+        mongoDatabase.getCollection("reservations").deleteMany(Filters.empty());
+    }
+
+    static ClientDTO client1;
+    static ClientDTO client2;
+    static ClientDTO client3;
+    static ClientDTO client4;
+
+    static UserMongoRepositoryAdapter adapter = new UserMongoRepositoryAdapter(new UserMongoRepository());
+
+    //////    static CourtDTO court1;
 //////    static CourtDTO court2;
 //////    static CourtDTO court3;
 //////    static CourtDTO court4;
@@ -77,21 +78,37 @@
 ////
 ////    static final LocalDateTime dataStart = LocalDateTime.of(2023, Month.NOVEMBER, 30, 14, 20);
 ////
-////    static void cleanAll() {
-////        cleanReservations();
-////        cleanUsers();
-////        cleanCourts();
-////    }
-////
-////    static void initClients() {
-////        ClientService clientServiceTest = new ClientService(new UserMongoRepository());
-////        cleanUsers();
-////        client1 = clientServiceTest.registerClient("Adam", "Smith", "loginek", "password", "normal");
-////        client2 = clientServiceTest.registerClient("Eva", "Braun", "loginek13", "password", "athlete");
-////        client3 = clientServiceTest.registerClient("Michal", "Pi", "michas13", "password", "coach");
-////        client4 = clientServiceTest.registerClient("Peter", "Grif", "griffPet", "password", "normal");
-////    }
-//
+    static void cleanAll() {
+        cleanReservations();
+        cleanUsers();
+        cleanCourts();
+    }
+
+    static void initClients() {
+
+        ClientService clientServiceTest = new ClientService(
+                adapter,
+                adapter,
+                adapter,
+                adapter,
+                adapter,
+                adapter
+        );
+        cleanUsers();
+        client1 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
+                new Client(UUID.fromString("8d83bbda-e38a-4cf2-9136-40e5310c5761"), "Adam", "Smith", "loginek", "password", "normal"))
+        );
+        client2 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
+                new Client(UUID.fromString("692251d0-4da6-4099-b999-98df0812d5de"), "Eva", "Braun", "loginek13", "password", "athlete"))
+        );
+        client3 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
+                new Client(UUID.fromString("491008d4-c1ac-4af8-97ae-8a91e6f086f6"), "Michal", "Pi", "michas13", "password", "coach"))
+        );
+        client4 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
+                new Client(UUID.fromString("f13ab7a5-7306-4675-95f2-5190fec1304c"), "Peter", "Grif", "griffPet", "password", "normal"))
+        );
+    }
+
 //////    static void initCourts() {
 //////        CourtService courtServiceTest = new CourtService(new CourtMongoRepository());
 //////        cleanCourts();
@@ -143,9 +160,9 @@
 ////        adminRes1 = resourceAdminServiceTest.registerResourceAdmin("adminekRes1@1234", "adminekRes1@1234");
 ////        adminRes2 = resourceAdminServiceTest.registerResourceAdmin("adminekRes2@9876", "adminekRes2@9876");
 ////    }
-////
-////    @Test
-////    void test() {
-//////        cleanAll();
-////    }
-//}
+
+    @Test
+    void test() {
+        cleanAll();
+    }
+}
