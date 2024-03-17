@@ -31,6 +31,15 @@ public class Reservation {
         this.beginTime = (beginTime == null) ? LocalDateTime.now() : beginTime;
     }
 
+    public Reservation(UUID id, Client client, Court court, LocalDateTime beginTime, LocalDateTime endTime, double reservationCost) {
+        this.id = id;
+        this.client = client;
+        this.court = court;
+        this.beginTime = beginTime;
+        this.endTime = endTime;
+        this.reservationCost = reservationCost;
+    }
+
     public int getReservationHours() {
         int hours = 0;
 

@@ -3,10 +3,17 @@ package tks.gv.reservationservice;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tks.gv.courts.Court;
+import tks.gv.exceptions.MyMongoException;
+import tks.gv.exceptions.ReservationException;
 import tks.gv.reservations.Reservation;
 import tks.gv.infrastructure.reservations.ports.*;
+import tks.gv.userinterface.courts.ports.GetCourtByIdUseCase;
+import tks.gv.userinterface.courts.ports.ModifyCourtUseCase;
 import tks.gv.userinterface.reservations.ports.*;
+import tks.gv.users.Client;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +27,6 @@ public class ReservationService implements AddReservationUseCase, CheckClientRes
                                     GetReservationByIdUseCase, ReturnCourtUseCase {
 
     private AddReservationPort addReservationPort;
-    private CheckClientReservationBalancePort checkClientReservationBalancePort;
     private DeleteReservationPort deleteReservationPort;
     private GetAllArchiveReservationsPort getAllArchiveReservationsPort;
     private GetAllClientReservationsPort getAllClientReservationsPort;
@@ -31,18 +37,20 @@ public class ReservationService implements AddReservationUseCase, CheckClientRes
     private GetCourtEndedReservationPort getCourtEndedReservationPort;
     private GetReservationByIdPort getReservationByIdPort;
     private ReturnCourtPort returnCourtPort;
+    private GetCourtByIdUseCase getCourtByIdUseCase;
+    private ModifyCourtUseCase modifyCourtUseCase;
 
 
     @Autowired
-    public ReservationService(AddReservationPort addReservationPort, CheckClientReservationBalancePort checkClientReservationBalancePort,
+    public ReservationService(AddReservationPort addReservationPort,
                               DeleteReservationPort deleteReservationPort, GetAllArchiveReservationsPort getAllArchiveReservationsPort,
                               GetAllClientReservationsPort getAllClientReservationsPort, GetAllCurrentReservationsPort getAllCurrentReservationsPort,
                               GetClientCurrentReservationsPort getClientCurrentReservationsPort, GetClientEndedReservationsPort getClientEndedReservationsPort,
                               GetCourtCurrentReservationPort getCourtCurrentReservationPort, GetCourtEndedReservationPort getCourtEndedReservationPort,
-                              GetReservationByIdPort getReservationByIdPort, ReturnCourtPort returnCourtPort) {
+                              GetReservationByIdPort getReservationByIdPort, ReturnCourtPort returnCourtPort,
+                              GetCourtByIdUseCase getCourtByIdUseCase, ModifyCourtUseCase modifyCourtUseCase) {
 
         this.addReservationPort = addReservationPort;
-        this.checkClientReservationBalancePort = checkClientReservationBalancePort;
         this.deleteReservationPort = deleteReservationPort;
         this.getAllArchiveReservationsPort = getAllArchiveReservationsPort;
         this.getAllClientReservationsPort = getAllClientReservationsPort;
@@ -53,17 +61,34 @@ public class ReservationService implements AddReservationUseCase, CheckClientRes
         this.getCourtEndedReservationPort = getCourtEndedReservationPort;
         this.getReservationByIdPort = getReservationByIdPort;
         this.returnCourtPort = returnCourtPort;
-
+        this.getCourtByIdUseCase = getCourtByIdUseCase;
+        this.modifyCourtUseCase = modifyCourtUseCase;
     }
 
     @Override
-    public Reservation addReservation(Reservation reservation) {
-        return addReservationPort.addReservation(reservation);
+    public Reservation addReservation(String clientId, String courtId, LocalDateTime beginTime) {
+        try {
+            Reservation newReservation = addReservationPort.addReservation(
+                    new Reservation(null,
+                            new Client(UUID.fromString(clientId), "", "", "", "", ""),
+                            new Court(UUID.fromString(courtId), 0, 0, 0),
+                            beginTime));
+            if (newReservation == null) {
+                throw new ReservationException("Nie udalo sie utworzyc rezerwacji! - brak odpowiedzi");
+            }
+            Court court = getCourtByIdUseCase.getCourtById(UUID.fromString(courtId));
+            court.setRented(true);
+            modifyCourtUseCase.modifyCourt(court);
+            return newReservation;
+        } catch (MyMongoException exception) {
+            throw new ReservationException("Nie udalo sie utworzyc rezerwacji - " + exception.getMessage());
+        }
     }
 
+    //TODO IMPLEMENTACJA MA BYĆ W TYM MIEJSCU
     @Override
     public double checkClientReservationBalance(UUID clientId) {
-        return checkClientReservationBalancePort.checkClientReservationBalance(clientId);
+        return 0;//checkClientReservationBalancePort.checkClientReservationBalance(clientId);
     }
 
     @Override
@@ -82,8 +107,8 @@ public class ReservationService implements AddReservationUseCase, CheckClientRes
     }
 
     @Override
-    public List<Reservation> getAllCurrentReservations(UUID clientId) {
-        return getAllCurrentReservationsPort.getAllCurrentReservations(clientId);
+    public List<Reservation> getAllCurrentReservations() {
+        return getAllCurrentReservationsPort.getAllCurrentReservations();
     }
 
     @Override
@@ -102,7 +127,7 @@ public class ReservationService implements AddReservationUseCase, CheckClientRes
     }
 
     @Override
-    public Reservation getCourtEndedReservation(UUID courtId) {
+    public List<Reservation> getCourtEndedReservation(UUID courtId) {
         return getCourtEndedReservationPort.getCourtEndedReservation(courtId);
     }
 
@@ -113,8 +138,10 @@ public class ReservationService implements AddReservationUseCase, CheckClientRes
 
     @Override
     public void returnCourt(UUID courtId) {
-        returnCourtPort.returnCourt(courtId);
-
+        Reservation reservation = getCourtCurrentReservation(courtId);
+        reservation.endReservation(null);
+        returnCourtPort.returnCourt(reservation);
+        reservation.getCourt().setRented(false);
     }
 }
 //
