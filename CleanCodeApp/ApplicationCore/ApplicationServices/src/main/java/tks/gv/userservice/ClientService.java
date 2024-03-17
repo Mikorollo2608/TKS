@@ -141,27 +141,15 @@ public class ClientService implements
 ////        userRepository.update(UUID.fromString(id), "password",
 ////                passwordEncoder.encode(changePasswordDTO.getNewPassword()));
 ////    }
-//
-//
-//    /*----------------------------------------------HANDLE STRING----------------------------------------------*/
-
-    public Client getClientById(String clientId) {
-        return getClientById(UUID.fromString(clientId));
-    }
-
-    public void activateClient(String clientId) {
-        activateClient(UUID.fromString(clientId));
-    }
-
-    public void deactivateClient(String clientId) {
-        deactivateClient(UUID.fromString(clientId));
-    }
 
 ////    public void changeClientPassword(UUID id, ChangePasswordDTORequest changePasswordDTO) {
 ////        changeClientPassword(id.toString(), changePasswordDTO);
 ////    }
 
     private Client userProjection(User user) {
-        return user != null ? (Client) user : null;
+        if (user instanceof Client client) {
+            return client;
+        }
+        return null;
     }
 }

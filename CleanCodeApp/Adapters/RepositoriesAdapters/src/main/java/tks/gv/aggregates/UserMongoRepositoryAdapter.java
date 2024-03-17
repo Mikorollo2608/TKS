@@ -71,7 +71,8 @@ public class UserMongoRepositoryAdapter implements
 
     @Override
     public User getUserByLogin(String login) {
-        return autoMap(repository.read(Filters.eq("login", login)).get(0));
+        var listUser = repository.read(Filters.eq("login", login));
+        return !listUser.isEmpty() ? autoMap(listUser.get(0)) : null;
     }
 
     @Override
