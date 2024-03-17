@@ -2,7 +2,7 @@ package tks.gv.controllers.reservations;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,13 +13,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import tks.gv.data.mappers.dto.ReservationMapper;
 import tks.gv.exceptions.MultiReservationException;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.ReservationException;
 
+import tks.gv.reservations.Reservation;
 import tks.gv.restapi.data.dto.ReservationDTO;
-import tks.gv.reservationservice.ReservationService;
-import tks.gv.userservice.ClientService;
+
+import tks.gv.userinterface.reservations.ports.AddReservationUseCase;
+import tks.gv.userinterface.reservations.ports.CheckClientReservationBalanceUseCase;
+import tks.gv.userinterface.reservations.ports.DeleteReservationUseCase;
+import tks.gv.userinterface.reservations.ports.GetAllArchiveReservationsUseCase;
+import tks.gv.userinterface.reservations.ports.GetAllClientReservationsUseCase;
+import tks.gv.userinterface.reservations.ports.GetAllCurrentReservationsUseCase;
+import tks.gv.userinterface.reservations.ports.GetClientCurrentReservationsUseCase;
+import tks.gv.userinterface.reservations.ports.GetClientEndedReservationsUseCase;
+import tks.gv.userinterface.reservations.ports.GetCourtCurrentReservationUseCase;
+import tks.gv.userinterface.reservations.ports.GetCourtEndedReservationUseCase;
+import tks.gv.userinterface.reservations.ports.GetReservationByIdUseCase;
+import tks.gv.userinterface.reservations.ports.ReturnCourtUseCase;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,29 +40,30 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/reservations")
+@RequiredArgsConstructor
 public class ReservationController {
 
-    private final ReservationService reservationService;
-    private final ClientService clientService;
-//    private final JwsService jwsService;
-
-    @Autowired
-    public ReservationController(ReservationService reservationService, ClientService clientService
-//            , JwsService jwsService
-    ) {
-        this.reservationService = reservationService;
-        this.clientService = clientService;
-//        this.jwsService = jwsService;
-    }
+    private final AddReservationUseCase addReservationUseCase;
+    private final CheckClientReservationBalanceUseCase checkClientReservationBalanceUseCase;
+    private final DeleteReservationUseCase deleteReservationUseCase;
+    private final GetAllArchiveReservationsUseCase getAllArchiveReservationsUseCase;
+    private final GetAllClientReservationsUseCase  getAllClientReservationsUseCase;
+    private final GetAllCurrentReservationsUseCase getAllCurrentReservationsUseCase;
+    private final GetClientCurrentReservationsUseCase getClientCurrentReservationsUseCase;
+    private final GetClientEndedReservationsUseCase getClientEndedReservationsUseCase;
+    private final GetCourtCurrentReservationUseCase  getCourtCurrentReservationUseCase;
+    private final GetCourtEndedReservationUseCase getCourtEndedReservationUseCase;
+    private final GetReservationByIdUseCase getReservationByIdUseCase;
+    private final ReturnCourtUseCase returnCourtUseCase;
 
     @PostMapping("/addReservation")
     public ResponseEntity<String> addReservation(@RequestParam("clientId") String clientId, @RequestParam("courtId") String courtId,
                                                  @RequestParam(value = "date", required = false) String date) {
         try {
             if (date == null) {
-                reservationService.addReservation(UUID.fromString(clientId), UUID.fromString(courtId));
+                addReservationUseCase.addReservation(clientId, clientId);
             } else {
-                reservationService.addReservation(UUID.fromString(clientId), UUID.fromString(courtId), LocalDateTime.parse(date));
+                addReservationUseCase.addReservation(clientId, courtId, LocalDateTime.parse(date));
             }
         } catch (IllegalArgumentException | NullPointerException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
@@ -64,31 +78,36 @@ public class ReservationController {
 
     @GetMapping
     public List<ReservationDTO> getAllCurrentReservations(HttpServletResponse response) {
-        List<ReservationDTO> resultList = reservationService.getAllCurrentReservations();
+        List<Reservation> resultList = getAllCurrentReservationsUseCase.getAllCurrentReservations();
         if (resultList.isEmpty()) {
-            resultList = null;
             response.setStatus(HttpStatus.NO_CONTENT.value());
+            return null;
         }
-        return resultList;
+        return resultList.stream()
+                .map(ReservationMapper::toJsonReservation)
+                .toList();
     }
 
     @GetMapping("/archive")
     public List<ReservationDTO> getAllArchiveReservations(HttpServletResponse response) {
-        List<ReservationDTO> resultList = reservationService.getAllArchiveReservations();
+        List<Reservation> resultList = getAllArchiveReservationsUseCase.getAllArchiveReservations();
         if (resultList.isEmpty()) {
-            resultList = null;
             response.setStatus(HttpStatus.NO_CONTENT.value());
+            return null;
         }
-        return resultList;
+        return resultList.stream()
+                .map(ReservationMapper::toJsonReservation)
+                .toList();
     }
 
     @PostMapping("/returnCourt")
     public ResponseEntity<String> returnCourt(@RequestParam("courtId") String courtId, @RequestParam(value = "date", required = false) String date) {
         try {
             if (date == null) {
-                reservationService.returnCourt(UUID.fromString(courtId));
+                returnCourtUseCase.returnCourt(UUID.fromString(courtId));
             } else {
-                reservationService.returnCourt(UUID.fromString(courtId), LocalDateTime.parse(date));
+                ///TODO dodac z data
+//                returnCourtUseCase.returnCourt(UUID.fromString(courtId), LocalDateTime.parse(date));
             }
         } catch (IllegalArgumentException iae) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
@@ -101,71 +120,81 @@ public class ReservationController {
 
     @GetMapping("/{id}")
     public ReservationDTO getReservationById(@PathVariable("id") String id, HttpServletResponse response) {
-        ReservationDTO reservation = reservationService.getReservationById(id);
+        Reservation reservation = getReservationByIdUseCase.getReservationById(UUID.fromString(id));
         if (reservation == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
+            return null;
         }
-        return reservation;
+        return ReservationMapper.toJsonReservation(reservation);
     }
 
     @GetMapping("/clientReservation")
     public List<ReservationDTO> getAllClientReservations(@RequestParam("clientId") String clientId, HttpServletResponse response) {
-        List<ReservationDTO> resultList = reservationService.getAllClientReservations(UUID.fromString(clientId));
+        List<Reservation> resultList = getAllClientReservationsUseCase.getAllClientReservations(UUID.fromString(clientId));
         if (resultList.isEmpty()) {
-            resultList = null;
             response.setStatus(HttpStatus.NO_CONTENT.value());
+            return null;
         }
-        return resultList;
+        return resultList.stream()
+                .map(ReservationMapper::toJsonReservation)
+                .toList();
     }
 
     @GetMapping("/clientReservation/current")
     public List<ReservationDTO> getClientCurrentReservations(@RequestParam("clientId") String clientId, HttpServletResponse response) {
-        List<ReservationDTO> resultList = reservationService.getClientCurrentReservations(UUID.fromString(clientId));
+        List<Reservation> resultList = getClientCurrentReservationsUseCase.getClientCurrentReservations(UUID.fromString(clientId));
         if (resultList.isEmpty()) {
-            resultList = null;
             response.setStatus(HttpStatus.NO_CONTENT.value());
+            return null;
         }
-        return resultList;
+        return resultList.stream()
+                .map(ReservationMapper::toJsonReservation)
+                .toList();
     }
 
     @GetMapping("/clientReservation/ended")
     public List<ReservationDTO> getClientEndedReservations(@RequestParam("clientId") String clientId, HttpServletResponse response) {
-        List<ReservationDTO> resultList = reservationService.getClientEndedReservations(UUID.fromString(clientId));
+        List<Reservation> resultList = getClientEndedReservationsUseCase.getClientEndedReservation(UUID.fromString(clientId));
         if (resultList.isEmpty()) {
-            resultList = null;
             response.setStatus(HttpStatus.NO_CONTENT.value());
+            return null;
         }
-        return resultList;
+        return resultList.stream()
+                .map(ReservationMapper::toJsonReservation)
+                .toList();
     }
 
     @GetMapping("/courtReservation/current")
     public ReservationDTO getCourtCurrentReservation(@RequestParam("courtId") String courtId, HttpServletResponse response) {
-        ReservationDTO reservation = reservationService.getCourtCurrentReservation(UUID.fromString(courtId));
+        Reservation reservation = getCourtCurrentReservationUseCase.getCourtCurrentReservation(UUID.fromString(courtId));
         if (reservation == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
+            return null;
         }
-        return reservation;
+        return ReservationMapper.toJsonReservation(reservation);
     }
 
     @GetMapping("/courtReservation/ended")
     public List<ReservationDTO> getCourtEndedReservation(@RequestParam("courtId") String courtId, HttpServletResponse response) {
-        List<ReservationDTO> resultList = reservationService.getCourtEndedReservation(UUID.fromString(courtId));
+        List<Reservation> resultList = getCourtEndedReservationUseCase.getCourtEndedReservation(UUID.fromString(courtId));
         if (resultList.isEmpty()) {
-            resultList = null;
             response.setStatus(HttpStatus.NO_CONTENT.value());
+            return null;
         }
-        return resultList;
+        return resultList.stream()
+                .map(ReservationMapper::toJsonReservation)
+                .toList();
     }
 
     @GetMapping("/clientBalance")
     public double checkClientReservationBalance(@RequestParam("clientId") String clientId) {
-        return reservationService.checkClientReservationBalance(UUID.fromString(clientId));
+        return checkClientReservationBalanceUseCase.checkClientReservationBalance(UUID.fromString(clientId));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteReservation(@PathVariable("id") String id) {
         try {
-            reservationService.deleteReservation(UUID.fromString(id));
+            deleteReservationUseCase.deleteReservation(UUID.fromString(id));
         } catch (ReservationException re) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(re.getMessage());
         } catch (MyMongoException mme) {

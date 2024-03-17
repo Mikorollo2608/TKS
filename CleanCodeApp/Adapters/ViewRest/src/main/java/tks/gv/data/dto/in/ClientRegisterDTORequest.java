@@ -1,14 +1,13 @@
-//package tks.gv.security.dto;
+//package tks.gv.data.dto.in;
 //
 //import com.fasterxml.jackson.annotation.JsonCreator;
 //
 //import com.fasterxml.jackson.annotation.JsonProperty;
 //import lombok.Getter;
 //
-//import tks.gv.restapi.data.dto.ClientDTO;
-//
 //@Getter
-//public class ClientRegisterDTORequest extends ClientDTO {
+//public class ClientRegisterDTORequest extends ClientDTORequest {
+//
 //    @JsonCreator
 //    public ClientRegisterDTORequest(@JsonProperty("firstName") String firstName,
 //                                    @JsonProperty("lastName") String lastName,

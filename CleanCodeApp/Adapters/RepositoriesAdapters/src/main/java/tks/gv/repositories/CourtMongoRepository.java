@@ -87,9 +87,12 @@ public class CourtMongoRepository extends AbstractMongoRepository<CourtEntity> {
 
     @Override
     public CourtEntity create(CourtEntity court) {
+        if(court.getId() == null || court.getId().isBlank()){
+            court = new CourtEntity(UUID.randomUUID().toString(), court.getArea(), court.getBaseCost(), court.getCourtNumber(), court.isArchive(), court.isRented());
+        }
         if (!read(Filters.eq("courtnumber", court.getCourtNumber())).isEmpty()) {
             throw new CourtNumberException("Nie udalo sie zarejestrowac boiska w bazie! - boisko o tym numerze " +
-                    "znajduje sie juz w bazie");
+                "znajduje sie juz w bazie");
         }
         if (!createNew(court)) {
             throw new CourtException("Nie udalo sie zarejestrowac boiska w bazie! - brak odpowiedzi");

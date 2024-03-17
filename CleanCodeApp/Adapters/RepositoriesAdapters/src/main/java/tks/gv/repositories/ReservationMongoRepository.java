@@ -74,15 +74,15 @@ public class ReservationMongoRepository extends AbstractMongoRepository<Reservat
             CourtEntity courtFound = list2.get(0);
 
             if (courtFound.isRented() == 0 && !clientFound.isArchive() && !courtFound.isArchive()) {
-//                ReservationEntity newReservation = new ReservationEntity(UUID.randomUUID().toString(),
-//                        clientFound.getId(), courtFound.getId(), initReservation.getBeginTime(), null, 0);
+                ReservationEntity newReservation = new ReservationEntity(UUID.randomUUID().toString(),
+                        clientFound.getId(), courtFound.getId(), initReservation.getBeginTime(), null, 0);
 
                 InsertOneResult result;
                 ClientSession clientSession = getMongoClient().startSession();
                 try {
                     clientSession.startTransaction();
 //                    result = this.getCollection().insertOne(clientSession, ReservationMapper.toMongoReservation(newReservation));
-                    result = this.getCollection().insertOne(clientSession, initReservation);
+                    result = this.getCollection().insertOne(clientSession, newReservation);
                     if (result.wasAcknowledged()) {
                         getDatabase().getCollection(CourtMongoRepository.COLLECTION_NAME, CourtEntity.class).updateOne(
                                 clientSession,
@@ -97,8 +97,6 @@ public class ReservationMongoRepository extends AbstractMongoRepository<Reservat
                 } finally {
                     clientSession.close();
                 }
-                //TODO move this to service that will create this reservation
-                //courtFound.setRented(true);
                 return result.wasAcknowledged() ? initReservation : null;
             } else if (clientFound.isArchive()) {
                 throw new UserException("Nie udalo sie utworzyc rezerwacji - klient jest archiwalny!");

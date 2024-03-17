@@ -1,6 +1,5 @@
 package tks.gv.reservations;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import tks.gv.courts.Court;
@@ -30,6 +29,15 @@ public class Reservation {
         this.client = client;
         this.court = court;
         this.beginTime = (beginTime == null) ? LocalDateTime.now() : beginTime;
+    }
+
+    public Reservation(UUID id, Client client, Court court, LocalDateTime beginTime, LocalDateTime endTime, double reservationCost) {
+        this.id = id;
+        this.client = client;
+        this.court = court;
+        this.beginTime = beginTime;
+        this.endTime = endTime;
+        this.reservationCost = reservationCost;
     }
 
     public int getReservationHours() {

@@ -1,6 +1,5 @@
 package tks.gv.controllers.users;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -12,7 +11,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tks.gv.data.dto.ClientDTO;
-import tks.gv.data.dto.UserDTO.BasicUserValidation;
-import tks.gv.data.dto.UserDTO.PasswordValidation;
+import tks.gv.data.dto.UserDTO;
+
 
 import tks.gv.data.mappers.dto.ClientMapper;
 import tks.gv.exceptions.UserException;
@@ -50,8 +48,8 @@ public class ClientController {
     private final ModifyClientUseCase modifyClientUseCase;
     private final ChangeClientStatusUseCase changeClientStatusUseCase;
 
-    @PostMapping("/addClient")
-    public ResponseEntity<String> addClient(@Validated({BasicUserValidation.class, PasswordValidation.class}) @RequestBody ClientDTO client,
+    @PostMapping(value = "/addClient")
+    public ResponseEntity<String> addClient(@Validated({UserDTO.BasicUserValidation.class, UserDTO.PasswordValidation.class}) @RequestBody ClientDTO client,
                                             Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -120,8 +118,7 @@ public class ClientController {
     }
 
     @PutMapping("/modifyClient")
-    public ResponseEntity<String> modifyClient(HttpServletRequest httpServletRequest,
-                                               @Validated(BasicUserValidation.class) @RequestBody ClientDTO modifiedClient,
+    public ResponseEntity<String> modifyClient(@Validated(UserDTO.BasicUserValidation.class) @RequestBody ClientDTO modifiedClient,
                                                Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

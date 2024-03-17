@@ -9,7 +9,6 @@ import tks.gv.courts.Court;
 
 import tks.gv.courtservice.CourtService;
 import tks.gv.infrastructure.courts.ports.*;
-import tks.gv.userinterface.courts.ports.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +52,14 @@ public class CourtServiceTest {
         courtList.add(court1);
         courtList.add(court2);
         courtList.add(court3);
+    }
+
+    @Test
+    void testConstructor(){
+        CourtService cs = new CourtService(addCourtPort,getAllCourtsPort, getCourtByIdPort,
+                getCourtByCourtNumberPort, modifyCourtPort, activateCourtPort,
+                deactivateCourtPort, deleteCourtPort);
+        assertNotNull(cs);
     }
 
     @Test
