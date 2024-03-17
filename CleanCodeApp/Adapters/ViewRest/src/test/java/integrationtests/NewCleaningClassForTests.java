@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
+import org.springframework.stereotype.Component;
 import tks.gv.aggregates.CourtMongoRepositoryAdapter;
 import tks.gv.aggregates.UserMongoRepositoryAdapter;
 import tks.gv.courts.Court;

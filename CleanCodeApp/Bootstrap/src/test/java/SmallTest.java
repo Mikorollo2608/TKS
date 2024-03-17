@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
         classes = AppREST.class)
-//@AutoConfigureMockMvc
 //@TestPropertySource(
 //        locations = "classpath:application-integrationtest.properties")
 public class SmallTest {

@@ -1,0 +1,194 @@
+//package integrationtests;
+//
+//import com.mongodb.ConnectionString;
+//import com.mongodb.MongoClientSettings;
+//import com.mongodb.MongoCredential;
+//import com.mongodb.client.MongoClients;
+//import com.mongodb.client.MongoDatabase;
+//import com.mongodb.client.model.Filters;
+//import org.bson.UuidRepresentation;
+//import org.bson.codecs.configuration.CodecRegistries;
+//import org.bson.codecs.configuration.CodecRegistry;
+//import org.bson.codecs.pojo.Conventions;
+//import org.bson.codecs.pojo.PojoCodecProvider;
+//import org.junit.jupiter.api.Test;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Component;
+//import tks.gv.aggregates.CourtMongoRepositoryAdapter;
+//import tks.gv.aggregates.UserMongoRepositoryAdapter;
+//import tks.gv.courts.Court;
+//import tks.gv.courtservice.CourtService;
+//import tks.gv.data.dto.CourtDTO;
+//import tks.gv.data.dto.in.AdminDTORequest;
+//import tks.gv.data.dto.in.ResourceAdminDTORequest;
+//import tks.gv.data.dto.out.ClientDTOResponse;
+//import tks.gv.data.mappers.dto.AdminMapper;
+//import tks.gv.data.mappers.dto.ClientMapper;
+//import tks.gv.data.mappers.dto.CourtMapper;
+//import tks.gv.data.mappers.dto.ResourceAdminMapper;
+//import tks.gv.repositories.CourtMongoRepository;
+//import tks.gv.repositories.UserMongoRepository;
+//import tks.gv.userinterface.users.ports.clients.RegisterClientUseCase;
+//import tks.gv.users.Admin;
+//import tks.gv.users.Client;
+//import tks.gv.users.ResourceAdmin;
+//import tks.gv.userservice.AdminService;
+//import tks.gv.userservice.ClientService;
+//import tks.gv.userservice.ResourceAdminService;
+//
+//import java.time.LocalDateTime;
+//import java.time.Month;
+//import java.util.List;
+//import java.util.UUID;
+//
+//@Component
+//public class NewCleaningClassForTests {
+//    private static final CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder()
+//            .automatic(true)
+//            .conventions(List.of(Conventions.ANNOTATION_CONVENTION))
+//            .build());
+//
+//    private static final MongoClientSettings settings = MongoClientSettings.builder()
+//            .credential(MongoCredential.createCredential("admin", "admin", "adminpassword".toCharArray()))
+//            .applyConnectionString(new ConnectionString("mongodb://localhost:27017,localhost:27018,localhost:27019/?replicaSet=replica_set_single"))
+//            .uuidRepresentation(UuidRepresentation.STANDARD)
+//            .codecRegistry(CodecRegistries.fromRegistries(
+//                    MongoClientSettings.getDefaultCodecRegistry(),
+//                    pojoCodecRegistry
+//            ))
+//            .build();
+//    private static final MongoDatabase mongoDatabase = MongoClients.create(settings).getDatabase("reserveACourt");
+//
+//    static void cleanUsers() {
+//        mongoDatabase.getCollection("users").deleteMany(Filters.empty());
+//    }
+//
+//    static void cleanCourts() {
+//        mongoDatabase.getCollection("courts").deleteMany(Filters.empty());
+//    }
+//
+//    static void cleanReservations() {
+//        mongoDatabase.getCollection("reservations").deleteMany(Filters.empty());
+//    }
+//
+//    static ClientDTOResponse client1;
+//    static ClientDTOResponse client2;
+//    static ClientDTOResponse client3;
+//    static ClientDTOResponse client4;
+//
+//    static final String testPass = "P@ssword!";
+//
+////    static UserMongoRepositoryAdapter userAdapter = new UserMongoRepositoryAdapter(new UserMongoRepository());
+////    static CourtMongoRepositoryAdapter courtAdapter = new CourtMongoRepositoryAdapter(new CourtMongoRepository());
+//
+//    static CourtDTO court1;
+//    static CourtDTO court2;
+//    static CourtDTO court3;
+//    static CourtDTO court4;
+//    static CourtDTO court5;
+//
+////    static ReservationDTO reservation1;
+////    static ReservationDTO reservation2;
+////    static ReservationDTO reservation3;
+////    static ReservationDTO reservation4;
+////    static ReservationDTO reservation5;
+////    static ReservationDTO reservation6;
+////    static ReservationDTO reservation7;
+//
+//    static final LocalDateTime dataStart = LocalDateTime.of(2023, Month.NOVEMBER, 30, 14, 20);
+//
+//    static void cleanAll() {
+//        cleanReservations();
+//        cleanUsers();
+//        cleanCourts();
+//    }
+//
+//    @Autowired
+//    RegisterClientUseCase registerClientUseCase;
+//
+//    void initClients() {
+//
+//        cleanUsers();
+//        client1 = ClientMapper.toUserDTO(registerClientUseCase.registerClient(
+//                new Client(UUID.fromString("8d83bbda-e38a-4cf2-9136-40e5310c5761"), "Adam", "Smith", "loginek", testPass, "normal"))
+//        );
+//        client2 = ClientMapper.toUserDTO(registerClientUseCase.registerClient(
+//                new Client(UUID.fromString("692251d0-4da6-4099-b999-98df0812d5de"), "Eva", "Braun", "loginek13", testPass, "athlete"))
+//        );
+//        client3 = ClientMapper.toUserDTO(registerClientUseCase.registerClient(
+//                new Client(UUID.fromString("491008d4-c1ac-4af8-97ae-8a91e6f086f6"), "Michal", "Pi", "michas13", testPass, "coach"))
+//        );
+//        client4 = ClientMapper.toUserDTO(registerClientUseCase.registerClient(
+//                new Client(UUID.fromString("f13ab7a5-7306-4675-95f2-5190fec1304c"), "Peter", "Grif", "griffPet", testPass, "normal"))
+//        );
+//    }
+//
+////    static void initCourts() {
+////        CourtService courtServiceTest = new CourtService(courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter);
+////        cleanCourts();
+////
+////        Court c1 = new Court(UUID.fromString("e6a5ef37-8194-4520-be83-7264d6225386"), 100, 100, 1);
+////        Court c2 = new Court(UUID.fromString("ae29dbd0-3b04-4291-b999-a0d1711a14fc"), 100, 200, 2);
+////        Court c3 = new Court(UUID.fromString("5b9e6308-152d-434d-a818-f09d3c95715e"), 300, 200, 3);
+////        Court c4 = new Court(UUID.fromString("e3dfa05a-e2d1-4d0d-8596-26da9220a5f0"), 300, 200, 4);
+////        Court c5 = new Court(UUID.fromString("160f8ead-cfb2-4bbf-a453-c340c6ac2f7e"), 300, 200, 6);
+////
+////        courtServiceTest.addCourt(c1);
+////        courtServiceTest.addCourt(c2);
+////        courtServiceTest.addCourt(c3);
+////        courtServiceTest.addCourt(c4);
+////        courtServiceTest.addCourt(c5);
+////
+////        court1 = CourtMapper.toJsonCourt(c1);
+////        court2 = CourtMapper.toJsonCourt(c2);
+////        court3 = CourtMapper.toJsonCourt(c3);
+////        court4 = CourtMapper.toJsonCourt(c4);
+////        court5 = CourtMapper.toJsonCourt(c5);
+////    }
+//
+////////    static void initReservations() {
+////////        ReservationService reservationServiceTest = new ReservationService(new ReservationMongoRepository());
+////////        cleanAll();
+////////        initClients();
+////////        initCourts();
+////////        reservation1 = reservationServiceTest.makeReservation(UUID.fromString(client1.getId()), UUID.fromString(court1.getId()), dataStart);
+////////        reservation2 = reservationServiceTest.makeReservation(UUID.fromString(client2.getId()), UUID.fromString(court2.getId()), dataStart);
+////////        reservation3 = reservationServiceTest.makeReservation(UUID.fromString(client3.getId()), UUID.fromString(court3.getId()), LocalDateTime.of(2023, Month.NOVEMBER, 28, 14, 20));
+////////        reservationServiceTest.returnCourt(UUID.fromString(court3.getId()), dataStart);
+////////
+////////        //Extra for getters
+////////        reservation4 = reservationServiceTest.makeReservation(UUID.fromString(client2.getId()), UUID.fromString(court3.getId()), LocalDateTime.of(2023, Month.NOVEMBER, 28, 15, 0));
+////////        reservationServiceTest.returnCourt(UUID.fromString(court3.getId()), LocalDateTime.of(2023, Month.DECEMBER, 2, 12, 20));
+////////        reservation5 = reservationServiceTest.makeReservation(UUID.fromString(client3.getId()), UUID.fromString(court4.getId()), dataStart);
+////////        reservationServiceTest.returnCourt(UUID.fromString(court4.getId()), LocalDateTime.of(2023, Month.DECEMBER, 1, 14, 20));
+////////        reservation6 = reservationServiceTest.makeReservation(UUID.fromString(client1.getId()), UUID.fromString(court3.getId()), LocalDateTime.of(2023, Month.DECEMBER, 15, 10, 0));
+////////        reservation7 = reservationServiceTest.makeReservation(UUID.fromString(client3.getId()), UUID.fromString(court5.getId()), LocalDateTime.of(2023, Month.DECEMBER, 16, 10, 0));
+////////    }
+//////
+//////    /*----------------------------------------------------------------------------------------------------------------*/
+//
+//    static AdminDTORequest admin1;
+//    static AdminDTORequest admin2;
+//
+////    static void initAdmins() {
+////        AdminService adminServiceServiceTest = new AdminService(userAdapter, userAdapter, userAdapter, userAdapter, userAdapter, userAdapter);
+////        cleanUsers();
+////        admin1 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("fd60c176-d427-4591-ac13-6fb84d904862"), "adminek1@1234", testPass)));
+////        admin2 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("6f736fcc-d19d-4bcc-b1da-966b3c7c9758"), "adminek2@9876", testPass)));
+////    }
+//
+//    static ResourceAdminDTORequest adminRes1;
+//    static ResourceAdminDTORequest adminRes2;
+//
+////    static void initResAdmins() {
+////        ResourceAdminService resourceAdminServiceTest = new ResourceAdminService(userAdapter, userAdapter, userAdapter, userAdapter, userAdapter, userAdapter);
+////        cleanUsers();
+////        adminRes1 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("0c5f74c8-5a7e-4809-a6d3-bed663083b07"),"adminekRes1@1234", testPass)));
+////        adminRes2 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("ce9f05b5-fb28-4b07-9bee-9e069b6965ba"),"adminekRes2@9876", testPass)));
+////    }
+//
+//    @Test
+//    void test() {
+//        cleanAll();
+//    }
+//}
