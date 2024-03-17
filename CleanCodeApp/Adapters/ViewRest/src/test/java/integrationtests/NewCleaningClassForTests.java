@@ -8,12 +8,18 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
 import tks.gv.aggregates.UserMongoRepositoryAdapter;
+import tks.gv.data.dto.AdminDTO;
+import tks.gv.data.dto.CourtDTO;
+import tks.gv.data.dto.ResourceAdminDTO;
+import tks.gv.data.mappers.dto.AdminMapper;
 import tks.gv.data.mappers.dto.ClientMapper;
 
 import tks.gv.data.dto.ClientDTO;
 
 import tks.gv.repositories.UserMongoRepository;
+import tks.gv.users.Admin;
 import tks.gv.users.Client;
+import tks.gv.userservice.AdminService;
 import tks.gv.userservice.ClientService;
 
 import org.bson.UuidRepresentation;
@@ -23,6 +29,8 @@ import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,24 +68,26 @@ public class NewCleaningClassForTests {
     static ClientDTO client3;
     static ClientDTO client4;
 
+    static final String testPass = "P@ssword!";
+
     static UserMongoRepositoryAdapter adapter = new UserMongoRepositoryAdapter(new UserMongoRepository());
 
-    //////    static CourtDTO court1;
-//////    static CourtDTO court2;
-//////    static CourtDTO court3;
-//////    static CourtDTO court4;
-//////    static CourtDTO court5;
-//////
-//////    static ReservationDTO reservation1;
-//////    static ReservationDTO reservation2;
-//////    static ReservationDTO reservation3;
-//////    static ReservationDTO reservation4;
-//////    static ReservationDTO reservation5;
-//////    static ReservationDTO reservation6;
-//////    static ReservationDTO reservation7;
-////
-////    static final LocalDateTime dataStart = LocalDateTime.of(2023, Month.NOVEMBER, 30, 14, 20);
-////
+    static CourtDTO court1;
+    static CourtDTO court2;
+    static CourtDTO court3;
+    static CourtDTO court4;
+    static CourtDTO court5;
+
+//    static ReservationDTO reservation1;
+//    static ReservationDTO reservation2;
+//    static ReservationDTO reservation3;
+//    static ReservationDTO reservation4;
+//    static ReservationDTO reservation5;
+//    static ReservationDTO reservation6;
+//    static ReservationDTO reservation7;
+
+    static final LocalDateTime dataStart = LocalDateTime.of(2023, Month.NOVEMBER, 30, 14, 20);
+
     static void cleanAll() {
         cleanReservations();
         cleanUsers();
@@ -86,26 +96,19 @@ public class NewCleaningClassForTests {
 
     static void initClients() {
 
-        ClientService clientServiceTest = new ClientService(
-                adapter,
-                adapter,
-                adapter,
-                adapter,
-                adapter,
-                adapter
-        );
+        ClientService clientServiceTest = new ClientService(adapter, adapter, adapter, adapter, adapter, adapter);
         cleanUsers();
         client1 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
-                new Client(UUID.fromString("8d83bbda-e38a-4cf2-9136-40e5310c5761"), "Adam", "Smith", "loginek", "password", "normal"))
+                new Client(UUID.fromString("8d83bbda-e38a-4cf2-9136-40e5310c5761"), "Adam", "Smith", "loginek", testPass, "normal"))
         );
         client2 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
-                new Client(UUID.fromString("692251d0-4da6-4099-b999-98df0812d5de"), "Eva", "Braun", "loginek13", "password", "athlete"))
+                new Client(UUID.fromString("692251d0-4da6-4099-b999-98df0812d5de"), "Eva", "Braun", "loginek13", testPass, "athlete"))
         );
         client3 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
-                new Client(UUID.fromString("491008d4-c1ac-4af8-97ae-8a91e6f086f6"), "Michal", "Pi", "michas13", "password", "coach"))
+                new Client(UUID.fromString("491008d4-c1ac-4af8-97ae-8a91e6f086f6"), "Michal", "Pi", "michas13", testPass, "coach"))
         );
         client4 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
-                new Client(UUID.fromString("f13ab7a5-7306-4675-95f2-5190fec1304c"), "Peter", "Grif", "griffPet", "password", "normal"))
+                new Client(UUID.fromString("f13ab7a5-7306-4675-95f2-5190fec1304c"), "Peter", "Grif", "griffPet", testPass, "normal"))
         );
     }
 
@@ -139,27 +142,27 @@ public class NewCleaningClassForTests {
 //////    }
 ////
 ////    /*----------------------------------------------------------------------------------------------------------------*/
-////
-////    static AdminDTO admin1;
-////    static AdminDTO admin2;
-////
-////    static void initAdmins() {
-////        AdminService adminServiceServiceTest = new AdminService(new UserMongoRepository());
-////        cleanUsers();
-////        admin1 = adminServiceServiceTest.registerAdmin("adminek1@1234", "adminek1@1234");
-////        admin2 = adminServiceServiceTest.registerAdmin("adminek2@9876", "adminek2@9876");
-////    }
-////
-////
-////    static ResourceAdminDTO adminRes1;
-////    static ResourceAdminDTO adminRes2;
-////
-////    static void initResAdmins() {
-////        ResourceAdminService resourceAdminServiceTest = new ResourceAdminService(new UserMongoRepository());
-////        cleanUsers();
-////        adminRes1 = resourceAdminServiceTest.registerResourceAdmin("adminekRes1@1234", "adminekRes1@1234");
-////        adminRes2 = resourceAdminServiceTest.registerResourceAdmin("adminekRes2@9876", "adminekRes2@9876");
-////    }
+
+    static AdminDTO admin1;
+    static AdminDTO admin2;
+
+    static void initAdmins() {
+        AdminService adminServiceServiceTest = new AdminService(adapter, adapter, adapter, adapter, adapter, adapter);
+        cleanUsers();
+        admin1 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("fd60c176-d427-4591-ac13-6fb84d904862"), "adminek1@1234", testPass)));
+        admin2 =  AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("6f736fcc-d19d-4bcc-b1da-966b3c7c9758"),"adminek2@9876", testPass)));
+    }
+
+
+    static ResourceAdminDTO adminRes1;
+    static ResourceAdminDTO adminRes2;
+
+    static void initResAdmins() {
+//        ResourceAdminService resourceAdminServiceTest = new ResourceAdminService(adapter, adapter, adapter, adapter, adapter, adapter);
+//        cleanUsers();
+//        adminRes1 = resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("0c5f74c8-5a7e-4809-a6d3-bed663083b07"),"adminekRes1@1234", testPass));
+//        adminRes2 = resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("ce9f05b5-fb28-4b07-9bee-9e069b6965ba"),"adminekRes2@9876", testPass));
+    }
 
     @Test
     void test() {
