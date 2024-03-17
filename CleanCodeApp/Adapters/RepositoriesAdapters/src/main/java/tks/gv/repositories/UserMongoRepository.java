@@ -95,7 +95,7 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
                         adminEntity.isArchive()
                 );
             } else if (initUser instanceof ResourceAdminEntity resourceAdminEntity) {
-                initUser = new AdminEntity(
+                initUser = new ResourceAdminEntity(
                         UUID.randomUUID().toString(),
                         resourceAdminEntity.getLogin(),
                         resourceAdminEntity.getPassword(),
@@ -114,7 +114,7 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
             if (!this.getCollection().insertOne(initUser).wasAcknowledged()) {
                 throw new UserException("Nie udalo sie zarejestrowac uzytkownika w bazie! - brak odpowiedzi");
             }
-            ;
+
         } catch (MongoWriteException e) {
             throw new MyMongoException(e.getMessage());
         }

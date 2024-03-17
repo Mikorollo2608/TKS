@@ -224,19 +224,19 @@ public class ClientControllerTests {
         Response response = request.get(new URI(appUrlClient + "/match?login=login"));
         String responseString = response.asString();
 
-        String[] splitedRespStr = responseString.split("},");
+        String[] splitRespStr = responseString.split("},");
 
-        assertEquals(2, splitedRespStr.length);
+        assertEquals(2, splitRespStr.length);
 
         //First Client
-        assertTrue(splitedRespStr[0].contains(
+        assertTrue(splitRespStr[0].contains(
                 "\"login\":\"loginek\"," +
                 "\"clientTypeName\":\"normal\"," +
                 "\"firstName\":\"Adam\"," +
                 "\"lastName\":\"Smith\""));
 
         //Second Client
-        assertTrue(splitedRespStr[1].contains(
+        assertTrue(splitRespStr[1].contains(
                 "\"login\":\"loginek13\"," +
                 "\"clientTypeName\":\"athlete\"," +
                 "\"firstName\":\"Eva\"," +
@@ -248,7 +248,7 @@ public class ClientControllerTests {
     @Test
     void getClientByLoginMatchingNoCont() throws URISyntaxException {
         RequestSpecification request = RestAssured.given();
-        Response response = request.get(new URI(appUrlClient + "/match?login=uwuwuuwuwu"));
+        Response response = request.get(new URI(appUrlClient + "/match?login=uwu"));
         String responseString = response.asString();
 
         assertTrue(responseString.isEmpty());
@@ -298,7 +298,6 @@ public class ClientControllerTests {
 
         Response responsePut = requestPut.put(appUrlClient + "/modifyClient");
 
-        System.out.println(responsePut.asString());
         assertEquals(204, responsePut.getStatusCode());
 
         responseString = requestGet.get(new URI(appUrlClient)).asString();

@@ -7,7 +7,10 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
+import tks.gv.aggregates.CourtMongoRepositoryAdapter;
 import tks.gv.aggregates.UserMongoRepositoryAdapter;
+import tks.gv.courts.Court;
+import tks.gv.courtservice.CourtService;
 import tks.gv.data.dto.AdminDTO;
 import tks.gv.data.dto.CourtDTO;
 import tks.gv.data.dto.ResourceAdminDTO;
@@ -16,9 +19,13 @@ import tks.gv.data.mappers.dto.ClientMapper;
 
 import tks.gv.data.dto.ClientDTO;
 
+import tks.gv.data.mappers.dto.CourtMapper;
+import tks.gv.data.mappers.dto.ResourceAdminMapper;
+import tks.gv.repositories.CourtMongoRepository;
 import tks.gv.repositories.UserMongoRepository;
 import tks.gv.users.Admin;
 import tks.gv.users.Client;
+import tks.gv.users.ResourceAdmin;
 import tks.gv.userservice.AdminService;
 import tks.gv.userservice.ClientService;
 
@@ -28,6 +35,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.junit.jupiter.api.Test;
+import tks.gv.userservice.ResourceAdminService;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -70,7 +78,8 @@ public class NewCleaningClassForTests {
 
     static final String testPass = "P@ssword!";
 
-    static UserMongoRepositoryAdapter adapter = new UserMongoRepositoryAdapter(new UserMongoRepository());
+    static UserMongoRepositoryAdapter userAdapter = new UserMongoRepositoryAdapter(new UserMongoRepository());
+    static CourtMongoRepositoryAdapter courtAdapter = new CourtMongoRepositoryAdapter(new CourtMongoRepository());
 
     static CourtDTO court1;
     static CourtDTO court2;
@@ -96,7 +105,7 @@ public class NewCleaningClassForTests {
 
     static void initClients() {
 
-        ClientService clientServiceTest = new ClientService(adapter, adapter, adapter, adapter, adapter, adapter);
+        ClientService clientServiceTest = new ClientService(userAdapter, userAdapter, userAdapter, userAdapter, userAdapter, userAdapter);
         cleanUsers();
         client1 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
                 new Client(UUID.fromString("8d83bbda-e38a-4cf2-9136-40e5310c5761"), "Adam", "Smith", "loginek", testPass, "normal"))
@@ -112,16 +121,29 @@ public class NewCleaningClassForTests {
         );
     }
 
-//////    static void initCourts() {
-//////        CourtService courtServiceTest = new CourtService(new CourtMongoRepository());
-//////        cleanCourts();
-//////        court1 = courtServiceTest.registerCourt(100, 100, 1);
-//////        court2 = courtServiceTest.registerCourt(100, 200, 2);
-//////        court3 = courtServiceTest.registerCourt(300, 200, 3);
-//////        court4 = courtServiceTest.registerCourt(300, 200, 4);
-//////        court5 = courtServiceTest.registerCourt(300, 200, 6);
-//////    }
-////
+    static void initCourts() {
+        CourtService courtServiceTest = new CourtService(courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter);
+        cleanCourts();
+
+        Court c1 = new Court(UUID.fromString("e6a5ef37-8194-4520-be83-7264d6225386"), 100, 100, 1);
+        Court c2 = new Court(UUID.fromString("ae29dbd0-3b04-4291-b999-a0d1711a14fc"), 100, 200, 2);
+        Court c3 = new Court(UUID.fromString("5b9e6308-152d-434d-a818-f09d3c95715e"), 300, 200, 3);
+        Court c4 = new Court(UUID.fromString("e3dfa05a-e2d1-4d0d-8596-26da9220a5f0"), 300, 200, 4);
+        Court c5 = new Court(UUID.fromString("160f8ead-cfb2-4bbf-a453-c340c6ac2f7e"), 300, 200, 6);
+
+        courtServiceTest.addCourt(c1);
+        courtServiceTest.addCourt(c2);
+        courtServiceTest.addCourt(c3);
+        courtServiceTest.addCourt(c4);
+        courtServiceTest.addCourt(c5);
+
+        court1 = CourtMapper.toJsonCourt(c1);
+        court2 = CourtMapper.toJsonCourt(c2);
+        court3 = CourtMapper.toJsonCourt(c3);
+        court4 = CourtMapper.toJsonCourt(c4);
+        court5 = CourtMapper.toJsonCourt(c5);
+    }
+
 //////    static void initReservations() {
 //////        ReservationService reservationServiceTest = new ReservationService(new ReservationMongoRepository());
 //////        cleanAll();
@@ -147,21 +169,20 @@ public class NewCleaningClassForTests {
     static AdminDTO admin2;
 
     static void initAdmins() {
-        AdminService adminServiceServiceTest = new AdminService(adapter, adapter, adapter, adapter, adapter, adapter);
+        AdminService adminServiceServiceTest = new AdminService(userAdapter, userAdapter, userAdapter, userAdapter, userAdapter, userAdapter);
         cleanUsers();
         admin1 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("fd60c176-d427-4591-ac13-6fb84d904862"), "adminek1@1234", testPass)));
-        admin2 =  AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("6f736fcc-d19d-4bcc-b1da-966b3c7c9758"),"adminek2@9876", testPass)));
+        admin2 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("6f736fcc-d19d-4bcc-b1da-966b3c7c9758"), "adminek2@9876", testPass)));
     }
-
 
     static ResourceAdminDTO adminRes1;
     static ResourceAdminDTO adminRes2;
 
     static void initResAdmins() {
-//        ResourceAdminService resourceAdminServiceTest = new ResourceAdminService(adapter, adapter, adapter, adapter, adapter, adapter);
-//        cleanUsers();
-//        adminRes1 = resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("0c5f74c8-5a7e-4809-a6d3-bed663083b07"),"adminekRes1@1234", testPass));
-//        adminRes2 = resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("ce9f05b5-fb28-4b07-9bee-9e069b6965ba"),"adminekRes2@9876", testPass));
+        ResourceAdminService resourceAdminServiceTest = new ResourceAdminService(userAdapter, userAdapter, userAdapter, userAdapter, userAdapter, userAdapter);
+        cleanUsers();
+        adminRes1 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("0c5f74c8-5a7e-4809-a6d3-bed663083b07"),"adminekRes1@1234", testPass)));
+        adminRes2 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("ce9f05b5-fb28-4b07-9bee-9e069b6965ba"),"adminekRes2@9876", testPass)));
     }
 
     @Test
