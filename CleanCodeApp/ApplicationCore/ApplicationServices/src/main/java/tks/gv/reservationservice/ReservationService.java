@@ -85,10 +85,13 @@ public class ReservationService implements AddReservationUseCase, CheckClientRes
         }
     }
 
-    //TODO IMPLEMENTACJA MA BYĆ W TYM MIEJSCU
     @Override
     public double checkClientReservationBalance(UUID clientId) {
-        return 0;//checkClientReservationBalancePort.checkClientReservationBalance(clientId);
+        double sum = 0.0;
+        for (var res : getClientEndedReservation(clientId)) {
+            sum += res.getReservationCost();
+        }
+        return sum;
     }
 
     @Override
@@ -142,6 +145,7 @@ public class ReservationService implements AddReservationUseCase, CheckClientRes
         reservation.endReservation(null);
         returnCourtPort.returnCourt(reservation);
         reservation.getCourt().setRented(false);
+        modifyCourtUseCase.modifyCourt(reservation.getCourt());
     }
 }
 //

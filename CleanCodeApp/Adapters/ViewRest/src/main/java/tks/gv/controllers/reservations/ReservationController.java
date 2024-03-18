@@ -61,7 +61,7 @@ public class ReservationController {
                                                  @RequestParam(value = "date", required = false) String date) {
         try {
             if (date == null) {
-                addReservationUseCase.addReservation(clientId, clientId);
+                addReservationUseCase.addReservation(clientId, clientId, LocalDateTime.now());
             } else {
                 addReservationUseCase.addReservation(clientId, courtId, LocalDateTime.parse(date));
             }
@@ -106,7 +106,8 @@ public class ReservationController {
             if (date == null) {
                 returnCourtUseCase.returnCourt(UUID.fromString(courtId));
             } else {
-                ///TODO dodac z data
+                ///FIXME
+                returnCourtUseCase.returnCourt(UUID.fromString(courtId));
 //                returnCourtUseCase.returnCourt(UUID.fromString(courtId), LocalDateTime.parse(date));
             }
         } catch (IllegalArgumentException iae) {
@@ -195,7 +196,7 @@ public class ReservationController {
     public ResponseEntity<String> deleteReservation(@PathVariable("id") String id) {
         try {
             deleteReservationUseCase.deleteReservation(UUID.fromString(id));
-        } catch (ReservationException re) {
+        } catch (ReservationException | IllegalStateException re) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(re.getMessage());
         } catch (MyMongoException mme) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mme.getMessage());

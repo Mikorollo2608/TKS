@@ -7,8 +7,8 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
-import org.springframework.stereotype.Component;
 import tks.gv.aggregates.CourtMongoRepositoryAdapter;
+import tks.gv.aggregates.ReservationMongoRepositoryAdapter;
 import tks.gv.aggregates.UserMongoRepositoryAdapter;
 import tks.gv.courts.Court;
 import tks.gv.courtservice.CourtService;
@@ -19,11 +19,15 @@ import tks.gv.data.dto.ResourceAdminDTO;
 import tks.gv.data.mappers.dto.AdminMapper;
 import tks.gv.data.mappers.dto.ClientMapper;
 
+import tks.gv.data.mappers.dto.ReservationMapper;
+import tks.gv.restapi.data.dto.ReservationDTO;
 
 import tks.gv.data.mappers.dto.CourtMapper;
 import tks.gv.data.mappers.dto.ResourceAdminMapper;
 import tks.gv.repositories.CourtMongoRepository;
+import tks.gv.repositories.ReservationMongoRepository;
 import tks.gv.repositories.UserMongoRepository;
+import tks.gv.reservationservice.ReservationService;
 import tks.gv.users.Admin;
 import tks.gv.users.Client;
 import tks.gv.users.ResourceAdmin;
@@ -88,13 +92,13 @@ public class NewCleaningClassForTests {
     static CourtDTO court4;
     static CourtDTO court5;
 
-//    static ReservationDTO reservation1;
-//    static ReservationDTO reservation2;
-//    static ReservationDTO reservation3;
-//    static ReservationDTO reservation4;
-//    static ReservationDTO reservation5;
-//    static ReservationDTO reservation6;
-//    static ReservationDTO reservation7;
+    static ReservationDTO reservation1;
+    static ReservationDTO reservation2;
+    static ReservationDTO reservation3;
+    static ReservationDTO reservation4;
+    static ReservationDTO reservation5;
+    static ReservationDTO reservation6;
+    static ReservationDTO reservation7;
 
     static final LocalDateTime dataStart = LocalDateTime.of(2023, Month.NOVEMBER, 30, 14, 20);
 
@@ -104,9 +108,10 @@ public class NewCleaningClassForTests {
         cleanCourts();
     }
 
+    static ClientService clientServiceTest = new ClientService(userAdapter, userAdapter, userAdapter, userAdapter, userAdapter, userAdapter);
+
     static void initClients() {
 
-        ClientService clientServiceTest = new ClientService(userAdapter, userAdapter, userAdapter, userAdapter, userAdapter, userAdapter);
         cleanUsers();
         client1 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
                 new Client(UUID.fromString("8d83bbda-e38a-4cf2-9136-40e5310c5761"), "Adam", "Smith", "loginek", testPass, "normal"))
@@ -122,8 +127,9 @@ public class NewCleaningClassForTests {
         );
     }
 
+    static CourtService courtServiceTest = new CourtService(courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter);
+
     static void initCourts() {
-        CourtService courtServiceTest = new CourtService(courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter);
         cleanCourts();
 
         Court c1 = new Court(UUID.fromString("e6a5ef37-8194-4520-be83-7264d6225386"), 100, 100, 1);
@@ -145,26 +151,42 @@ public class NewCleaningClassForTests {
         court5 = CourtMapper.toJsonCourt(c5);
     }
 
-//////    static void initReservations() {
-//////        ReservationService reservationServiceTest = new ReservationService(new ReservationMongoRepository());
-//////        cleanAll();
-//////        initClients();
-//////        initCourts();
-//////        reservation1 = reservationServiceTest.makeReservation(UUID.fromString(client1.getId()), UUID.fromString(court1.getId()), dataStart);
-//////        reservation2 = reservationServiceTest.makeReservation(UUID.fromString(client2.getId()), UUID.fromString(court2.getId()), dataStart);
-//////        reservation3 = reservationServiceTest.makeReservation(UUID.fromString(client3.getId()), UUID.fromString(court3.getId()), LocalDateTime.of(2023, Month.NOVEMBER, 28, 14, 20));
-//////        reservationServiceTest.returnCourt(UUID.fromString(court3.getId()), dataStart);
-//////
-//////        //Extra for getters
-//////        reservation4 = reservationServiceTest.makeReservation(UUID.fromString(client2.getId()), UUID.fromString(court3.getId()), LocalDateTime.of(2023, Month.NOVEMBER, 28, 15, 0));
-//////        reservationServiceTest.returnCourt(UUID.fromString(court3.getId()), LocalDateTime.of(2023, Month.DECEMBER, 2, 12, 20));
-//////        reservation5 = reservationServiceTest.makeReservation(UUID.fromString(client3.getId()), UUID.fromString(court4.getId()), dataStart);
-//////        reservationServiceTest.returnCourt(UUID.fromString(court4.getId()), LocalDateTime.of(2023, Month.DECEMBER, 1, 14, 20));
-//////        reservation6 = reservationServiceTest.makeReservation(UUID.fromString(client1.getId()), UUID.fromString(court3.getId()), LocalDateTime.of(2023, Month.DECEMBER, 15, 10, 0));
-//////        reservation7 = reservationServiceTest.makeReservation(UUID.fromString(client3.getId()), UUID.fromString(court5.getId()), LocalDateTime.of(2023, Month.DECEMBER, 16, 10, 0));
-//////    }
-////
-////    /*----------------------------------------------------------------------------------------------------------------*/
+    static ReservationMongoRepositoryAdapter reservationMongoRepositoryAdapter = new ReservationMongoRepositoryAdapter(new ReservationMongoRepository(),
+            userAdapter, courtAdapter);
+
+    static void initReservations() {
+        ReservationService reservationServiceTest = new ReservationService(
+                reservationMongoRepositoryAdapter,
+                reservationMongoRepositoryAdapter,
+                reservationMongoRepositoryAdapter,
+                reservationMongoRepositoryAdapter,
+                reservationMongoRepositoryAdapter,
+                reservationMongoRepositoryAdapter,
+                reservationMongoRepositoryAdapter,
+                reservationMongoRepositoryAdapter,
+                reservationMongoRepositoryAdapter,
+                reservationMongoRepositoryAdapter,
+                reservationMongoRepositoryAdapter,
+                courtServiceTest,
+                courtServiceTest);
+        cleanAll();
+        initClients();
+        initCourts();
+        reservation1 = ReservationMapper.toJsonReservation(reservationServiceTest.addReservation(client1.getId(), court1.getId(), dataStart));
+        reservation2 = ReservationMapper.toJsonReservation(reservationServiceTest.addReservation(client2.getId(), court2.getId(), dataStart));
+        reservation3 = ReservationMapper.toJsonReservation(reservationServiceTest.addReservation(client3.getId(), court3.getId(), LocalDateTime.of(2023, Month.NOVEMBER, 28, 14, 20)));
+        reservationServiceTest.returnCourt(UUID.fromString(court3.getId()));
+
+        //Extra for getters
+        reservation4 = ReservationMapper.toJsonReservation(reservationServiceTest.addReservation(client2.getId(), court3.getId(), LocalDateTime.of(2023, Month.NOVEMBER, 28, 15, 0)));
+        reservationServiceTest.returnCourt(UUID.fromString(court3.getId()));
+        reservation5 = ReservationMapper.toJsonReservation(reservationServiceTest.addReservation(client3.getId(),court4.getId(), dataStart));
+        reservationServiceTest.returnCourt(UUID.fromString(court4.getId()));
+        reservation6 = ReservationMapper.toJsonReservation(reservationServiceTest.addReservation(client1.getId(), court3.getId(), LocalDateTime.of(2023, Month.DECEMBER, 15, 10, 0)));
+        reservation7 = ReservationMapper.toJsonReservation(reservationServiceTest.addReservation(client3.getId(), court5.getId(), LocalDateTime.of(2023, Month.DECEMBER, 16, 10, 0)));
+    }
+
+//    /*----------------------------------------------------------------------------------------------------------------*/
 
     static AdminDTO admin1;
     static AdminDTO admin2;
@@ -189,5 +211,6 @@ public class NewCleaningClassForTests {
     @Test
     void test() {
         cleanAll();
+        initReservations();
     }
 }

@@ -97,7 +97,7 @@ public class ReservationMongoRepository extends AbstractMongoRepository<Reservat
                 } finally {
                     clientSession.close();
                 }
-                return result.wasAcknowledged() ? initReservation : null;
+                return result.wasAcknowledged() ? newReservation : null;
             } else if (clientFound.isArchive()) {
                 throw new UserException("Nie udalo sie utworzyc rezerwacji - klient jest archiwalny!");
             } else if (courtFound.isArchive()) {
