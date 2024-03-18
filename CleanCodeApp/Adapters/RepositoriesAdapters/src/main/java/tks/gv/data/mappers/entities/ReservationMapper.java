@@ -1,8 +1,6 @@
 package tks.gv.data.mappers.entities;
 
 import tks.gv.courts.Court;
-import tks.gv.data.entities.ClientEntity;
-import tks.gv.data.entities.CourtEntity;
 import tks.gv.data.entities.ReservationEntity;
 import tks.gv.reservations.Reservation;
 import tks.gv.users.Client;
