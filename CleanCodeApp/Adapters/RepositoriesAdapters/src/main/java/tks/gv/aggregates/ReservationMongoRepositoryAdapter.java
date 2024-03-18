@@ -3,20 +3,16 @@ package tks.gv.aggregates;
 import com.mongodb.client.model.Filters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tks.gv.data.mappers.entities.CourtMapper;
 import tks.gv.data.mappers.entities.ReservationMapper;
 import tks.gv.infrastructure.courts.ports.GetCourtByIdPort;
 import tks.gv.infrastructure.reservations.ports.*;
 import tks.gv.infrastructure.users.ports.GetUserByIdPort;
-import tks.gv.repositories.CourtMongoRepository;
 import tks.gv.repositories.ReservationMongoRepository;
-import tks.gv.repositories.UserMongoRepository;
 import tks.gv.reservations.Reservation;
 import tks.gv.users.Client;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Filter;
 
 @Component
 public class ReservationMongoRepositoryAdapter implements AddReservationPort,

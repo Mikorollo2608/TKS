@@ -81,7 +81,6 @@ public class ReservationMongoRepository extends AbstractMongoRepository<Reservat
                 ClientSession clientSession = getMongoClient().startSession();
                 try {
                     clientSession.startTransaction();
-//                    result = this.getCollection().insertOne(clientSession, ReservationMapper.toMongoReservation(newReservation));
                     result = this.getCollection().insertOne(clientSession, newReservation);
                     if (result.wasAcknowledged()) {
                         getDatabase().getCollection(CourtMongoRepository.COLLECTION_NAME, CourtEntity.class).updateOne(
