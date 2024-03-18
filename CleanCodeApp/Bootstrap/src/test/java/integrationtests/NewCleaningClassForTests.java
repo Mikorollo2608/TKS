@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tks.gv.aggregates.CourtMongoRepositoryAdapter;
 import tks.gv.aggregates.ReservationMongoRepositoryAdapter;
@@ -25,9 +26,6 @@ import tks.gv.restapi.data.dto.ReservationDTO;
 
 import tks.gv.data.mappers.dto.CourtMapper;
 import tks.gv.data.mappers.dto.ResourceAdminMapper;
-import tks.gv.repositories.CourtMongoRepository;
-import tks.gv.repositories.ReservationMongoRepository;
-import tks.gv.repositories.UserMongoRepository;
 import tks.gv.reservationservice.ReservationService;
 import tks.gv.users.Admin;
 import tks.gv.users.Client;
@@ -40,7 +38,6 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.junit.jupiter.api.Test;
 import tks.gv.userservice.ResourceAdminService;
 
 import java.time.LocalDateTime;
@@ -85,9 +82,6 @@ public class NewCleaningClassForTests {
 
     static final String testPass = "P@ssword!";
 
-    static UserMongoRepositoryAdapter userAdapter = new UserMongoRepositoryAdapter(new UserMongoRepository());
-    static CourtMongoRepositoryAdapter courtAdapter = new CourtMongoRepositoryAdapter(new CourtMongoRepository());
-
     static CourtDTO court1;
     static CourtDTO court2;
     static CourtDTO court3;
@@ -110,9 +104,10 @@ public class NewCleaningClassForTests {
         cleanCourts();
     }
 
-    static ClientService clientServiceTest = new ClientService(userAdapter, userAdapter, userAdapter, userAdapter, userAdapter, userAdapter);
+    @Autowired
+    ClientService clientServiceTest;
 
-    static void initClients() {
+    void initClients() {
 
         cleanUsers();
         client1 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
@@ -129,9 +124,10 @@ public class NewCleaningClassForTests {
         );
     }
 
-    static CourtService courtServiceTest = new CourtService(courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter, courtAdapter);
+    @Autowired
+    CourtService courtServiceTest;
 
-    static void initCourts() {
+    void initCourts() {
         cleanCourts();
 
         Court c1 = new Court(UUID.fromString("e6a5ef37-8194-4520-be83-7264d6225386"), 100, 100, 1);
@@ -153,24 +149,14 @@ public class NewCleaningClassForTests {
         court5 = CourtMapper.toJsonCourt(c5);
     }
 
-    static ReservationMongoRepositoryAdapter reservationMongoRepositoryAdapter = new ReservationMongoRepositoryAdapter(new ReservationMongoRepository(),
-            userAdapter, courtAdapter);
+    @Autowired
+    ReservationMongoRepositoryAdapter reservationMongoRepositoryAdapter;
 
-    static void initReservations() {
-        ReservationService reservationServiceTest = new ReservationService(
-                reservationMongoRepositoryAdapter,
-                reservationMongoRepositoryAdapter,
-                reservationMongoRepositoryAdapter,
-                reservationMongoRepositoryAdapter,
-                reservationMongoRepositoryAdapter,
-                reservationMongoRepositoryAdapter,
-                reservationMongoRepositoryAdapter,
-                reservationMongoRepositoryAdapter,
-                reservationMongoRepositoryAdapter,
-                reservationMongoRepositoryAdapter,
-                reservationMongoRepositoryAdapter,
-                courtServiceTest,
-                courtServiceTest);
+    @Autowired
+    ReservationService reservationServiceTest;
+
+    void initReservations() {
+
         cleanAll();
         initClients();
         initCourts();
@@ -193,8 +179,10 @@ public class NewCleaningClassForTests {
     static AdminDTO admin1;
     static AdminDTO admin2;
 
-    static void initAdmins() {
-        AdminService adminServiceServiceTest = new AdminService(userAdapter, userAdapter, userAdapter, userAdapter, userAdapter, userAdapter);
+    @Autowired
+    AdminService adminServiceServiceTest;
+
+    void initAdmins() {
         cleanUsers();
         admin1 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("fd60c176-d427-4591-ac13-6fb84d904862"), "adminek1@1234", testPass)));
         admin2 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("6f736fcc-d19d-4bcc-b1da-966b3c7c9758"), "adminek2@9876", testPass)));
@@ -203,16 +191,12 @@ public class NewCleaningClassForTests {
     static ResourceAdminDTO adminRes1;
     static ResourceAdminDTO adminRes2;
 
-    static void initResAdmins() {
-        ResourceAdminService resourceAdminServiceTest = new ResourceAdminService(userAdapter, userAdapter, userAdapter, userAdapter, userAdapter, userAdapter);
+    @Autowired
+    ResourceAdminService resourceAdminServiceTest;
+
+    void initResAdmins() {
         cleanUsers();
         adminRes1 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("0c5f74c8-5a7e-4809-a6d3-bed663083b07"),"adminekRes1@1234", testPass)));
         adminRes2 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("ce9f05b5-fb28-4b07-9bee-9e069b6965ba"),"adminekRes2@9876", testPass)));
-    }
-
-    @Test
-    void test() {
-        cleanAll();
-        initReservations();
     }
 }

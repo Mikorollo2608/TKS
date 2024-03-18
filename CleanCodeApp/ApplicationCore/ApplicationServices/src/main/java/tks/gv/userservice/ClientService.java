@@ -128,24 +128,6 @@ public class ClientService implements
         changeUserStatusPort.deactivateUser(clientId);
     }
 
-////    public void changeClientPassword(String id, ChangePasswordDTORequest changePasswordDTO) {
-////        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-////
-////        if (!passwordEncoder.matches(changePasswordDTO.getActualPassword(), user.getPassword())) {
-////            throw new IllegalStateException("Niepoprawne aktualne haslo!");
-////        }
-////        if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmationPassword())) {
-////            throw new IllegalStateException("Podane hasla roznia sie!");
-////        }
-////
-////        userRepository.update(UUID.fromString(id), "password",
-////                passwordEncoder.encode(changePasswordDTO.getNewPassword()));
-////    }
-
-////    public void changeClientPassword(UUID id, ChangePasswordDTORequest changePasswordDTO) {
-////        changeClientPassword(id.toString(), changePasswordDTO);
-////    }
-
     private Client userProjection(User user) {
         if (user instanceof Client client) {
             return client;

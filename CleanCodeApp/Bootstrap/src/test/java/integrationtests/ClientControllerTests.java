@@ -1,32 +1,25 @@
 package integrationtests;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tks.gv.AppREST;
 
-
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.UUID;
 
 import static integrationtests.NewCleaningClassForTests.cleanUsers;
-import static integrationtests.NewCleaningClassForTests.client1;
-import static integrationtests.NewCleaningClassForTests.client2;
-import static integrationtests.NewCleaningClassForTests.client3;
-import static integrationtests.NewCleaningClassForTests.client4;
-import static integrationtests.NewCleaningClassForTests.initClients;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -36,38 +29,48 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
         classes = {AppREST.class, NewCleaningClassForTests.class})
+//@TestPropertySource(locations = {"classpath:application-integrationtest.properties"})
 public class ClientControllerTests {
 
-    static final String appUrlClient = "http://localhost:8080/api/clients";
+
+    final String appUrlClient = "http://localhost:8080/api/clients";
 
     @AfterAll
     static void cleanAtTheEnd() {
         cleanUsers();
     }
 
+    @Autowired
+    NewCleaningClassForTests newCleaningClassForTests;
+
     @BeforeEach
     void cleanAndInitDatabase() {
         cleanUsers();
-        initClients();
+        newCleaningClassForTests.initClients();
     }
 
-//    @Test
-//    void getAllClientsTest() throws URISyntaxException, JsonProcessingException {
-//        RequestSpecification request = RestAssured.given();
-//        Response response = request.get(new URI(appUrlClient));
-//
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        List<ClientDTOResponse> clientDTOList = objectMapper.readValue(response.asString(), new TypeReference<>() {
-//        });
-//        assertEquals(4, clientDTOList.size());
-//
-//        assertEquals(client1, clientDTOList.get(0));
-//        assertEquals(client2, clientDTOList.get(1));
-//        assertEquals(client3, clientDTOList.get(2));
-//        assertEquals(client4, clientDTOList.get(3));
-//
-//        assertEquals(200, response.getStatusCode());
-//    }
+    @Test
+    void getAllClientsTest() throws URISyntaxException {
+        RequestSpecification request = RestAssured.given();
+        Response response = request.get(new URI(appUrlClient));
+        String responseString = response.asString();
+
+        //First Client
+        assertTrue(responseString.contains("\"archive\":false"));
+        assertTrue(responseString.contains("\"id\":\""));
+        assertTrue(responseString.contains("\"login\":\"loginek\""));
+        assertTrue(responseString.contains("\"clientTypeName\":\"normal\""));
+        assertTrue(responseString.contains("\"firstName\":\"Adam\""));
+        assertTrue(responseString.contains("\"lastName\":\"Smith\""));
+
+        //Third Client
+        assertTrue(responseString.contains("\"login\":\"michas13\""));
+        assertTrue(responseString.contains("\"clientTypeName\":\"coach\""));
+        assertTrue(responseString.contains("\"firstName\":\"Michal\""));
+        assertTrue(responseString.contains("\"lastName\":\"Pi\""));
+
+        assertEquals(200, response.getStatusCode());
+    }
 
     @Test
     void getAllClientsTestNoCont() throws URISyntaxException {
@@ -80,45 +83,38 @@ public class ClientControllerTests {
         assertEquals(204, response.getStatusCode());
     }
 
-//    @Test
-//    void createClientTestPos() throws URISyntaxException, JsonProcessingException {
-//        cleanUsers();
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        String JSON = objectMapper.writeValueAsString(
-//                new ClientRegisterDTORequest(
-//                        "John",
-//                        "Bravo",
-//                        "johnBravo",
-//                        "johnBravo1!"
-//                )
-//        ).replace("\"id\":null,", "");
-//
-//        RequestSpecification requestPost = RestAssured.given();
-//        requestPost.contentType("application/json");
-//        requestPost.body(JSON);
-//
-//        System.out.println(JSON);
-//
-//        RequestSpecification requestGet = RestAssured.given();
-//        String responseString = requestGet.get(new URI(appUrlClient)).asString();
-//
-//        assertTrue(responseString.isEmpty());
-//
-//        Response responsePost = requestPost.post(appUrlClient + "/addClient");
-//
-//        assertEquals(201, responsePost.getStatusCode());
-//
-//        responseString = requestGet.get(new URI(appUrlClient)).asString();
-//
-//        List<ClientDTORequest> clientDTOList = objectMapper.readValue(responseString, new TypeReference<>() {});
-//
-//        assertEquals("John", clientDTOList.get(0).getFirstName());
-//        assertEquals("Bravo", clientDTOList.get(0).getLastName());
-//        assertEquals("johnBravo", clientDTOList.get(0).getLogin());
-//        assertFalse(clientDTOList.get(0).isArchive());
-//        assertEquals("normal", clientDTOList.get(0).getClientType());
-//    }
+    @Test
+    void createClientTestPos() throws URISyntaxException {
+        cleanUsers();
+        String JSON = """
+                {
+                  "firstName": "John",
+                  "lastName": "Bravo",
+                  "login": "johnBravo",
+                  "password": "johnBravo1",
+                  "clientTypeName": "normal"
+                }
+                """;
+        RequestSpecification requestPost = RestAssured.given();
+        requestPost.contentType("application/json");
+        requestPost.body(JSON);
+
+        RequestSpecification requestGet = RestAssured.given();
+        String responseString = requestGet.get(new URI(appUrlClient)).asString();
+
+        assertTrue(responseString.isEmpty());
+
+        Response responsePost = requestPost.post(appUrlClient + "/addClient");
+
+        assertEquals(201, responsePost.getStatusCode());
+
+        responseString = requestGet.get(new URI(appUrlClient)).asString();
+
+        assertTrue(responseString.contains("\"login\":\"johnBravo\""));
+        assertTrue(responseString.contains("\"clientTypeName\":\"normal\""));
+        assertTrue(responseString.contains("\"firstName\":\"John\""));
+        assertTrue(responseString.contains("\"lastName\":\"Bravo\""));
+    }
 
     @Test
     void createClientTestNegInvalidData() throws URISyntaxException {

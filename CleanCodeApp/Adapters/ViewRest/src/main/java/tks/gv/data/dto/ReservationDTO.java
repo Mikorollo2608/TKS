@@ -9,14 +9,13 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import tks.gv.data.dto.ClientDTO;
 import tks.gv.data.dto.CourtDTO;
-import tks.gv.data.dto.DTO;
 
 import java.time.LocalDateTime;
 
 @Getter
 @FieldDefaults(makeFinal = true)
 @JsonPropertyOrder({"beginTime", "client", "court", "endTime", "id", "reservationCost"})
-public class ReservationDTO implements DTO {
+public class ReservationDTO {
 
     public interface BasicReservationValidation {}
 

@@ -4,10 +4,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tks.gv.AppREST;
@@ -29,6 +29,9 @@ public class ReservationsControllerTests {
 
     static final String appUrlReservation = "http://localhost:8080/api/reservations";
 
+    @Autowired
+    NewCleaningClassForTests newCleaningClassForTests;
+
     @AfterAll
     static void cleanAtTheEnd() {
         cleanAll();
@@ -37,7 +40,7 @@ public class ReservationsControllerTests {
     @BeforeEach
     void cleanAndInitDatabase() {
         cleanAll();
-        initReservations();
+        newCleaningClassForTests.initReservations();
     }
 
     @Test
@@ -109,8 +112,8 @@ public class ReservationsControllerTests {
     @Test
     void createReservationTestPos() throws URISyntaxException {
         cleanReservations();
-        initClients();
-        initCourts();
+        newCleaningClassForTests.initClients();
+        newCleaningClassForTests.initCourts();
         RequestSpecification requestPost = RestAssured.given();
 
         RequestSpecification requestGet = RestAssured.given();
@@ -136,8 +139,8 @@ public class ReservationsControllerTests {
     @Test
     void createReservationTestNegInvalidData() throws URISyntaxException {
         cleanReservations();
-        initClients();
-        initCourts();
+        newCleaningClassForTests.initClients();
+        newCleaningClassForTests.initCourts();
         RequestSpecification requestPost = RestAssured.given();
 
         RequestSpecification requestGet = RestAssured.given();
@@ -591,7 +594,7 @@ public class ReservationsControllerTests {
 
     @Test
     void deleteCourtTestPos() throws URISyntaxException {
-        initReservations();
+        newCleaningClassForTests.initReservations();
 
         RequestSpecification requestGet = RestAssured.given();
         RequestSpecification requestDelete = RestAssured.given();

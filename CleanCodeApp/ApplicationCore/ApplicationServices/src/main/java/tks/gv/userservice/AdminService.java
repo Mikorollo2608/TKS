@@ -128,24 +128,6 @@ public class AdminService implements
         changeUserStatusPort.deactivateUser(adminId);
     }
 
-////    public void changeAdminPassword(String id, ChangePasswordDTORequest changePasswordDTO) {
-////        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-////
-////        if (!passwordEncoder.matches(changePasswordDTO.getActualPassword(), user.getPassword())) {
-////            throw new IllegalStateException("Niepoprawne aktualne haslo!");
-////        }
-////        if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmationPassword())) {
-////            throw new IllegalStateException("Podane hasla roznia sie!");
-////        }
-////
-////        userRepository.update(UUID.fromString(id), "password",
-////                passwordEncoder.encode(changePasswordDTO.getNewPassword()));
-////    }
-
-////    public void changeAdminPassword(UUID id, ChangePasswordDTORequest changePasswordDTO) {
-////        changeAdminPassword(id.toString(), changePasswordDTO);
-////    }
-
     private Admin userProjection(User user) {
         if (user instanceof Admin admin) {
             return admin;

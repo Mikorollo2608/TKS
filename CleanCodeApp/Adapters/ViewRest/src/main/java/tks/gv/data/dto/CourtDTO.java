@@ -10,12 +10,11 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import org.w3c.dom.Entity;
 
 @Getter
 @FieldDefaults(makeFinal = true)
 @JsonPropertyOrder({"archive", "area", "baseCost", "courtNumber", "id", "rented"})
-public class CourtDTO implements DTO {
+public class CourtDTO {
 
     public interface BasicCourtValidation {}
 

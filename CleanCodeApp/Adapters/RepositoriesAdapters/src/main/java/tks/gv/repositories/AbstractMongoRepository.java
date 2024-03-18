@@ -98,7 +98,6 @@ public abstract class AbstractMongoRepository<T> implements AutoCloseable {
         return !list.isEmpty() ? list.get(0) : null;
     }
 
-    ///FIXME rozwazyc
     public boolean update(UUID uuid, String fieldName, Object value) {
         if (fieldName.equals("_id")) {
             throw new MyMongoException("Proba zmiany UUID!");

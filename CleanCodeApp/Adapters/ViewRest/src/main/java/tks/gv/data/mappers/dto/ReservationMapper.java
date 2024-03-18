@@ -1,7 +1,5 @@
 package tks.gv.data.mappers.dto;
 
-import tks.gv.data.mappers.dto.CourtMapper;
-import tks.gv.data.mappers.dto.ClientMapper;
 import tks.gv.reservations.Reservation;
 import tks.gv.restapi.data.dto.ReservationDTO;
 

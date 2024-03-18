@@ -16,7 +16,7 @@ import java.util.Objects;
 @Getter
 @FieldDefaults(makeFinal = true)
 @JsonPropertyOrder({"archive", "id", "login"})
-public class UserDTO implements DTO {
+public class UserDTO {
 
     public interface BasicUserValidation {}
     public interface PasswordValidation {}

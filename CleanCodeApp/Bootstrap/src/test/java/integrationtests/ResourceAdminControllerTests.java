@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tks.gv.AppREST;
@@ -19,7 +20,6 @@ import java.util.UUID;
 import static integrationtests.NewCleaningClassForTests.adminRes1;
 import static integrationtests.NewCleaningClassForTests.adminRes2;
 import static integrationtests.NewCleaningClassForTests.cleanUsers;
-import static integrationtests.NewCleaningClassForTests.initResAdmins;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -33,15 +33,18 @@ public class ResourceAdminControllerTests {
 
     static final String appUrlResAdmins = "http://localhost:8080/api/resAdmins";
 
+    @Autowired
+    NewCleaningClassForTests newCleaningClassForTests;
+
     @AfterAll
     static void cleanAtTheEnd() {
-//        cleanUsers();
+        cleanUsers();
     }
 
     @BeforeEach
     void cleanAndInitDatabase() {
         cleanUsers();
-        initResAdmins();
+        newCleaningClassForTests.initResAdmins();
     }
 
     @Test

@@ -5,10 +5,10 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tks.gv.AppREST;
@@ -19,10 +19,7 @@ import java.util.UUID;
 
 import static integrationtests.NewCleaningClassForTests.cleanCourts;
 import static integrationtests.NewCleaningClassForTests.cleanReservations;
-import static integrationtests.NewCleaningClassForTests.initClients;
-import static integrationtests.NewCleaningClassForTests.initCourts;
 
-import static integrationtests.NewCleaningClassForTests.initReservations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,6 +32,9 @@ public class CourtControllerTests {
 
     static final String appUrlCourt = "http://localhost:8080/api/courts";
 
+    @Autowired
+    NewCleaningClassForTests newCleaningClassForTests;
+
     @AfterAll
     static void cleanAtTheEnd() {
         cleanCourts();
@@ -43,7 +43,7 @@ public class CourtControllerTests {
     @BeforeEach
     void cleanAndInitDatabase() {
         cleanCourts();
-        initCourts();
+        newCleaningClassForTests.initCourts();
     }
 
     @Test
@@ -493,7 +493,7 @@ public class CourtControllerTests {
     @Test
     void deleteCourtTestPos() throws URISyntaxException {
         cleanReservations();
-        initCourts();
+        newCleaningClassForTests.initCourts();
 
         RequestSpecification requestGet = RestAssured.given();
         String responseString = requestGet.get(new URI(appUrlCourt)).asString();
@@ -535,8 +535,8 @@ public class CourtControllerTests {
     @Test
     void deleteCourtTestNeg() throws URISyntaxException {
         //Additional preparing
-        initClients();
-        initReservations();
+        newCleaningClassForTests.initClients();
+        newCleaningClassForTests.initReservations();
 
         RequestSpecification requestGet = RestAssured.given();
         String responseString = requestGet.get(new URI(appUrlCourt)).asString();

@@ -114,64 +114,6 @@ public class ReservationMongoRepository extends AbstractMongoRepository<Reservat
         return this.getCollection().find(filter).into(new ArrayList<>());
     }
 
-    //try to change implementation so it uses updateByReplace
-//    public void update(UUID courtId, LocalDateTime endTime) {
-//        //Find court
-//        var listCourt = getDatabase().getCollection(CourtMongoRepository.COLLECTION_NAME, CourtEntity.class)
-//                .find(Filters.eq("_id", courtId.toString())).into(new ArrayList<>());
-//        if (listCourt.isEmpty()) {
-//            throw new ReservationException("Brak podanego boiska w bazie!");
-//        }
-//        if (listCourt.get(0).isRented() == 0) {
-//            throw new ReservationException("To boisko nie jest aktualnie wypozyczone!");
-//        }
-//
-//        //Find reservation
-//        var listReservation = getDatabase().getCollection(COLLECTION_NAME,
-//                        ReservationEntity.class).find(Filters.and(
-//                        Filters.eq("courtid", courtId.toString()),
-//                        Filters.eq("endtime", null)))
-//                .into(new ArrayList<>());
-//        if (listReservation.isEmpty()) {
-//            throw new ReservationException("Brak rezerwacji, dla podanego boiska, w bazie!");
-//        }
-//
-//        //Find client
-//        var listClient = getDatabase().getCollection(UserMongoRepository.COLLECTION_NAME, ClientEntity.class)
-//                .find(Filters.eq("_id", listReservation.get(0).getClientId()))
-//                .into(new ArrayList<>());
-//        if (listClient.isEmpty()) {
-//            throw new ReservationException("Brak podanego klienta w bazie!");
-//        }
-//
-//        ReservationEntity reservationFound = ReservationMapper.fromMongoReservation(listReservation.get(0),
-//                listClient.get(0), listCourt.get(0));
-//
-//        ClientSession clientSession = getMongoClient().startSession();
-//        try {
-//            clientSession.startTransaction();
-//            reservationFound.endReservation(endTime);
-//
-//            //Update reservations properties
-//            update(reservationFound.getId(), "endtime", reservationFound.getEndTime());
-//            update(reservationFound.getId(), "reservationcost", reservationFound.getReservationCost());
-//
-//            //Update court's "rented" field
-//            getDatabase().getCollection(CourtMongoRepository.COLLECTION_NAME, CourtEntity.class).updateOne(
-//                    clientSession,
-//                    Filters.eq("_id", listCourt.get(0).getId()),
-//                    Updates.inc("rented", -1));
-//
-//            clientSession.commitTransaction();
-//        } catch (Exception exception) {
-//            clientSession.abortTransaction();
-//            clientSession.close();
-//            throw new MyMongoException(exception.getMessage());
-//        } finally {
-//            clientSession.close();
-//        }
-//    }
-
     @Override
     public boolean updateByReplace(UUID uuid, ReservationEntity reservation) {
         Bson filter = Filters.eq("_id", uuid.toString());

@@ -106,9 +106,7 @@ public class ReservationController {
             if (date == null) {
                 returnCourtUseCase.returnCourt(UUID.fromString(courtId));
             } else {
-                ///FIXME
                 returnCourtUseCase.returnCourt(UUID.fromString(courtId));
-//                returnCourtUseCase.returnCourt(UUID.fromString(courtId), LocalDateTime.parse(date));
             }
         } catch (IllegalArgumentException iae) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
@@ -205,32 +203,4 @@ public class ReservationController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    /*---------------------------------------FOR CLIENT-------------------------------------------------------------*/
-//    @PostMapping("/addReservation/me")
-//    public ResponseEntity<String> addReservationByClient(@RequestParam("courtId") String courtId,
-//                                                 @RequestParam(value = "date", required = false) String date) {
-//        String clientId = clientService.getClientByLogin(
-//                SecurityContextHolder.getContext().getAuthentication().getName()).getId();
-//        return addReservation(clientId, courtId, date);
-//    }
-//
-//    @GetMapping("/clientReservation/me")
-//    public List<ReservationDTO> getAllClientReservationsByClient(HttpServletResponse response) {
-//        String clientId = clientService.getClientByLogin(
-//                SecurityContextHolder.getContext().getAuthentication().getName()).getId();
-//        return getAllClientReservations(clientId, response);
-//    }
-
-//    @PostMapping("/returnCourt/me")
-//    public ResponseEntity<String> returnCourtByClient(@RequestParam("courtId") String courtId, @RequestParam(value = "date", required = false) String date) {
-//        String clientId = clientService.getClientByLogin(
-//                SecurityContextHolder.getContext().getAuthentication().getName()).getId();
-//
-//        ReservationDTO reservation = reservationService.getCourtCurrentReservation(UUID.fromString(courtId));
-//        if (reservation == null || !reservation.getClient().getId().equals(clientId)) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("To boisko nie jest wypozyczone przez aktualnego uzytkownika");
-//        }
-//
-//        return returnCourt(courtId, date);
-//    }
 }
