@@ -81,7 +81,6 @@ public class ReservationMongoRepository extends AbstractMongoRepository<Reservat
                 ClientSession clientSession = getMongoClient().startSession();
                 try {
                     clientSession.startTransaction();
-//                    result = this.getCollection().insertOne(clientSession, ReservationMapper.toMongoReservation(newReservation));
                     result = this.getCollection().insertOne(clientSession, newReservation);
                     if (result.wasAcknowledged()) {
                         getDatabase().getCollection(CourtMongoRepository.COLLECTION_NAME, CourtEntity.class).updateOne(
@@ -97,7 +96,7 @@ public class ReservationMongoRepository extends AbstractMongoRepository<Reservat
                 } finally {
                     clientSession.close();
                 }
-                return result.wasAcknowledged() ? initReservation : null;
+                return result.wasAcknowledged() ? newReservation : null;
             } else if (clientFound.isArchive()) {
                 throw new UserException("Nie udalo sie utworzyc rezerwacji - klient jest archiwalny!");
             } else if (courtFound.isArchive()) {

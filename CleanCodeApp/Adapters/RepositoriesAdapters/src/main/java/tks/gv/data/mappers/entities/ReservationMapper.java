@@ -7,16 +7,18 @@ import tks.gv.data.entities.ReservationEntity;
 import tks.gv.reservations.Reservation;
 import tks.gv.users.Client;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class ReservationMapper {
     public static ReservationEntity toMongoReservation(Reservation reservation) {
-        return new ReservationEntity(reservation.getId().toString(), reservation.getClient().getId().toString(),
+        return new ReservationEntity(Objects.requireNonNullElse(reservation.getId(),"").toString(), reservation.getClient().getId().toString(),
                 reservation.getCourt().getId().toString(), reservation.getBeginTime(), reservation.getEndTime(),
                 reservation.getReservationCost());
     }
 
     public static Reservation fromMongoReservation(ReservationEntity reservationMapper) {
+        if (reservationMapper == null) return null;
         Reservation reservation = new Reservation(UUID.fromString(reservationMapper.getId()),
                 new Client(UUID.fromString(reservationMapper.getClientId()),"","","","",""),
                 new Court(UUID.fromString(reservationMapper.getCourtId()),0,0,0),

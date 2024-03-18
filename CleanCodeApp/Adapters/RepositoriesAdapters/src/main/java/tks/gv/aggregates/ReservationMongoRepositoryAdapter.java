@@ -31,9 +31,10 @@ public class ReservationMongoRepositoryAdapter implements AddReservationPort,
     private final GetUserByIdPort getUserByIdPort;
 
     private Reservation alaReservationBuidler(Reservation reservation){
+        if (reservation == null) return null;
         Reservation retReservation = new Reservation(reservation.getId(),
-                (Client)getUserByIdPort.getUserById(reservation.getId()),
-                getCourtByIdPort.getCourtById(reservation.getId()),
+                (Client)getUserByIdPort.getUserById(reservation.getClient().getId()),
+                getCourtByIdPort.getCourtById(reservation.getCourt().getId()),
                 reservation.getBeginTime());
         return retReservation;
     }
@@ -53,7 +54,7 @@ public class ReservationMongoRepositoryAdapter implements AddReservationPort,
 
     @Override
     public void deleteReservation(UUID uuid) {
-        deleteReservation(uuid);
+        reservationMongoRepository.delete(uuid);
     }
 
     @Override
@@ -98,14 +99,14 @@ public class ReservationMongoRepositoryAdapter implements AddReservationPort,
     @Override
     public Reservation getCourtCurrentReservation(UUID courtId) {
         var list = reservationMongoRepository.read(
-                        Filters.and(Filters.ne("endtime", null), Filters.eq("courtid", courtId.toString())));
+                        Filters.and(Filters.eq("endtime", null), Filters.eq("courtid", courtId.toString())));
         return list.isEmpty() ? null : alaReservationBuidler(ReservationMapper.fromMongoReservation(list.get(0)));
     }
 
     @Override
     public List<Reservation> getCourtEndedReservation(UUID courtId) {
         return reservationMongoRepository.read(
-                        Filters.and(Filters.eq("endtime", null), Filters.eq("clientid", courtId.toString())))
+                        Filters.and(Filters.ne("endtime", null), Filters.eq("courtid", courtId.toString())))
                 .stream()
                 .map(ReservationMapper::fromMongoReservation)
                 .map(this::alaReservationBuidler).toList();
