@@ -65,6 +65,8 @@ public class ReservationService implements AddReservationUseCase, CheckClientRes
         this.modifyCourtUseCase = modifyCourtUseCase;
     }
 
+
+
     @Override
     public Reservation addReservation(String clientId, String courtId, LocalDateTime beginTime) {
         try {
@@ -143,6 +145,8 @@ public class ReservationService implements AddReservationUseCase, CheckClientRes
         returnCourtPort.returnCourt(reservation);
         reservation.getCourt().setRented(false);
     }
+
+
 }
 //
 //import com.mongodb.client.model.Filters;
