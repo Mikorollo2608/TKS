@@ -146,6 +146,7 @@ public class ReservationService implements AddReservationUseCase, CheckClientRes
         Reservation reservation = getCourtCurrentReservation(courtId);
         reservation.endReservation(null);
         reservation.getCourt().setRented(false);
+        returnCourtPort.returnCourt(reservation);
         modifyCourtUseCase.modifyCourt(reservation.getCourt());
     }
 
