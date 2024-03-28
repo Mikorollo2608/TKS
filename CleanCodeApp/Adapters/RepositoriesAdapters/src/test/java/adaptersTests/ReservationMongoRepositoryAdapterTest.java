@@ -70,7 +70,7 @@ public class ReservationMongoRepositoryAdapterTest {
 
         ReservationEntity blankCreated = new ReservationEntity(UUID.randomUUID().toString(),
                 reservationBlank.getClient().getId().toString(), reservationBlank.getCourt().getId().toString(), reservationBlank.getBeginTime(), null, 0);
-        Mockito.when(repository.create(eq(ReservationMapper.toMongoReservation(reservationBlank)))).thenReturn(blankCreated);
+        Mockito.when(repository.create(eq(ReservationMapper.toReservationEntity(reservationBlank)))).thenReturn(blankCreated);
         Reservation ret = adapter.addReservation(reservationBlank);
         assertEquals(reservationBlank.getBeginTime(), ret.getBeginTime());
         assertEquals(reservationBlank.getEndTime(), ret.getEndTime());
@@ -91,7 +91,7 @@ public class ReservationMongoRepositoryAdapterTest {
     void testGetAllArchiveReservations(){
         Mockito.when(getCourtByIdPort.getCourtById(court2.getId())).thenReturn(court2);
         Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
-        Mockito.when(repository.read(eq(Filters.ne("endtime",null)))).thenReturn(List.of(ReservationMapper.toMongoReservation(reservationEnded)));
+        Mockito.when(repository.read(eq(Filters.ne("endtime",null)))).thenReturn(List.of(ReservationMapper.toReservationEntity(reservationEnded)));
         assertEquals(reservationEnded, adapter.getAllArchiveReservations().get(0));
     }
 
@@ -99,7 +99,7 @@ public class ReservationMongoRepositoryAdapterTest {
     void testGetAllCurrentReservations(){
         Mockito.when(getCourtByIdPort.getCourtById(court1.getId())).thenReturn(court1);
         Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
-        Mockito.when(repository.read(eq(Filters.eq("endtime",null)))).thenReturn(List.of(ReservationMapper.toMongoReservation(reservationCurrent)));
+        Mockito.when(repository.read(eq(Filters.eq("endtime",null)))).thenReturn(List.of(ReservationMapper.toReservationEntity(reservationCurrent)));
         assertEquals(reservationCurrent, adapter.getAllCurrentReservations().get(0));
     }
 
@@ -112,8 +112,8 @@ public class ReservationMongoRepositoryAdapterTest {
 
         Mockito.when(repository.read(eq(Filters.eq("clientid",testClient.getId().toString()))))
                 .thenReturn(
-                        List.of(ReservationMapper.toMongoReservation(reservationCurrent),
-                                ReservationMapper.toMongoReservation(reservationEnded)));
+                        List.of(ReservationMapper.toReservationEntity(reservationCurrent),
+                                ReservationMapper.toReservationEntity(reservationEnded)));
         List<Reservation> ret = adapter.getAllClientReservations(testClient.getId());
         assertEquals(reservationCurrent, ret.get(0));
         assertEquals(reservationEnded, ret.get(1));
@@ -127,7 +127,7 @@ public class ReservationMongoRepositoryAdapterTest {
 
         Mockito.when(repository.read(eq(Filters.and(Filters.eq("endtime", null), Filters.eq("clientid", testClient.getId().toString())))))
                 .thenReturn(
-                        List.of(ReservationMapper.toMongoReservation(reservationCurrent)));
+                        List.of(ReservationMapper.toReservationEntity(reservationCurrent)));
         List<Reservation> ret = adapter.getClientCurrentReservations(testClient.getId());
         assertEquals(reservationCurrent, ret.get(0));
     }
@@ -140,7 +140,7 @@ public class ReservationMongoRepositoryAdapterTest {
 
         Mockito.when(repository.read(eq(Filters.and(Filters.ne("endtime", null), Filters.eq("clientid", testClient.getId().toString())))))
                 .thenReturn(
-                        List.of(ReservationMapper.toMongoReservation(reservationEnded)));
+                        List.of(ReservationMapper.toReservationEntity(reservationEnded)));
         List<Reservation> ret = adapter.getClientEndedReservation(testClient.getId());
         assertEquals(reservationEnded, ret.get(0));
     }
@@ -153,7 +153,7 @@ public class ReservationMongoRepositoryAdapterTest {
 
         Mockito.when(repository.read(eq(Filters.and(Filters.eq("endtime", null), Filters.eq("courtid", court1.getId().toString())))))
                 .thenReturn(
-                        List.of(ReservationMapper.toMongoReservation(reservationCurrent)));
+                        List.of(ReservationMapper.toReservationEntity(reservationCurrent)));
         Reservation ret = adapter.getCourtCurrentReservation(court1.getId());
         assertEquals(reservationCurrent, ret);
     }
@@ -166,7 +166,7 @@ public class ReservationMongoRepositoryAdapterTest {
 
         Mockito.when(repository.read(eq(Filters.and(Filters.ne("endtime", null), Filters.eq("courtid", court2.getId().toString())))))
                 .thenReturn(
-                        List.of(ReservationMapper.toMongoReservation(reservationEnded)));
+                        List.of(ReservationMapper.toReservationEntity(reservationEnded)));
         List<Reservation> ret = adapter.getCourtEndedReservation(court2.getId());
         assertEquals(reservationEnded, ret.get(0));
     }
@@ -178,15 +178,15 @@ public class ReservationMongoRepositoryAdapterTest {
         Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
 
         Mockito.when(repository.readByUUID(eq(reservationCurrent.getId())))
-                .thenReturn(ReservationMapper.toMongoReservation(reservationCurrent));
+                .thenReturn(ReservationMapper.toReservationEntity(reservationCurrent));
         assertEquals(reservationCurrent, adapter.getReservationById(reservationCurrent.getId()));
     }
 
     @Test
     void testReturnCourt(){
-        Mockito.when(repository.updateByReplace(reservationEnded.getId(), ReservationMapper.toMongoReservation(reservationEnded)))
+        Mockito.when(repository.updateByReplace(reservationEnded.getId(), ReservationMapper.toReservationEntity(reservationEnded)))
                 .thenReturn(true);
         adapter.returnCourt(reservationEnded);
-        Mockito.verify(repository, Mockito.times(1)).updateByReplace(reservationEnded.getId(), ReservationMapper.toMongoReservation(reservationEnded));
+        Mockito.verify(repository, Mockito.times(1)).updateByReplace(reservationEnded.getId(), ReservationMapper.toReservationEntity(reservationEnded));
     }
 }

@@ -48,7 +48,7 @@ public class ReservationMongoRepositoryAdapter implements AddReservationPort,
 
     @Override
     public Reservation addReservation(Reservation reservation) {
-        return alaReservationBuidler(ReservationMapper.fromMongoReservation(reservationMongoRepository.create(ReservationMapper.toMongoReservation(reservation))));
+        return alaReservationBuidler(ReservationMapper.fromReservationEntity(reservationMongoRepository.create(ReservationMapper.toReservationEntity(reservation))));
     }
 
     @Override
@@ -59,21 +59,21 @@ public class ReservationMongoRepositoryAdapter implements AddReservationPort,
     @Override
     public List<Reservation> getAllArchiveReservations() {
         return reservationMongoRepository.read(Filters.ne("endtime",null)).stream()
-                .map(ReservationMapper::fromMongoReservation)
+                .map(ReservationMapper::fromReservationEntity)
                 .map(this::alaReservationBuidler).toList();
     }
 
     @Override
     public List<Reservation> getAllClientReservations(UUID clientId) {
         return reservationMongoRepository.read(Filters.eq("clientid",clientId.toString())).stream()
-                .map(ReservationMapper::fromMongoReservation)
+                .map(ReservationMapper::fromReservationEntity)
                 .map(this::alaReservationBuidler).toList();
     }
 
     @Override
     public List<Reservation> getAllCurrentReservations() {
         return reservationMongoRepository.read(Filters.eq("endtime",null)).stream()
-                .map(ReservationMapper::fromMongoReservation)
+                .map(ReservationMapper::fromReservationEntity)
                 .map(this::alaReservationBuidler).toList();
     }
 
@@ -82,7 +82,7 @@ public class ReservationMongoRepositoryAdapter implements AddReservationPort,
         return reservationMongoRepository.read(
                 Filters.and(Filters.eq("endtime", null), Filters.eq("clientid", clientId.toString())))
                 .stream()
-                .map(ReservationMapper::fromMongoReservation)
+                .map(ReservationMapper::fromReservationEntity)
                 .map(this::alaReservationBuidler).toList();
     }
 
@@ -91,7 +91,7 @@ public class ReservationMongoRepositoryAdapter implements AddReservationPort,
         return reservationMongoRepository.read(
                         Filters.and(Filters.ne("endtime", null), Filters.eq("clientid", clientId.toString())))
                 .stream()
-                .map(ReservationMapper::fromMongoReservation)
+                .map(ReservationMapper::fromReservationEntity)
                 .map(this::alaReservationBuidler).toList();
     }
 
@@ -99,7 +99,7 @@ public class ReservationMongoRepositoryAdapter implements AddReservationPort,
     public Reservation getCourtCurrentReservation(UUID courtId) {
         var list = reservationMongoRepository.read(
                         Filters.and(Filters.eq("endtime", null), Filters.eq("courtid", courtId.toString())));
-        return list.isEmpty() ? null : alaReservationBuidler(ReservationMapper.fromMongoReservation(list.get(0)));
+        return list.isEmpty() ? null : alaReservationBuidler(ReservationMapper.fromReservationEntity(list.get(0)));
     }
 
     @Override
@@ -107,17 +107,17 @@ public class ReservationMongoRepositoryAdapter implements AddReservationPort,
         return reservationMongoRepository.read(
                         Filters.and(Filters.ne("endtime", null), Filters.eq("courtid", courtId.toString())))
                 .stream()
-                .map(ReservationMapper::fromMongoReservation)
+                .map(ReservationMapper::fromReservationEntity)
                 .map(this::alaReservationBuidler).toList();
     }
 
     @Override
     public Reservation getReservationById(UUID uuid) {
-        return alaReservationBuidler(ReservationMapper.fromMongoReservation(reservationMongoRepository.readByUUID(uuid)));
+        return alaReservationBuidler(ReservationMapper.fromReservationEntity(reservationMongoRepository.readByUUID(uuid)));
     }
 
     @Override
     public void returnCourt(Reservation reservation) {
-        reservationMongoRepository.updateByReplace(reservation.getId(), ReservationMapper.toMongoReservation(reservation));
+        reservationMongoRepository.updateByReplace(reservation.getId(), ReservationMapper.toReservationEntity(reservation));
     }
 }

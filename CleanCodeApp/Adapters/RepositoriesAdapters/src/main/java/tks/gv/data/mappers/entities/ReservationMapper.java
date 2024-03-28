@@ -9,13 +9,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class ReservationMapper {
-    public static ReservationEntity toMongoReservation(Reservation reservation) {
+    public static ReservationEntity toReservationEntity(Reservation reservation) {
         return new ReservationEntity(Objects.requireNonNullElse(reservation.getId(), "").toString(), reservation.getClient().getId().toString(),
                 reservation.getCourt().getId().toString(), reservation.getBeginTime(), reservation.getEndTime(),
                 reservation.getReservationCost());
     }
 
-    public static Reservation fromMongoReservation(ReservationEntity reservationMapper) {
+    public static Reservation fromReservationEntity(ReservationEntity reservationMapper) {
         if (reservationMapper == null) return null;
         Reservation reservation = new Reservation(UUID.fromString(reservationMapper.getId()),
                 new Client(UUID.fromString(reservationMapper.getClientId()), "", "", "", "", ""),
