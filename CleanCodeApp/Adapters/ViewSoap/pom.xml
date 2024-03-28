@@ -10,7 +10,14 @@
     </parent>
 
     <artifactId>ViewSoap</artifactId>
+    <packaging>jar</packaging>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>tks.gv</groupId>
+            <artifactId>DomainModel</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

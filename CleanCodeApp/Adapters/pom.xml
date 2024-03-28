@@ -19,4 +19,12 @@
         <module>ViewSoap</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>tks.gv</groupId>
+            <artifactId>ApplicationPorts</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 </project>
