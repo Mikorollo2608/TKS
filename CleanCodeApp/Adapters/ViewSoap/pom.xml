@@ -23,18 +23,30 @@
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.0</version>
+            <version>4.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>4.0.0</version>
+            <version>4.0.4</version>
             <scope>runtime</scope>
         </dependency>
+        <!--JAXB generate XSD-->
         <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>jaxb2-maven-plugin</artifactId>
             <version>3.1.0</version>
+        </dependency>
+        <!--Spring WS-->
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-ws-core</artifactId>
+            <version>4.0.10</version>
+        </dependency>
+        <!--WSDL-->
+        <dependency>
+            <groupId>wsdl4j</groupId>
+            <artifactId>wsdl4j</artifactId>
         </dependency>
     </dependencies>
 
@@ -57,14 +69,15 @@
                         <source>src/main/java/tks/gv/data/dto</source>
                     </sources>
                     <outputDirectory>src/main/resources</outputDirectory>
-                    <clearOutputDir>false</clearOutputDir>
-                    <transformSchemas>
-                        <transformSchema>
-                            <uri>/data/dto</uri>
-                            <toPrefix>user</toPrefix>
-                            <toFile>user-gen.xsd</toFile>
-                        </transformSchema>
-                    </transformSchemas>
+                    <!--TODO true or false on production???-->
+                    <clearOutputDir>true</clearOutputDir>
+<!--                    <transformSchemas>-->
+<!--                        <transformSchema>-->
+<!--                            <uri>/data/dto</uri>-->
+<!--                            <toPrefix>user</toPrefix>-->
+<!--                            <toFile>user-gen.xsd</toFile>-->
+<!--                        </transformSchema>-->
+<!--                    </transformSchemas>-->
                 </configuration>
             </plugin>
         </plugins>

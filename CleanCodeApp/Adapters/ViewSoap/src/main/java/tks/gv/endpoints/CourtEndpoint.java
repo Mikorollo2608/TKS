@@ -1,22 +1,32 @@
 package tks.gv.endpoints;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+import tks.gv.data.dto.CourtXmlDTORes;
+import tks.gv.data.mappers.dto.CourtMapperXml;
+import tks.gv.infrastructure.courts.ports.GetCourtByCourtNumberPort;
 
-import tks.gv.data.dto.CourtXmlDTO;
-
-import java.io.File;
-import java.util.UUID;
-
+@Endpoint
 public class CourtEndpoint {
-    public static void main(String[] args) throws JAXBException {
-        CourtXmlDTO court = new CourtXmlDTO(UUID.randomUUID().toString(),
-                100.0, 200, 102, false, false);
+    private static final String NAMESPACE_URI = "http://data.gv.tks/dto";
 
-        JAXBContext context = JAXBContext.newInstance(CourtXmlDTO.class);
-        Marshaller mar = context.createMarshaller();
-        mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        mar.marshal(court, new File("target/court.xml"));
+    private final GetCourtByCourtNumberPort getCourtByCourtNumberPort;
+
+    @Autowired
+    public CourtEndpoint(GetCourtByCourtNumberPort getCourtByCourtNumberPort) {
+        this.getCourtByCourtNumberPort = getCourtByCourtNumberPort;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "court")
+    @ResponsePayload
+    public CourtXmlDTORes getCourtById(@RequestPayload CourtXmlDTORes request) {
+        CourtXmlDTORes response = CourtMapperXml.toXmlCourt(
+                getCourtByCourtNumberPort.getCourtByCourtNumber(request.getCourtNumber())
+        );
+
+        return response;
     }
 }
