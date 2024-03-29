@@ -1,46 +1,70 @@
 package tks.gv.data.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.common.base.Objects;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.experimental.FieldDefaults;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Getter
-@FieldDefaults(makeFinal = true)
-@JsonPropertyOrder({"archive", "area", "baseCost", "courtNumber", "id", "rented"})
+//@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@XmlRootElement(name = "court")
+@XmlType(propOrder = {"archive", "area", "baseCost", "courtNumber", "id", "rented"})
 public class CourtXmlDTO {
 
-    @JsonProperty("id")
     private String id;
-    @JsonProperty("area")
     private double area;
-    @JsonProperty("baseCost")
     private int baseCost;
-    @JsonProperty("courtNumber")
     private int courtNumber;
-    @JsonProperty("archive")
     private boolean archive;
-    @JsonProperty("rented")
     private boolean rented;
 
-    public CourtXmlDTO(@JsonProperty("id") String id,
-                       @JsonProperty("area") double area,
-                       @JsonProperty("baseCost") int baseCost,
-                       @JsonProperty("courtNumber") int courtNumber,
-                       @JsonProperty("archive") boolean archive,
-                       @JsonProperty("rented") boolean rented) {
-        this.id = id;
-        this.area = area;
-        this.baseCost = baseCost;
-        this.courtNumber = courtNumber;
-        this.archive = archive;
-        this.rented = rented;
+    @XmlElement(name = "id")
+    public String getId() {
+        return id;
+    }
+
+    @XmlElement(name = "area")
+    public double getArea() {
+        return area;
+    }
+
+    @XmlElement(name = "baseCost")
+    public int getBaseCost() {
+        return baseCost;
+    }
+
+    @XmlElement(name = "courtNumber")
+    public int getCourtNumber() {
+        return courtNumber;
+    }
+
+    @XmlElement(name = "archive")
+    public boolean isArchive() {
+        return archive;
+    }
+
+    @XmlElement(name = "rented")
+    public boolean isRented() {
+        return rented;
     }
 
     @Override
     public boolean equals(Object o) {
-        ///TODO
-        return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CourtXmlDTO courtXmlDTO = (CourtXmlDTO) o;
+        return Objects.equal(id, courtXmlDTO.id) &&
+                Double.compare(area, courtXmlDTO.area) == 0 &&
+                baseCost == courtXmlDTO.baseCost &&
+                courtNumber == courtXmlDTO.courtNumber &&
+                archive == courtXmlDTO.archive &&
+                rented == courtXmlDTO.rented;
     }
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
+
+
+    <xs:element name="court" type="courtXmlDTO"/>
+
+
+    <xs:complexType name="courtXmlDTO">
+
+
+        <xs:sequence>
+
+
+            <xs:element name="archive" type="xs:boolean"/>
+
+
+            <xs:element name="area" type="xs:double"/>
+
+
+            <xs:element name="baseCost" type="xs:int"/>
+
+
+            <xs:element name="courtNumber" type="xs:int"/>
+
+
+            <xs:element minOccurs="0" name="id" type="xs:string"/>
+
+
+            <xs:element name="rented" type="xs:boolean"/>
+
+
+        </xs:sequence>
+
+
+    </xs:complexType>
+
+
+</xs:schema>
