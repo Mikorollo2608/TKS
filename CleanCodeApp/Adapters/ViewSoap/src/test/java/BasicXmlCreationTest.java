@@ -4,7 +4,7 @@ import jakarta.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import tks.gv.data.dto.CourtXmlDTORes;
+import tks.gv.data.dto.CourtSoap;
 
 
 import java.io.File;
@@ -28,10 +28,10 @@ public class BasicXmlCreationTest {
 
         assertFalse(Files.exists(path));
 
-        CourtXmlDTORes court = new CourtXmlDTORes(UUID.randomUUID().toString(),
+        CourtSoap court = new CourtSoap(UUID.randomUUID().toString(),
                 100.0, 200, 102, false, false);
 
-        JAXBContext context = JAXBContext.newInstance(CourtXmlDTORes.class);
+        JAXBContext context = JAXBContext.newInstance(CourtSoap.class);
         Marshaller mar = context.createMarshaller();
         mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         mar.marshal(court, new File(out));

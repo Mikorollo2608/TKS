@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://data.gv.tks/dto" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://data.gv.tks/dto" version="1.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://data.gv.tks/dto" elementFormDefault="qualified" targetNamespace="http://data.gv.tks/dto" version="1.0">
     
-  <xs:element name="court" type="tns:courtXmlDTORes"/>
+  <xs:element name="court" type="tns:courtSoap"/>
     
-  <xs:complexType name="courtXmlDTORes">
+  <xs:element name="courtSoapRequest" type="tns:courtSoapRequest"/>
+    
+  <xs:element name="courtSoapResponse" type="tns:courtSoapResponse"/>
+    
+  <xs:complexType name="courtSoap">
         
     <xs:sequence>
             
@@ -18,6 +22,26 @@
       <xs:element minOccurs="0" name="id" type="xs:string"/>
             
       <xs:element name="rented" type="xs:boolean"/>
+          
+    </xs:sequence>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="courtSoapRequest">
+        
+    <xs:sequence>
+            
+      <xs:element name="courtNumber" type="xs:int"/>
+          
+    </xs:sequence>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="courtSoapResponse">
+        
+    <xs:sequence>
+            
+      <xs:element ref="tns:court"/>
           
     </xs:sequence>
       

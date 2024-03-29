@@ -1,7 +1,6 @@
 @XmlSchema(
         namespace = SoapConstants.NAMESPACE_URI,
-        elementFormDefault = XmlNsForm.QUALIFIED,
-        attributeFormDefault = XmlNsForm.QUALIFIED
+        elementFormDefault = XmlNsForm.QUALIFIED
 )
 package tks.gv.data.dto;
 
