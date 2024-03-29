@@ -11,6 +11,7 @@ import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
 import org.springframework.xml.xsd.XsdSchema;
+import tks.gv.SoapConstants;
 
 @EnableWs
 @Configuration
@@ -28,13 +29,13 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
         wsdl11Definition.setPortTypeName("CourtsPort");
         wsdl11Definition.setLocationUri("/ws");
-        wsdl11Definition.setTargetNamespace("http://data.gv.tks/dto");
+        wsdl11Definition.setTargetNamespace(SoapConstants.NAMESPACE_URI);
         wsdl11Definition.setSchema(countriesSchema);
         return wsdl11Definition;
     }
 
     @Bean
     public XsdSchema countriesSchema() {
-        return new SimpleXsdSchema(new ClassPathResource("schema1.xsd"));
+        return new SimpleXsdSchema(new ClassPathResource(SoapConstants.XSD_SCHEMA_FILE));
     }
 }

@@ -11,14 +11,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tks.gv.SoapConstants;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement(name = "court")
-@XmlType(propOrder = {"archive", "area", "baseCost", "courtNumber", "id", "rented"})
+@XmlRootElement(name = SoapConstants.COURT_ELEMENT_NAME)
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"archive", "area", "baseCost", "courtNumber", "id", "rented"})
 public class CourtXmlDTORes {
 
     @XmlElement(name = "id")

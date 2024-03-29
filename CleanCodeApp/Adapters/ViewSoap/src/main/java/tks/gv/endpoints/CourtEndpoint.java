@@ -5,13 +5,13 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+import tks.gv.SoapConstants;
 import tks.gv.data.dto.CourtXmlDTORes;
 import tks.gv.data.mappers.dto.CourtMapperXml;
 import tks.gv.infrastructure.courts.ports.GetCourtByCourtNumberPort;
 
 @Endpoint
 public class CourtEndpoint {
-    private static final String NAMESPACE_URI = "http://data.gv.tks/dto";
 
     private final GetCourtByCourtNumberPort getCourtByCourtNumberPort;
 
@@ -20,13 +20,11 @@ public class CourtEndpoint {
         this.getCourtByCourtNumberPort = getCourtByCourtNumberPort;
     }
 
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "court")
+    @PayloadRoot(namespace = SoapConstants.NAMESPACE_URI, localPart = SoapConstants.COURT_ELEMENT_NAME)
     @ResponsePayload
-    public CourtXmlDTORes getCourtById(@RequestPayload CourtXmlDTORes request) {
-        CourtXmlDTORes response = CourtMapperXml.toXmlCourt(
+    public CourtXmlDTORes getCourtByCourtNumber(@RequestPayload CourtXmlDTORes request) {
+        return CourtMapperXml.toXmlCourt(
                 getCourtByCourtNumberPort.getCourtByCourtNumber(request.getCourtNumber())
         );
-
-        return response;
     }
 }
