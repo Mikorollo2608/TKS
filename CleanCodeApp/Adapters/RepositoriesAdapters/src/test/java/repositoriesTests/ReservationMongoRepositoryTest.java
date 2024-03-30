@@ -37,7 +37,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ReservationMongoRepositoryTest {
-    static final DBConfig dbconfig = new DBConfig();
+    static final DBConfig dbconfig = new DBConfig("mongodb://localhost:27017,localhost:27018,localhost:27019/?replicaSet=replica_set_single");
     static MongoClient mongoClient = dbconfig.mongoClient();
     static MongoDatabase mongoDatabase = dbconfig.mongoDatabase(mongoClient);
 

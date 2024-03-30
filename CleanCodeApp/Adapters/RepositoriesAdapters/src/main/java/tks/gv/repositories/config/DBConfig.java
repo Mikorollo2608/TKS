@@ -11,6 +11,8 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,12 +21,7 @@ import java.util.List;
 @Configuration
 public class DBConfig {
 
-    private final ConnectionString connectionString = new ConnectionString(
-            // Local with docker
-            "mongodb://localhost:27017,localhost:27018,localhost:27019/?replicaSet=replica_set_single"
-            // MongoDB Atlas (cloud)
-//            "mongodb+srv://Michal:ZvDI3RNUGeTKjHTU@atlascluster.pweqkng.mongodb.net/"
-    );
+    private final ConnectionString connectionString;
     private final MongoCredential credential = MongoCredential.createCredential("admin", "admin",
             "adminpassword".toCharArray());
 
@@ -32,6 +29,11 @@ public class DBConfig {
             .automatic(true)
             .conventions(List.of(Conventions.ANNOTATION_CONVENTION))
             .build());
+
+    @Autowired
+    public DBConfig(@Value("${mongo.url}") String connectionString) {
+        this.connectionString = new ConnectionString(connectionString);
+    }
 
     @Bean
     public MongoClient mongoClient() {
