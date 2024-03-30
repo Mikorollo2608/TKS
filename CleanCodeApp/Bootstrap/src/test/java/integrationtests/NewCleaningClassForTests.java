@@ -9,9 +9,7 @@ import com.mongodb.client.model.Filters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tks.gv.aggregates.CourtMongoRepositoryAdapter;
 import tks.gv.aggregates.ReservationMongoRepositoryAdapter;
-import tks.gv.aggregates.UserMongoRepositoryAdapter;
 import tks.gv.courts.Court;
 import tks.gv.courtservice.CourtService;
 import tks.gv.data.dto.AdminDTO;
@@ -21,10 +19,10 @@ import tks.gv.data.dto.ResourceAdminDTO;
 import tks.gv.data.mappers.dto.AdminMapper;
 import tks.gv.data.mappers.dto.ClientMapper;
 
+import tks.gv.data.mappers.dto.CourtMapper;
 import tks.gv.data.mappers.dto.ReservationMapper;
 import tks.gv.restapi.data.dto.ReservationDTO;
 
-import tks.gv.data.mappers.dto.CourtMapper;
 import tks.gv.data.mappers.dto.ResourceAdminMapper;
 import tks.gv.reservationservice.ReservationService;
 import tks.gv.users.Admin;

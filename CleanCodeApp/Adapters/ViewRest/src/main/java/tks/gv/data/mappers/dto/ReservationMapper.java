@@ -17,7 +17,7 @@ public class ReservationMapper {
         );
     }
 
-    public static Reservation fromJsonUser(ReservationDTO reservationDTO) {
+    public static Reservation fromJsonReservation(ReservationDTO reservationDTO) {
         Reservation newReservation = new Reservation(reservationDTO.getId() != null ? UUID.fromString(reservationDTO.getId()) : null,
                 ClientMapper.fromUserDTO(reservationDTO.getClient()),
                 CourtMapper.fromJsonCourt(reservationDTO.getCourt()),
