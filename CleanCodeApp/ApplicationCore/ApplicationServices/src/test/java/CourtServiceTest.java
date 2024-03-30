@@ -44,7 +44,7 @@ public class CourtServiceTest {
     CourtService courtService = new CourtService();
 
     @BeforeEach
-    void prepareCourts(){
+    void prepareCourts() {
         court1 = new Court(UUID.fromString("bd67f4f3-bddf-4ad8-b563-38e2c0b8d34e"), 10, 2, 1);
         court2 = new Court(UUID.fromString("8ec379f1-3c16-40d6-abab-c43b47ca4f94"), 20, 4, 2);
         court3 = new Court(UUID.fromString("b52757b9-6605-4d09-83e7-cf714dc5fb5f"), 30, 6, 3);
@@ -55,15 +55,15 @@ public class CourtServiceTest {
     }
 
     @Test
-    void testConstructor(){
-        CourtService cs = new CourtService(addCourtPort,getAllCourtsPort, getCourtByIdPort,
+    void testConstructor() {
+        CourtService cs = new CourtService(addCourtPort, getAllCourtsPort, getCourtByIdPort,
                 getCourtByCourtNumberPort, modifyCourtPort, activateCourtPort,
                 deactivateCourtPort, deleteCourtPort);
         assertNotNull(cs);
     }
 
     @Test
-    void testGetAllCourts(){
+    void testGetAllCourts() {
         Mockito.when(getAllCourtsPort.getAllCourts()).thenReturn(courtList);
 
         List<Court> retList = courtService.getAllCourts();
@@ -75,10 +75,8 @@ public class CourtServiceTest {
 
     @Test
     void testAddCourtNewCourt() {
-        Mockito.doNothing().when(addCourtPort).addCourt(any(Court.class));
-        courtService.addCourt(court1);
-        Mockito.verify(addCourtPort,Mockito.times(1)).addCourt(court1);
-
+        Mockito.when(addCourtPort.addCourt(court1)).thenReturn(court1);
+        assertEquals(court1, courtService.addCourt(court1));
     }
 
     @Test
@@ -111,7 +109,7 @@ public class CourtServiceTest {
     @Test
     public void testGetCourtByCourtNumber() {
         Mockito.when(getCourtByCourtNumberPort.getCourtByCourtNumber(eq(court1.getCourtNumber()))).thenReturn(court1);
-        assertEquals(court1,courtService.getCourtByCourtNumber(court1.getCourtNumber()));
+        assertEquals(court1, courtService.getCourtByCourtNumber(court1.getCourtNumber()));
     }
 
     @Test

@@ -479,7 +479,6 @@ public class ReservationsControllerTests {
         assertTrue(splitedRespStr[0].contains("\"court\":{\""));
         assertTrue(splitedRespStr[0].contains("\"id\":\"%s\"".formatted(court3.getId())));
         assertTrue(splitedRespStr[0].contains("\"id\":\"" + reservation3.getId() + "\""));
-        System.out.println(splitedRespStr[0]);
 //        assertTrue(splitedRespStr[0].contains("\"endTime\":\"2023-11-30T14:20:00\""));
 
 

@@ -41,8 +41,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserMongoRepositoryTest {
     static final DBConfig dbconfig = new DBConfig();
-    static final MongoClient mongoClient = dbconfig.mongoClient();
-    static final MongoDatabase mongoDatabase = dbconfig.mongoDatabase(mongoClient);
+    static MongoClient mongoClient = dbconfig.mongoClient();
+    static MongoDatabase mongoDatabase = dbconfig.mongoDatabase(mongoClient);
 
     static final UserMongoRepository clientRepository = new UserMongoRepository(mongoClient, mongoDatabase);
     ClientEntity client1;
@@ -63,6 +63,9 @@ public class UserMongoRepositoryTest {
 
     @BeforeEach
     void initData() {
+        mongoClient = dbconfig.mongoClient();
+        mongoDatabase = dbconfig.mongoDatabase(mongoClient);
+
         cleanFirstAndLastTimeDB();
         client1 = ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "Adam", "Smith", "12345678901", "12345678901", testClientType));
         client2 = ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "Eva", "Smith", "12345678902", "12345678902", testClientType));
@@ -108,7 +111,7 @@ public class UserMongoRepositoryTest {
         );
 
         assertNotNull(clientRepository.create(
-                new AdminEntity(null, "tobiaszTrab", "Haslo1234!",false)));
+                new AdminEntity(null, "tobiaszTrab", "Haslo1234!", false)));
         assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.getDatabase()
                 .getCollection(clientRepository.getCollectionName())
@@ -144,7 +147,7 @@ public class UserMongoRepositoryTest {
         );
 
         assertNotNull(clientRepository.create(
-                new AdminEntity("", "tobiaszTrab", "Haslo1234!",false)));
+                new AdminEntity("", "tobiaszTrab", "Haslo1234!", false)));
         assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.getDatabase()
                 .getCollection(clientRepository.getCollectionName())
