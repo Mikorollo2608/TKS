@@ -42,8 +42,8 @@ public class CourtService implements DeleteCourtUseCase, ActivateCourtUseCase,
     }
 
     @Override
-    public void addCourt(Court court) {
-        addCourtPort.addCourt(court);
+    public Court addCourt(Court court) {
+        return addCourtPort.addCourt(court);
     }
 
     @Override

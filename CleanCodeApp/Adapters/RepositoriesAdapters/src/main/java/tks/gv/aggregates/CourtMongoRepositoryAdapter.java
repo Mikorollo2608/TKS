@@ -25,8 +25,8 @@ public class CourtMongoRepositoryAdapter implements AddCourtPort, GetAllCourtsPo
     }
 
     @Override
-    public void addCourt(Court court) {
-        repository.create(CourtMapper.toMongoCourt(court));
+    public Court addCourt(Court court) {
+        return CourtMapper.fromMongoCourt(repository.create(CourtMapper.toMongoCourt(court)));
     }
 
     @Override

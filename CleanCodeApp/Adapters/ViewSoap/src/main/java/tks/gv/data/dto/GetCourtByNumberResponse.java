@@ -6,11 +6,11 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tks.gv.SoapConstants;
+import tks.gv.util.SoapConstants;
 
 @Data
 @NoArgsConstructor
-@XmlRootElement(name = SoapConstants.COURT_ELEMENT_RESPONSE)
+@XmlRootElement(name = SoapConstants.GET_COURT_BY_NUMBER_RES)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GetCourtByNumberResponse {
 

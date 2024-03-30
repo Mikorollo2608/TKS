@@ -7,4 +7,4 @@ package tks.gv.data.dto;
 
 import jakarta.xml.bind.annotation.XmlNsForm;
 import jakarta.xml.bind.annotation.XmlSchema;
-import tks.gv.SoapConstants;
+import tks.gv.util.SoapConstants;

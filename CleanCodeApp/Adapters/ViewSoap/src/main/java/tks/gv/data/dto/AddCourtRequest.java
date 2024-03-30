@@ -10,10 +10,14 @@ import tks.gv.util.SoapConstants;
 
 @Data
 @NoArgsConstructor
-@XmlRootElement(name = SoapConstants.GET_COURT_BY_NUM_REQ)
+@XmlRootElement(name = SoapConstants.ADD_COURT_REQ)
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GetCourtByNumberRequest {
+public class AddCourtRequest {
 
+    @XmlElement(name = "area", required = true)
+    private double area;
+    @XmlElement(name = "baseCost", required = true)
+    private int baseCost;
     @XmlElement(name = "courtNumber", required = true)
     private int courtNumber;
 }

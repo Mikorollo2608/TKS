@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://data.gv.tks/dto" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://data.gv.tks/dto" version="1.0">
     
+  <xs:element name="addCourtRequest" type="tns:addCourtRequest"/>
+    
+  <xs:element name="addCourtResponse" type="tns:addCourtResponse"/>
+    
   <xs:element name="court" type="tns:courtSoap"/>
+    
+  <xs:element name="getAllCourtsRequest" type="tns:getAllCourtsRequest"/>
+    
+  <xs:element name="getAllCourtsResponse" type="tns:getAllCourtsResponse"/>
     
   <xs:element name="getCourtByNumberRequest" type="tns:getCourtByNumberRequest"/>
     
   <xs:element name="getCourtByNumberResponse" type="tns:getCourtByNumberResponse"/>
+    
+  <xs:complexType name="addCourtRequest">
+        
+    <xs:sequence>
+            
+      <xs:element name="area" type="xs:double"/>
+            
+      <xs:element name="baseCost" type="xs:int"/>
+            
+      <xs:element name="courtNumber" type="xs:int"/>
+          
+    </xs:sequence>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="addCourtResponse">
+        
+    <xs:sequence>
+            
+      <xs:element name="created" type="xs:boolean"/>
+            
+      <xs:element minOccurs="0" ref="tns:court"/>
+          
+    </xs:sequence>
+      
+  </xs:complexType>
     
   <xs:complexType name="courtSoap">
         
@@ -22,6 +56,22 @@
       <xs:element minOccurs="0" name="id" type="xs:string"/>
             
       <xs:element name="rented" type="xs:boolean"/>
+          
+    </xs:sequence>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="getAllCourtsRequest">
+        
+    <xs:sequence/>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="getAllCourtsResponse">
+        
+    <xs:sequence>
+            
+      <xs:element maxOccurs="unbounded" name="courts" type="tns:courtSoap"/>
           
     </xs:sequence>
       

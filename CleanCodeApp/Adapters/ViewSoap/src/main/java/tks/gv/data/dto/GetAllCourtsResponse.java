@@ -8,12 +8,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import tks.gv.util.SoapConstants;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
-@XmlRootElement(name = SoapConstants.GET_COURT_BY_NUM_REQ)
+@XmlRootElement(name = SoapConstants.GET_ALL_COURTS_RES)
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GetCourtByNumberRequest {
+public class GetAllCourtsResponse {
 
-    @XmlElement(name = "courtNumber", required = true)
-    private int courtNumber;
+    @XmlElement(name = "courts", required = true)
+    private List<CourtSoap> courtsSoap;
 }

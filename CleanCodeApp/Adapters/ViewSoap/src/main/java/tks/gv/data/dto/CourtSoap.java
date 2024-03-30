@@ -9,7 +9,7 @@ import jakarta.xml.bind.annotation.XmlType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tks.gv.SoapConstants;
+import tks.gv.util.SoapConstants;
 
 @Data
 @NoArgsConstructor
