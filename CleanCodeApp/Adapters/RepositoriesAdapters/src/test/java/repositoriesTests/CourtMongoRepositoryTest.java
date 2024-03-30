@@ -4,6 +4,8 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.utility.DockerImageName;
 import tks.gv.data.entities.ClientEntity;
 import tks.gv.data.entities.CourtEntity;
 import tks.gv.data.entities.ReservationEntity;
@@ -33,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CourtMongoRepositoryTest {
     static final DBConfig dbconfig = new DBConfig("mongodb://localhost:27017,localhost:27018,localhost:27019/?replicaSet=replica_set_single");
+
     static MongoClient mongoClient = dbconfig.mongoClient();
     static MongoDatabase mongoDatabase = dbconfig.mongoDatabase(mongoClient);
     static final CourtMongoRepository courtRepository = new CourtMongoRepository(mongoClient, mongoDatabase);
