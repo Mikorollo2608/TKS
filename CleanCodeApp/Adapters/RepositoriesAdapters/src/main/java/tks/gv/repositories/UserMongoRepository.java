@@ -2,7 +2,9 @@ package tks.gv.repositories;
 
 import com.mongodb.MongoWriteException;
 
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ValidationOptions;
@@ -12,6 +14,7 @@ import com.mongodb.client.result.UpdateResult;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import org.bson.Document;
@@ -44,7 +47,9 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
 
     static final String COLLECTION_NAME = "users";
 
-    public UserMongoRepository() {
+    @Autowired
+    public UserMongoRepository(MongoClient mongoClient, MongoDatabase mongoDatabase) {
+        super(mongoClient, mongoDatabase);
         boolean collectionExists = getDatabase().listCollectionNames().into(new ArrayList<>()).contains(COLLECTION_NAME);
         if (!collectionExists) {
             ValidationOptions validationOptions = new ValidationOptions().validator(

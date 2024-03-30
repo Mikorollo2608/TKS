@@ -3,7 +3,9 @@ package tks.gv.repositories;
 import com.mongodb.MongoCommandException;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.ClientSession;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
@@ -31,7 +33,9 @@ public class ReservationMongoRepository extends AbstractMongoRepository<Reservat
 
     static final String COLLECTION_NAME = "reservations";
 
-    public ReservationMongoRepository() {
+    public ReservationMongoRepository(MongoClient mongoClient, MongoDatabase mongoDatabase) {
+        super(mongoClient, mongoDatabase);
+
         boolean collectionExists = getDatabase().listCollectionNames().into(new ArrayList<>()).contains(COLLECTION_NAME);
         if (!collectionExists) {
             ValidationOptions validationOptions = new ValidationOptions().validator(

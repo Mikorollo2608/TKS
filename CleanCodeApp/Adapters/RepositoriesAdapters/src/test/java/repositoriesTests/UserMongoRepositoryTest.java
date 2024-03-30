@@ -1,6 +1,8 @@
 package repositoriesTests;
 
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
 import tks.gv.data.entities.AdminEntity;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tks.gv.repositories.config.DBConfig;
 import tks.gv.users.Admin;
 import tks.gv.users.Client;
 
@@ -37,7 +40,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserMongoRepositoryTest {
-    static final UserMongoRepository clientRepository = new UserMongoRepository();
+    static final DBConfig dbconfig = new DBConfig();
+    static final MongoClient mongoClient = dbconfig.mongoClient();
+    static final MongoDatabase mongoDatabase = dbconfig.mongoDatabase(mongoClient);
+
+    static final UserMongoRepository clientRepository = new UserMongoRepository(mongoClient, mongoDatabase);
     ClientEntity client1;
     ClientEntity client2;
     ClientEntity client3;
@@ -64,7 +71,7 @@ public class UserMongoRepositoryTest {
 
     @Test
     void testCreatingRepository() {
-        UserMongoRepository clientRepository = new UserMongoRepository();
+        UserMongoRepository clientRepository = new UserMongoRepository(mongoClient, mongoDatabase);
         assertNotNull(clientRepository);
     }
 
@@ -396,7 +403,7 @@ public class UserMongoRepositoryTest {
     @Test
     void testCreatingNewCollection() {
         getTestCollection().drop();
-        assertNotNull(new UserMongoRepository());
+        assertNotNull(new UserMongoRepository(mongoClient, mongoDatabase));
     }
 
 }

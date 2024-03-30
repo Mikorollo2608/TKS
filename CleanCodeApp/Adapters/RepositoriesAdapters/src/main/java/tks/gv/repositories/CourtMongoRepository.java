@@ -2,7 +2,9 @@ package tks.gv.repositories;
 
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.ClientSession;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ValidationOptions;
@@ -33,7 +35,9 @@ public class CourtMongoRepository extends AbstractMongoRepository<CourtEntity> {
 
     static final String COLLECTION_NAME = "courts";
 
-    public CourtMongoRepository() {
+    public CourtMongoRepository(MongoClient mongoClient, MongoDatabase mongoDatabase) {
+        super(mongoClient, mongoDatabase);
+
         boolean collectionExists = getDatabase().listCollectionNames().into(new ArrayList<>()).contains(COLLECTION_NAME);
         if (!collectionExists) {
             ValidationOptions validationOptions = new ValidationOptions().validator(

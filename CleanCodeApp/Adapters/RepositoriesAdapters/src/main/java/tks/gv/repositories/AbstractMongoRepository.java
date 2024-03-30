@@ -19,6 +19,8 @@ import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.conversions.Bson;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import tks.gv.data.entities.Entity;
 
 import tks.gv.exceptions.MyMongoException;
@@ -28,35 +30,12 @@ import java.util.UUID;
 
 public abstract class AbstractMongoRepository<T> implements AutoCloseable {
 
-    private final ConnectionString connectionString = new ConnectionString(
-            // Local with docker
-            "mongodb://localhost:27017,localhost:27018,localhost:27019/?replicaSet=replica_set_single"
-            // MongoDB Atlas (cloud)
-//            "mongodb+srv://Michal:ZvDI3RNUGeTKjHTU@atlascluster.pweqkng.mongodb.net/"
-    );
-    private final MongoCredential credential = MongoCredential.createCredential("admin", "admin",
-            "adminpassword".toCharArray());
-
-    private final CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder()
-            .automatic(true)
-            .conventions(List.of(Conventions.ANNOTATION_CONVENTION))
-            .build());
     private final MongoClient mongoClient;
     private final MongoDatabase mongoDatabase;
 
-    public AbstractMongoRepository() {
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .credential(credential)
-                .applyConnectionString(connectionString)
-                .uuidRepresentation(UuidRepresentation.STANDARD)
-                .codecRegistry(CodecRegistries.fromRegistries(
-                        MongoClientSettings.getDefaultCodecRegistry(),
-                        pojoCodecRegistry
-                ))
-                .build();
-
-        mongoClient = MongoClients.create(settings);
-        mongoDatabase = mongoClient.getDatabase("reserveACourt");
+    public AbstractMongoRepository(MongoClient mongoClient, MongoDatabase mongoDatabase) {
+        this.mongoClient = mongoClient;
+        this.mongoDatabase = mongoDatabase;
     }
 
     protected MongoClient getMongoClient() {
