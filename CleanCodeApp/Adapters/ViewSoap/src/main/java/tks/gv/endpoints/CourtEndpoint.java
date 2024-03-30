@@ -6,8 +6,8 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import tks.gv.SoapConstants;
-import tks.gv.data.dto.CourtSoapRequest;
-import tks.gv.data.dto.CourtSoapResponse;
+import tks.gv.data.dto.GetCourtByNumberRequest;
+import tks.gv.data.dto.GetCourtByNumberResponse;
 import tks.gv.data.mappers.dto.CourtMapperXml;
 import tks.gv.infrastructure.courts.ports.GetCourtByCourtNumberPort;
 
@@ -23,8 +23,8 @@ public class CourtEndpoint {
 
     @PayloadRoot(namespace = SoapConstants.NAMESPACE_URI, localPart = SoapConstants.COURT_ELEMENT_REQUEST)
     @ResponsePayload
-    public CourtSoapResponse getCourtByCourtNumber(@RequestPayload CourtSoapRequest request) {
-        CourtSoapResponse response = new CourtSoapResponse();
+    public GetCourtByNumberResponse getCourtByCourtNumber(@RequestPayload GetCourtByNumberRequest request) {
+        GetCourtByNumberResponse response = new GetCourtByNumberResponse();
         response.setCourtSoap(
                 CourtMapperXml.toXmlCourt(getCourtByCourtNumberPort.getCourtByCourtNumber(request.getCourtNumber()))
         );

@@ -3,9 +3,9 @@
     
   <xs:element name="court" type="tns:courtSoap"/>
     
-  <xs:element name="courtSoapRequest" type="tns:courtSoapRequest"/>
+  <xs:element name="getCourtByNumberRequest" type="tns:getCourtByNumberRequest"/>
     
-  <xs:element name="courtSoapResponse" type="tns:courtSoapResponse"/>
+  <xs:element name="getCourtByNumberResponse" type="tns:getCourtByNumberResponse"/>
     
   <xs:complexType name="courtSoap">
         
@@ -27,7 +27,7 @@
       
   </xs:complexType>
     
-  <xs:complexType name="courtSoapRequest">
+  <xs:complexType name="getCourtByNumberRequest">
         
     <xs:sequence>
             
@@ -37,7 +37,7 @@
       
   </xs:complexType>
     
-  <xs:complexType name="courtSoapResponse">
+  <xs:complexType name="getCourtByNumberResponse">
         
     <xs:sequence>
             
