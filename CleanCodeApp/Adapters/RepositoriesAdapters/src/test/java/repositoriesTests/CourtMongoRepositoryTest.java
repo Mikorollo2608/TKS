@@ -4,7 +4,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 import tks.gv.data.entities.ClientEntity;
 import tks.gv.data.entities.CourtEntity;
@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,11 +35,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CourtMongoRepositoryTest {
-    static final DBConfig dbconfig = new DBConfig("mongodb://localhost:27017,localhost:27018,localhost:27019/?replicaSet=replica_set_single");
+    static DBConfig dbconfig;
 
-    static MongoClient mongoClient = dbconfig.mongoClient();
-    static MongoDatabase mongoDatabase = dbconfig.mongoDatabase(mongoClient);
-    static final CourtMongoRepository courtRepository = new CourtMongoRepository(mongoClient, mongoDatabase);
+    static MongoClient mongoClient;
+    static MongoDatabase mongoDatabase;
+    static CourtMongoRepository courtRepository;
 
     CourtEntity court1;
     CourtEntity court2;
@@ -50,6 +51,36 @@ public class CourtMongoRepositoryTest {
     }
 
     @BeforeAll
+    static void init() {
+        List<String> list = new ArrayList<>(
+                List.of(
+                        "MONGO_INITDB_ROOT_USERNAME=admin",
+                        "MONGO_INITDB_ROOT_PASSWORD=adminpassword",
+                        "MONGO_INITDB_DATABASE=admin"
+                )
+        );
+        GenericContainer<?> mongoDBContainer = new GenericContainer<>(DockerImageName.parse("mongo:7.0.2"));
+
+        mongoDBContainer.withCreateContainerCmdModifier(createContainerCmd -> {
+            createContainerCmd.withName("mongodb1");
+            createContainerCmd.withHostName("mongodb1");
+        });
+        mongoDBContainer.addExposedPort(27017);
+        mongoDBContainer.setEnv(list);
+
+        mongoDBContainer.start();
+
+        String connectionString = "mongodb://%s:%s/?retryWrites=false".formatted(mongoDBContainer.getHost(), mongoDBContainer.getFirstMappedPort());
+
+        dbconfig = new DBConfig(connectionString, "admin", "adminpassword", "admin");
+        mongoClient = dbconfig.mongoClient();
+        mongoDatabase = dbconfig.mongoDatabase(mongoClient);
+
+        courtRepository = new CourtMongoRepository(mongoClient, mongoDatabase);
+
+        cleanFirstAndLastTimeDB();
+    }
+
     @AfterAll
     static void cleanFirstAndLastTimeDB() {
         courtRepository.getDatabase().getCollection("users").deleteMany(Filters.empty());

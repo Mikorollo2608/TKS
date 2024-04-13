@@ -22,7 +22,7 @@ import java.util.List;
 public class DBConfig {
 
     private final ConnectionString connectionString;
-    private final MongoCredential credential = MongoCredential.createCredential("admin", "admin",
+    private MongoCredential credential = MongoCredential.createCredential("admin", "admin",
             "adminpassword".toCharArray());
 
     private final CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder()
@@ -33,6 +33,11 @@ public class DBConfig {
     @Autowired
     public DBConfig(@Value("${mongo.url}") String connectionString) {
         this.connectionString = new ConnectionString(connectionString);
+    }
+
+    public DBConfig(String connectionString, String username, String password, String database) {
+        this.connectionString = new ConnectionString(connectionString);
+        this.credential = MongoCredential.createCredential(username, database, password.toCharArray());
     }
 
     @Bean
