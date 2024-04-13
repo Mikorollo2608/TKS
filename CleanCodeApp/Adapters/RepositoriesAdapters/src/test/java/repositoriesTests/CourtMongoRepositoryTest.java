@@ -25,7 +25,9 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,25 +54,25 @@ public class CourtMongoRepositoryTest {
 
     @BeforeAll
     static void init() {
-        List<String> list = new ArrayList<>(
-                List.of(
-                        "MONGO_INITDB_ROOT_USERNAME=admin",
-                        "MONGO_INITDB_ROOT_PASSWORD=adminpassword",
-                        "MONGO_INITDB_DATABASE=admin"
+        Map<String, String> map = new HashMap<>(
+                Map.of(
+                        "MONGO_INITDB_ROOT_USERNAME", "admin",
+                        "MONGO_INITDB_ROOT_PASSWORD", "adminpassword",
+                        "MONGO_INITDB_DATABASE", "admin"
                 )
         );
-        GenericContainer<?> mongoDBContainer = new GenericContainer<>(DockerImageName.parse("mongo:7.0.2"));
 
-        mongoDBContainer.withCreateContainerCmdModifier(createContainerCmd -> {
-            createContainerCmd.withName("mongodb1");
-            createContainerCmd.withHostName("mongodb1");
-        });
-        mongoDBContainer.addExposedPort(27017);
-        mongoDBContainer.setEnv(list);
+        GenericContainer<?> mongoDBContainer = new GenericContainer<>(DockerImageName.parse("mongo:7.0.2"))
+                .withCreateContainerCmdModifier(createContainerCmd -> {
+                    createContainerCmd.withName("mongodbtest1");
+                    createContainerCmd.withHostName("mongodbtest1");
+                })
+                .withExposedPorts(27017)
+                .withEnv(map);
 
         mongoDBContainer.start();
 
-        String connectionString = "mongodb://%s:%s/?retryWrites=false".formatted(mongoDBContainer.getHost(), mongoDBContainer.getFirstMappedPort());
+        String connectionString = "mongodb://%s:%s".formatted(mongoDBContainer.getHost(), mongoDBContainer.getFirstMappedPort());
 
         dbconfig = new DBConfig(connectionString, "admin", "adminpassword", "admin");
         mongoClient = dbconfig.mongoClient();
