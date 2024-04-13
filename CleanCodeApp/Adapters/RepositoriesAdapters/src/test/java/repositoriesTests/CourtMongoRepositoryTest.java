@@ -68,7 +68,8 @@ public class CourtMongoRepositoryTest {
                     createContainerCmd.withHostName("mongodbtest1");
                 })
                 .withExposedPorts(27017)
-                .withEnv(map);
+                .withEnv(map)
+                .withCommand("--replSet rs0");
 
         mongoDBContainer.start();
 
