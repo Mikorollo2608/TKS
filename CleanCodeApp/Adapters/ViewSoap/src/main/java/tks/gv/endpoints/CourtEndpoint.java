@@ -20,7 +20,6 @@ import tks.gv.userinterface.courts.ports.GetCourtByCourtNumberUseCase;
 
 @Endpoint
 public class CourtEndpoint {
-    ///TODO add validation and other methods??
 
     private final GetCourtByCourtNumberUseCase getCourtByCourtNumber;
     private final GetAllCourtsUseCase getAllCourts;

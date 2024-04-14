@@ -43,6 +43,12 @@
             <artifactId>spring-ws-core</artifactId>
             <version>4.0.10</version>
         </dependency>
+        <!--Spring WS test-->
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-ws-test</artifactId>
+            <version>4.0.10</version>
+        </dependency>
         <!--WSDL-->
         <dependency>
             <groupId>wsdl4j</groupId>

@@ -1,4 +1,4 @@
-package tks.gv.config;
+package tks.gv.webservice.config;
 
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
