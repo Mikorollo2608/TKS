@@ -1,49 +1,44 @@
 package repositoriesTests;
 
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tks.gv.courts.Court;
 import tks.gv.data.entities.ClientEntity;
 import tks.gv.data.entities.ReservationEntity;
 import tks.gv.data.mappers.entities.ClientMapper;
 import tks.gv.data.mappers.entities.CourtMapper;
 import tks.gv.data.mappers.entities.ReservationMapper;
-import tks.gv.exceptions.MultiReservationException;
-import tks.gv.repositories.CourtMongoRepository;
-import tks.gv.repositories.ReservationMongoRepository;
-import tks.gv.repositories.config.DBConfig;
-import tks.gv.reservations.Reservation;
-import tks.gv.users.Client;
-
-import tks.gv.exceptions.UserException;
 import tks.gv.exceptions.CourtException;
+import tks.gv.exceptions.MultiReservationException;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.ReservationException;
+import tks.gv.exceptions.UserException;
+import tks.gv.repositories.CourtMongoRepository;
+import tks.gv.repositories.ReservationMongoRepository;
 import tks.gv.repositories.UserMongoRepository;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import tks.gv.reservations.Reservation;
+import tks.gv.users.Client;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ReservationMongoRepositoryTest {
-    static final DBConfig dbconfig = new DBConfig("mongodb://localhost:27017,localhost:27018,localhost:27019/?replicaSet=replica_set_single");
-    static MongoClient mongoClient = dbconfig.mongoClient();
-    static MongoDatabase mongoDatabase = dbconfig.mongoDatabase(mongoClient);
+public class ReservationMongoRepositoryTest extends SetupTestContainer {
 
-    static final ReservationMongoRepository reservationRepository = new ReservationMongoRepository(mongoClient, mongoDatabase);
-    static final CourtMongoRepository courtRepository = new CourtMongoRepository(mongoClient, mongoDatabase);
-    static final UserMongoRepository clientRepository = new UserMongoRepository(mongoClient, mongoDatabase);
+    static ReservationMongoRepository reservationRepository;
+    static CourtMongoRepository courtRepository;
+    static UserMongoRepository clientRepository;
     String testClientType;
 
     Client testClient1;
@@ -61,20 +56,20 @@ public class ReservationMongoRepositoryTest {
                 .getCollection(reservationRepository.getCollectionName(), ReservationEntity.class);
     }
 
-    @BeforeAll
     @AfterAll
-    static void cleanDB() {
-       mongoClient = dbconfig.mongoClient();
-       mongoDatabase = dbconfig.mongoDatabase(mongoClient);
-
+    static void cleanFirstAndLastTimeDB() {
         reservationRepository.getDatabase().getCollection("users").deleteMany(Filters.empty());
         reservationRepository.getDatabase().getCollection("courts").deleteMany(Filters.empty());
         reservationRepository.getDatabase().getCollection("reservations").deleteMany(Filters.empty());
     }
 
     @BeforeEach
-    void setUp() {
-        cleanDB();
+    void initData() {
+        reservationRepository = new ReservationMongoRepository(mongoClient, mongoDatabase);
+        courtRepository = new CourtMongoRepository(mongoClient, mongoDatabase);
+        clientRepository = new UserMongoRepository(mongoClient, mongoDatabase);
+
+        cleanFirstAndLastTimeDB();
         testClientType = "normal";
 
         testClient1 = ClientMapper.fromUserEntity((ClientEntity) clientRepository.create(ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "John", "Smith", "12345678901", "12345678901", testClientType))));

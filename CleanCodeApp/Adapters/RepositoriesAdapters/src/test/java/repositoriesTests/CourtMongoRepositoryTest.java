@@ -1,49 +1,27 @@
 package repositoriesTests;
 
-import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.Ports;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.utility.DockerImageName;
-import tks.gv.data.entities.ClientEntity;
+import org.bson.Document;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tks.gv.data.entities.CourtEntity;
-import tks.gv.data.entities.ReservationEntity;
 import tks.gv.exceptions.CourtNumberException;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.repositories.CourtMongoRepository;
-import tks.gv.repositories.ReservationMongoRepository;
-import tks.gv.repositories.UserMongoRepository;
-import tks.gv.repositories.config.DBConfig;
 
-import org.bson.Document;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CourtMongoRepositoryTest {
-    static DBConfig dbconfig;
+public class CourtMongoRepositoryTest extends SetupTestContainer {
 
-    static MongoClient mongoClient;
-    static MongoDatabase mongoDatabase;
     static CourtMongoRepository courtRepository;
 
     CourtEntity court1;
@@ -55,38 +33,6 @@ public class CourtMongoRepositoryTest {
                 .getCollection(courtRepository.getCollectionName(), CourtEntity.class);
     }
 
-    static final String testDBName = "testmongodb1";
-
-    @BeforeAll
-    static void init() {
-        Map<String, String> map = new HashMap<>(
-                Map.of(
-                        "MONGO_INITDB_ROOT_USERNAME", "admin",
-                        "MONGO_INITDB_ROOT_PASSWORD", "adminpassword"
-                )
-        );
-        GenericContainer<?> mongoDBContainer = new GenericContainer<>(DockerImageName.parse("mongo:7.0.2"))
-                .withCreateContainerCmdModifier(createContainerCmd -> {
-                    createContainerCmd.withName(testDBName);
-                    createContainerCmd.withHostName(testDBName);
-                    createContainerCmd.withPortBindings(new PortBinding(Ports.Binding.bindPort(60000), new ExposedPort(27017)));
-                })
-                .withExposedPorts(27017)
-                .withEnv(map);
-
-        mongoDBContainer.start();
-
-        String connectionString = "mongodb://%s:%s".formatted(mongoDBContainer.getHost(), mongoDBContainer.getFirstMappedPort());
-
-        dbconfig = new DBConfig(connectionString, "admin", "adminpassword", "admin");
-        mongoClient = dbconfig.mongoClient();
-        mongoDatabase = dbconfig.mongoDatabase(mongoClient);
-
-        courtRepository = new CourtMongoRepository(mongoClient, mongoDatabase);
-
-        cleanFirstAndLastTimeDB();
-    }
-
     @AfterAll
     static void cleanFirstAndLastTimeDB() {
         courtRepository.getDatabase().getCollection("users").deleteMany(Filters.empty());
@@ -96,8 +42,7 @@ public class CourtMongoRepositoryTest {
 
     @BeforeEach
     void initData() {
-        mongoClient = dbconfig.mongoClient();
-        mongoDatabase = dbconfig.mongoDatabase(mongoClient);
+        courtRepository = new CourtMongoRepository(mongoClient, mongoDatabase);
 
         cleanFirstAndLastTimeDB();
         court1 = new CourtEntity(UUID.randomUUID().toString(), 100, 200, 1, false, 0);

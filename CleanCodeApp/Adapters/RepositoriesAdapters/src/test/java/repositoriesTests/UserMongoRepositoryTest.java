@@ -1,10 +1,11 @@
 package repositoriesTests;
 
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-
+import org.bson.Document;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tks.gv.data.entities.AdminEntity;
 import tks.gv.data.entities.ClientEntity;
 import tks.gv.data.entities.ResourceAdminEntity;
@@ -16,20 +17,12 @@ import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.UnexpectedUserTypeException;
 import tks.gv.exceptions.UserLoginException;
 import tks.gv.repositories.UserMongoRepository;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import tks.gv.repositories.config.DBConfig;
 import tks.gv.users.Admin;
 import tks.gv.users.Client;
+import tks.gv.users.ResourceAdmin;
 
 import java.util.ArrayList;
 import java.util.UUID;
-
-import org.bson.Document;
-import tks.gv.users.ResourceAdmin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -39,12 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UserMongoRepositoryTest {
-    static final DBConfig dbconfig = new DBConfig("mongodb://localhost:27017,localhost:27018,localhost:27019/?replicaSet=replica_set_single");
-    static MongoClient mongoClient = dbconfig.mongoClient();
-    static MongoDatabase mongoDatabase = dbconfig.mongoDatabase(mongoClient);
-
-    static final UserMongoRepository clientRepository = new UserMongoRepository(mongoClient, mongoDatabase);
+public class UserMongoRepositoryTest extends SetupTestContainer {
+    static UserMongoRepository clientRepository;
     ClientEntity client1;
     ClientEntity client2;
     ClientEntity client3;
@@ -55,7 +44,6 @@ public class UserMongoRepositoryTest {
                 .getCollection(clientRepository.getCollectionName(), ClientEntity.class);
     }
 
-    @BeforeAll
     @AfterAll
     static void cleanFirstAndLastTimeDB() {
         clientRepository.getDatabase().getCollection("users").deleteMany(Filters.empty());
@@ -63,8 +51,7 @@ public class UserMongoRepositoryTest {
 
     @BeforeEach
     void initData() {
-        mongoClient = dbconfig.mongoClient();
-        mongoDatabase = dbconfig.mongoDatabase(mongoClient);
+        clientRepository = new UserMongoRepository(mongoClient, mongoDatabase);
 
         cleanFirstAndLastTimeDB();
         client1 = ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "Adam", "Smith", "12345678901", "12345678901", testClientType));
