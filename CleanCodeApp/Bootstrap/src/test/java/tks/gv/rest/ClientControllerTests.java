@@ -64,9 +64,9 @@ public class ClientControllerTests {
 
     @BeforeAll
     static void init() {
-        client1 = new Client(UUID.fromString("8d83bbda-e38a-4cf2-9136-40e5310c5761"), "Adam", "Smith", "loginek", testPass, "normal");
-        client2 = new Client(UUID.fromString("692251d0-4da6-4099-b999-98df0812d5de"), "Eva", "Braun", "loginek13", testPass, "athlete");
-        client3 = new Client(UUID.fromString("491008d4-c1ac-4af8-97ae-8a91e6f086f6"), "Michal", "Pi", "michas13", testPass, "coach");
+        client1 = new Client(UUID.randomUUID(), "Adam", "Smith", "loginek", testPass, "normal");
+        client2 = new Client(UUID.randomUUID(), "Eva", "Braun", "loginek13", testPass, "athlete");
+        client3 = new Client(UUID.randomUUID(),"Michal", "Pi", "michas13", testPass, "coach");
     }
 
     @Test
