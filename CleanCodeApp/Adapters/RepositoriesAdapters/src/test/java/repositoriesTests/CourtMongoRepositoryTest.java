@@ -6,11 +6,17 @@ import org.bson.Document;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tks.gv.data.entities.ClientEntity;
 import tks.gv.data.entities.CourtEntity;
+import tks.gv.data.entities.ReservationEntity;
 import tks.gv.exceptions.CourtNumberException;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.repositories.CourtMongoRepository;
+import tks.gv.repositories.ReservationMongoRepository;
+import tks.gv.repositories.UserMongoRepository;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -50,6 +56,13 @@ public class CourtMongoRepositoryTest extends SetupTestContainer {
         court3 = new CourtEntity(UUID.randomUUID().toString(), 300, 300, 3, false, 0);
     }
 
+//    @AfterEach
+//    void reconnect() {
+//        if (//if client is closed)
+//        mongoClient = dbconfig.mongoClient();
+//        mongoDatabase = dbconfig.mongoDatabase(mongoClient);
+//        courtRepository = new CourtMongoRepository(mongoClient, mongoDatabase);
+//    }
 
     @Test
     void testCreatingRepository() {
@@ -179,31 +192,30 @@ public class CourtMongoRepositoryTest extends SetupTestContainer {
         assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
     }
 
-    ///FIXME
-//    @Test
-//    void testDeletingDocumentsInDBExistingAllocation() {
-//        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
-//        LocalDateTime testTimeStart = LocalDateTime.of(2023, Month.JUNE, 4, 12, 0);
-//
-//        CourtEntity testCourt1 = courtRepository.create(new CourtEntity(UUID.randomUUID().toString(), 1000, 100, 1, false, 0));
-//        assertNotNull(courtRepository.create(this.court2));
-//        assertNotNull(courtRepository.create(this.court3));
-//
-//        assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
-//
-//        try (ReservationMongoRepository reservationMongoRepository = new ReservationMongoRepository(mongoClient, mongoDatabase);
-//             UserMongoRepository userMongoRepository = new UserMongoRepository(mongoClient, mongoDatabase)) {
-//            ClientEntity testClient1 = (ClientEntity) userMongoRepository.create(new ClientEntity(UUID.randomUUID().toString(), "John",
-//                    "Smith", "999999999999", "999999999999", false, "normal"));
-//            ReservationEntity testReservation1 = new ReservationEntity(UUID.randomUUID().toString(), testClient1.getId(),
-//                    testCourt1.getId(), testTimeStart, null, 0);
-//            reservationMongoRepository.create(testReservation1);
-//            assertThrows(MyMongoException.class, () -> courtRepository.delete(UUID.fromString(testCourt1.getId())));
-//            assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
-//
-//            reservationMongoRepository.delete(UUID.fromString(testReservation1.getId()));
-//        }
-//    }
+    @Test
+    void testDeletingDocumentsInDBExistingAllocation() {
+        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
+        LocalDateTime testTimeStart = LocalDateTime.of(2023, Month.JUNE, 4, 12, 0);
+
+        CourtEntity testCourt1 = courtRepository.create(new CourtEntity(UUID.randomUUID().toString(), 1000, 100, 1, false, 0));
+        assertNotNull(courtRepository.create(this.court2));
+        assertNotNull(courtRepository.create(this.court3));
+
+        assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
+
+        ReservationMongoRepository reservationMongoRepository = new ReservationMongoRepository(mongoClient, mongoDatabase);
+        UserMongoRepository userMongoRepository = new UserMongoRepository(mongoClient, mongoDatabase);
+        ClientEntity testClient1 = (ClientEntity) userMongoRepository.create(new ClientEntity(UUID.randomUUID().toString(), "John",
+                "Smith", "999999999999", "999999999999", false, "normal"));
+        ReservationEntity testReservation1 = new ReservationEntity(UUID.randomUUID().toString(), testClient1.getId(),
+                testCourt1.getId(), testTimeStart, null, 0);
+        reservationMongoRepository.create(testReservation1);
+        assertThrows(MyMongoException.class, () -> courtRepository.delete(UUID.fromString(testCourt1.getId())));
+        assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
+
+        reservationMongoRepository.delete(UUID.fromString(testReservation1.getId()));
+
+    }
 
     @Test
     void testUpdatingRecordsInDBPositive() {
