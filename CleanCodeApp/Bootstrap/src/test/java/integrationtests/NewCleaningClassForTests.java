@@ -43,6 +43,7 @@ import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import tks.gv.userservice.ResourceAdminService;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class NewCleaningClassForTests {
 
     private static final MongoClientSettings settings = MongoClientSettings.builder()
             .credential(MongoCredential.createCredential("admin", "admin", "adminpassword".toCharArray()))
-            .applyConnectionString(new ConnectionString("mongodb://localhost:60000"))
+            .applyConnectionString(new ConnectionString("mongodb://localhost:27017/?replicaSet=rs0"))
             .uuidRepresentation(UuidRepresentation.STANDARD)
             .codecRegistry(CodecRegistries.fromRegistries(
                     MongoClientSettings.getDefaultCodecRegistry(),
@@ -77,16 +78,34 @@ public class NewCleaningClassForTests {
                         "MONGO_INITDB_ROOT_PASSWORD", "adminpassword"
                 )
         );
+
         GenericContainer<?> mongoDBContainer = new GenericContainer<>(DockerImageName.parse("mongo:7.0.2"))
+                .withEnv(map)
                 .withCreateContainerCmdModifier(createContainerCmd -> {
                     createContainerCmd.withName(testDBName);
                     createContainerCmd.withHostName(testDBName);
-                    createContainerCmd.withPortBindings(new PortBinding(Ports.Binding.bindPort(60000), new ExposedPort(27017)));
+                    createContainerCmd.withEnv(List.of("MONGO_INITDB_ROOT_USERNAME=admin", "MONGO_INITDB_ROOT_PASSWORD=adminpassword"));
+                    createContainerCmd.withEntrypoint("/bin/bash", "-c",
+                            "openssl rand -base64 756 > docker-entrypoint-initdb.d/keyFile && chmod 400 docker-entrypoint-initdb.d/keyFile && " +
+                                    "mkdir /etc/mongo && mv /docker-entrypoint-initdb.d/keyFile /etc/mongo &&" +
+                                    "echo \"replication:\n" +
+                                    "    replSetName: rs0\n" +
+                                    "security:\n" +
+                                    "    keyFile: /etc/mongo/keyFile\"" +
+                                    "> /etc/mongod.conf"
+                                    + " && mongod --config /etc/mongod.conf --auth --bind_ip localhost,%s".formatted(testDBName));
+                    createContainerCmd.withPortBindings(new PortBinding(Ports.Binding.bindPort(27017), new ExposedPort(27017)));
                 })
-                .withExposedPorts(27017)
-                .withEnv(map);
-
+                .withExposedPorts(27017);
         mongoDBContainer.start();
+
+        try {
+            mongoDBContainer.execInContainer("/bin/bash", "-c", "mongosh --host localhost:27017 --authenticationDatabase admin --eval 'rs.initiate()'");
+            mongoDBContainer.execInContainer("/bin/bash", "-c", "printf \" use admin\ndb.createUser({user: \\\"admin\\\", pwd: \\\"adminpassword\\\", roles: [{ role: \\\"root\\\", db: \\\"admin\\\" }] })\n\" > /tmp/test.js");
+            mongoDBContainer.execInContainer("/bin/bash", "-c", "mongosh --host localhost:27017 < /tmp/test.js");
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         mongoDatabase = MongoClients.create(settings).getDatabase("reserveACourt");
     }
