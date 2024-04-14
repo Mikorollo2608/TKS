@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tks.gv.AppREST;
@@ -29,11 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
         classes = {AppREST.class, NewCleaningClassForTests.class})
-//@TestPropertySource(locations = {"classpath:application-integrationtest.properties"})
+@TestPropertySource(locations = {"classpath:application-integrationtest.properties"})
 public class ClientControllerTests {
 
-
-    final String appUrlClient = "http://localhost:8080/api/clients";
+    final String appUrlClient = "http://localhost:8081/api-test/clients";
 
     @AfterAll
     static void cleanAtTheEnd() {

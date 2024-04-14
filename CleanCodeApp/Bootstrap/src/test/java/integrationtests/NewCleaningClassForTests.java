@@ -1,5 +1,8 @@
 package integrationtests;
 
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
@@ -9,6 +12,8 @@ import com.mongodb.client.model.Filters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.utility.DockerImageName;
 import tks.gv.aggregates.ReservationMongoRepositoryAdapter;
 import tks.gv.courts.Court;
 import tks.gv.courtservice.CourtService;
@@ -40,11 +45,14 @@ import tks.gv.userservice.ResourceAdminService;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Component
 public class NewCleaningClassForTests {
+
     private static final CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder()
             .automatic(true)
             .conventions(List.of(Conventions.ANNOTATION_CONVENTION))
@@ -52,14 +60,37 @@ public class NewCleaningClassForTests {
 
     private static final MongoClientSettings settings = MongoClientSettings.builder()
             .credential(MongoCredential.createCredential("admin", "admin", "adminpassword".toCharArray()))
-            .applyConnectionString(new ConnectionString("mongodb://localhost:27017,localhost:27018,localhost:27019/?replicaSet=replica_set_single"))
+            .applyConnectionString(new ConnectionString("mongodb://localhost:60000"))
             .uuidRepresentation(UuidRepresentation.STANDARD)
             .codecRegistry(CodecRegistries.fromRegistries(
                     MongoClientSettings.getDefaultCodecRegistry(),
                     pojoCodecRegistry
             ))
             .build();
-    private static final MongoDatabase mongoDatabase = MongoClients.create(settings).getDatabase("reserveACourt");
+
+    private static final String testDBName = "testmongodb1";
+
+    static {
+        Map<String, String> map = new HashMap<>(
+                Map.of(
+                        "MONGO_INITDB_ROOT_USERNAME", "admin",
+                        "MONGO_INITDB_ROOT_PASSWORD", "adminpassword"
+                )
+        );
+        GenericContainer<?> mongoDBContainer = new GenericContainer<>(DockerImageName.parse("mongo:7.0.2"))
+                .withCreateContainerCmdModifier(createContainerCmd -> {
+                    createContainerCmd.withName(testDBName);
+                    createContainerCmd.withHostName(testDBName);
+                    createContainerCmd.withPortBindings(new PortBinding(Ports.Binding.bindPort(60000), new ExposedPort(27017)));
+                })
+                .withExposedPorts(27017)
+                .withEnv(map);
+
+        mongoDBContainer.start();
+
+        mongoDatabase = MongoClients.create(settings).getDatabase("reserveACourt");
+    }
+    private static final MongoDatabase mongoDatabase;
 
     static void cleanUsers() {
         mongoDatabase.getCollection("users").deleteMany(Filters.empty());
