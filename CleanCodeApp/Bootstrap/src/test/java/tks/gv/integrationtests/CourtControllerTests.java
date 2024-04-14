@@ -1,4 +1,4 @@
-package integrationtests;
+package tks.gv.integrationtests;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -18,8 +18,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-import static integrationtests.NewCleaningClassForTests.cleanCourts;
-import static integrationtests.NewCleaningClassForTests.cleanReservations;
+import static tks.gv.integrationtests.NewCleaningClassForTests.cleanCourts;
+import static tks.gv.integrationtests.NewCleaningClassForTests.cleanReservations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

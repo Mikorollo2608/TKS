@@ -1,10 +1,9 @@
-package integrationtests;
+package tks.gv.integrationtests;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +17,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-import static integrationtests.NewCleaningClassForTests.adminRes1;
-import static integrationtests.NewCleaningClassForTests.adminRes2;
-import static integrationtests.NewCleaningClassForTests.cleanUsers;
+import static tks.gv.integrationtests.NewCleaningClassForTests.admin1;
+import static tks.gv.integrationtests.NewCleaningClassForTests.admin2;
+import static tks.gv.integrationtests.NewCleaningClassForTests.cleanUsers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -31,9 +30,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
         classes = {AppREST.class, NewCleaningClassForTests.class})
 @TestPropertySource(locations = {"classpath:application-integrationtest.properties"})
-public class ResourceAdminControllerTests {
+public class AdminControllerTests {
 
-    static final String appUrlResAdmins = "http://localhost:8081/api-test/resAdmins";
+    static final String appUrlAdmins = "http://localhost:8081/api-test/admins";
 
     @Autowired
     NewCleaningClassForTests newCleaningClassForTests;
@@ -46,13 +45,13 @@ public class ResourceAdminControllerTests {
     @BeforeEach
     void cleanAndInitDatabase() {
         cleanUsers();
-        newCleaningClassForTests.initResAdmins();
+        newCleaningClassForTests.initAdmins();
     }
 
     @Test
-    void getAllResAdminsTest() throws URISyntaxException {
+    void getAllAdminsTest() throws URISyntaxException {
         RequestSpecification request = RestAssured.given();
-        Response response = request.get(new URI(appUrlResAdmins));
+        Response response = request.get(new URI(appUrlAdmins));
         String responseString = response.asString();
 
         String[] splitRespStr = responseString.split("},");
@@ -61,13 +60,13 @@ public class ResourceAdminControllerTests {
 
         //First Admin
         assertTrue(splitRespStr[0].contains("\"archive\":false"));
-        assertTrue(splitRespStr[0].contains("\"id\":\"%s\"".formatted(adminRes1.getId())));
-        assertTrue(splitRespStr[0].contains("\"login\":\"adminekRes1@1234\""));
+        assertTrue(splitRespStr[0].contains("\"id\":\"%s\"".formatted(admin1.getId())));
+        assertTrue(splitRespStr[0].contains("\"login\":\"adminek1@1234\""));
 
         //Second Admin
         assertTrue(splitRespStr[1].contains("\"archive\":false"));
-        assertTrue(splitRespStr[1].contains("\"id\":\"%s\"".formatted(adminRes2.getId())));
-        assertTrue(splitRespStr[1].contains("\"login\":\"adminekRes2@9876\""));
+        assertTrue(splitRespStr[1].contains("\"id\":\"%s\"".formatted(admin2.getId())));
+        assertTrue(splitRespStr[1].contains("\"login\":\"adminek2@9876\""));
 
         assertEquals(200, response.getStatusCode());
     }
@@ -76,7 +75,7 @@ public class ResourceAdminControllerTests {
     void getAllAdminsTestNoCont() throws URISyntaxException {
         cleanUsers();
         RequestSpecification request = RestAssured.given();
-        Response response = request.get(new URI(appUrlResAdmins));
+        Response response = request.get(new URI(appUrlAdmins));
         String responseString = response.asString();
 
         assertTrue(responseString.isEmpty());
@@ -88,7 +87,7 @@ public class ResourceAdminControllerTests {
         cleanUsers();
         String JSON = """
                 {
-                  "login": "johnBravo2",
+                  "login": "johnBravo",
                   "password": "testTO1"
                 }
                 """;
@@ -97,17 +96,17 @@ public class ResourceAdminControllerTests {
         requestPost.body(JSON);
 
         RequestSpecification requestGet = RestAssured.given();
-        String responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        String responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
         assertTrue(responseString.isEmpty());
 
-        Response responsePost = requestPost.post(appUrlResAdmins + "/addResAdmin");
+        Response responsePost = requestPost.post(appUrlAdmins + "/addAdmin");
 
         assertEquals(201, responsePost.getStatusCode());
 
-        responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
-        assertTrue(responseString.contains("\"login\":\"johnBravo2\""));
+        assertTrue(responseString.contains("\"login\":\"johnBravo\""));
     }
 
     @Test
@@ -123,15 +122,15 @@ public class ResourceAdminControllerTests {
         requestPost.body(json);
 
         RequestSpecification requestGet = RestAssured.given();
-        String responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        String responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
         assertFalse(responseString.contains("\"login\":\" \""));
 
-        Response responsePost = requestPost.post(appUrlResAdmins + "/addResAdmin");
+        Response responsePost = requestPost.post(appUrlAdmins + "/addAdmin");
 
         assertEquals(400, responsePost.getStatusCode());
 
-        responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
         assertFalse(responseString.contains("\"login\":\" \""));
     }
@@ -140,7 +139,7 @@ public class ResourceAdminControllerTests {
     void createAdminTestNegSameLogin() throws URISyntaxException {
         String json = """
                 {
-                  "login": "adminekRes1@1234",
+                  "login": "adminek1@1234",
                   "password": "testTO1"
                 }
                 """;
@@ -149,11 +148,11 @@ public class ResourceAdminControllerTests {
         requestPost.body(json);
 
         RequestSpecification requestGet = RestAssured.given();
-        String responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        String responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
-        assertTrue(responseString.contains("\"login\":\"adminekRes1@1234\""));
+        assertTrue(responseString.contains("\"login\":\"adminek1@1234\""));
 
-        Response responsePost = requestPost.post(appUrlResAdmins + "/addResAdmin");
+        Response responsePost = requestPost.post(appUrlAdmins + "/addAdmin");
 
         assertEquals(409, responsePost.getStatusCode());
     }
@@ -161,10 +160,10 @@ public class ResourceAdminControllerTests {
     @Test
     void getAdminByLoginTest() throws URISyntaxException {
         RequestSpecification request = RestAssured.given();
-        Response response = request.get(new URI(appUrlResAdmins + "/get?login=adminekRes1@1234"));
+        Response response = request.get(new URI(appUrlAdmins + "/get?login=adminek1@1234"));
         String responseString = response.asString();
 
-        assertTrue(responseString.contains("\"id\":\"%s\",\"login\":\"adminekRes1@1234\"".formatted(adminRes1.getId())));
+        assertTrue(responseString.contains("\"id\":\"%s\",\"login\":\"adminek1@1234\"".formatted(admin1.getId())));
 
         assertEquals(200, response.getStatusCode());
     }
@@ -172,7 +171,7 @@ public class ResourceAdminControllerTests {
     @Test
     void getAdminByLoginTestNoCont() throws URISyntaxException {
         RequestSpecification request = RestAssured.given();
-        Response response = request.get(new URI(appUrlResAdmins + "/get?login=564545415612121121"));
+        Response response = request.get(new URI(appUrlAdmins + "/get?login=564545415612121121"));
         String responseString = response.asString();
 
         assertTrue(responseString.isEmpty());
@@ -183,10 +182,10 @@ public class ResourceAdminControllerTests {
     void getAdminByIdTest() throws URISyntaxException {
         RequestSpecification request = RestAssured.given();
 
-        Response responseById = request.get(new URI(appUrlResAdmins + "/" + adminRes1.getId()));
+        Response responseById = request.get(new URI(appUrlAdmins + "/" + admin1.getId()));
         String responseByIdString = responseById.asString();
 
-        assertTrue(responseByIdString.contains("\"id\":\"%s\",\"login\":\"adminekRes1@1234\"".formatted(adminRes1.getId())));
+        assertTrue(responseByIdString.contains("\"id\":\"%s\",\"login\":\"adminek1@1234\"".formatted(admin1.getId())));
 
         assertEquals(200, responseById.getStatusCode());
     }
@@ -194,7 +193,7 @@ public class ResourceAdminControllerTests {
     @Test
     void getAdminByIdTestNoCont() throws URISyntaxException {
         RequestSpecification request = RestAssured.given();
-        Response response = request.get(new URI(appUrlResAdmins + "/" + UUID.randomUUID()));
+        Response response = request.get(new URI(appUrlAdmins + "/" + UUID.randomUUID()));
         String responseString = response.asString();
 
         assertTrue(responseString.isEmpty());
@@ -204,7 +203,7 @@ public class ResourceAdminControllerTests {
     @Test
     void getAdminByLoginMatchingPos() throws URISyntaxException {
         RequestSpecification request = RestAssured.given();
-        Response response = request.get(new URI(appUrlResAdmins + "/match?login=admin"));
+        Response response = request.get(new URI(appUrlAdmins + "/match?login=admin"));
         String responseString = response.asString();
 
         String[] splitRespStr = responseString.split("},");
@@ -212,10 +211,10 @@ public class ResourceAdminControllerTests {
         assertEquals(2, splitRespStr.length);
 
         //First Admin
-        assertTrue(splitRespStr[0].contains("\"id\":\"%s\",\"login\":\"adminekRes1@1234\"".formatted(adminRes1.getId())));
+        assertTrue(splitRespStr[0].contains("\"id\":\"%s\",\"login\":\"adminek1@1234\"".formatted(admin1.getId())));
 
         //Second Admin
-        assertTrue(splitRespStr[1].contains("\"id\":\"%s\",\"login\":\"adminekRes2@9876\"".formatted(adminRes2.getId())));
+        assertTrue(splitRespStr[1].contains("\"id\":\"%s\",\"login\":\"adminek2@9876\"".formatted(admin2.getId())));
 
         assertEquals(200, response.getStatusCode());
     }
@@ -223,7 +222,7 @@ public class ResourceAdminControllerTests {
     @Test
     void getAdminByLoginMatchingNoCont() throws URISyntaxException {
         RequestSpecification request = RestAssured.given();
-        Response response = request.get(new URI(appUrlResAdmins + "/match?login=uwu"));
+        Response response = request.get(new URI(appUrlAdmins + "/match?login=uwu"));
         String responseString = response.asString();
 
         assertTrue(responseString.isEmpty());
@@ -236,7 +235,7 @@ public class ResourceAdminControllerTests {
         String JSON = """
                 {
                   "archive": true,
-                  "id": "0c5f74c8-5a7e-4809-a6d3-bed663083b07",
+                  "id": "fd60c176-d427-4591-ac13-6fb84d904862",
                   "login": "loginekAdm"
                 }
                 """;
@@ -245,30 +244,30 @@ public class ResourceAdminControllerTests {
         requestPut.body(JSON);
 
         RequestSpecification requestGet = RestAssured.given();
-        String responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        String responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
         assertTrue(responseString.contains(
                 "\"archive\":false," +
-                "\"id\":\"" + adminRes1.getId() + "\"," +
-                "\"login\":\"adminekRes1@1234\""));
+                "\"id\":\"" + admin1.getId() + "\"," +
+                "\"login\":\"adminek1@1234\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
-                "\"id\":\"" + adminRes1.getId() + "\"," +
+                "\"id\":\"" + admin1.getId() + "\"," +
                 "\"login\":\"loginekAdm\""));
 
-        Response responsePut = requestPut.put(appUrlResAdmins + "/modifyResAdmin");
+        Response responsePut = requestPut.put(appUrlAdmins + "/modifyAdmin");
 
         assertEquals(204, responsePut.getStatusCode());
 
-        responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
         assertFalse(responseString.contains(
                 "\"archive\":false," +
-                "\"id\":\"" + adminRes1.getId() + "\"," +
-                "\"login\":\"adminekRes1@1234\""));
+                "\"id\":\"" + admin1.getId() + "\"," +
+                "\"login\":\"adminek1@1234\""));
         assertTrue(responseString.contains(
                 "\"archive\":true," +
-                "\"id\":\"" + adminRes1.getId() + "\"," +
+                "\"id\":\"" + admin1.getId() + "\"," +
                 "\"login\":\"loginekAdm\""));
     }
 
@@ -277,7 +276,7 @@ public class ResourceAdminControllerTests {
         String JSON = """
                 {
                   "archive": true,
-                  "id": "0c5f74c8-5a7e-4809-a6d3-bed663083b07",
+                  "id": "fd60c176-d427-4591-ac13-6fb84d904862",
                   "login": " "
                 }
                 """;
@@ -286,30 +285,30 @@ public class ResourceAdminControllerTests {
         requestPut.body(JSON);
 
         RequestSpecification requestGet = RestAssured.given();
-        String responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        String responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
         assertTrue(responseString.contains(
                 "\"archive\":false," +
-                "\"id\":\"" + adminRes1.getId() + "\"," +
-                "\"login\":\"adminekRes1@1234\""));
+                "\"id\":\"" + admin1.getId() + "\"," +
+                "\"login\":\"adminek1@1234\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
-                "\"id\":\"" + adminRes1.getId() + "\"," +
+                "\"id\":\"" + admin1.getId() + "\"," +
                 "\"login\":\" \""));
 
-        Response responsePut = requestPut.put(appUrlResAdmins + "/modifyResAdmin");
+        Response responsePut = requestPut.put(appUrlAdmins + "/modifyAdmin");
 
         assertEquals(400, responsePut.getStatusCode());
 
-        responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
         assertTrue(responseString.contains(
                 "\"archive\":false," +
-                "\"id\":\"" + adminRes1.getId() + "\"," +
-                "\"login\":\"adminekRes1@1234\""));
+                "\"id\":\"" + admin1.getId() + "\"," +
+                "\"login\":\"adminek1@1234\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
-                "\"id\":\"" + adminRes1.getId() + "\"," +
+                "\"id\":\"" + admin1.getId() + "\"," +
                 "\"login\":\" \""));
     }
 
@@ -318,8 +317,8 @@ public class ResourceAdminControllerTests {
         String JSON = """
                 {
                   "archive": true,
-                  "id": "0c5f74c8-5a7e-4809-a6d3-bed663083b07",
-                  "login": "adminekRes2@9876"
+                  "id": "fd60c176-d427-4591-ac13-6fb84d904862",
+                  "login": "adminek2@9876"
                 }
                 """;
         RequestSpecification requestPut = RestAssured.given();
@@ -327,77 +326,77 @@ public class ResourceAdminControllerTests {
         requestPut.body(JSON);
 
         RequestSpecification requestGet = RestAssured.given();
-        String responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        String responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
-        assertTrue(responseString.contains("\"login\":\"adminekRes2@9876\""));
+        assertTrue(responseString.contains("\"login\":\"adminek2@9876\""));
 
         assertTrue(responseString.contains(
                 "\"archive\":false," +
-                "\"id\":\"" + adminRes1.getId() + "\"," +
-                "\"login\":\"adminekRes1@1234\""));
+                "\"id\":\"" + admin1.getId() + "\"," +
+                "\"login\":\"adminek1@1234\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
-                "\"id\":\"" + adminRes1.getId() + "\"," +
-                "\"login\":\"adminekRes2@9876\""));
+                "\"id\":\"" + admin1.getId() + "\"," +
+                "\"login\":\"adminek2@9876\""));
 
-        Response responsePut = requestPut.put(appUrlResAdmins + "/modifyResAdmin");
+        Response responsePut = requestPut.put(appUrlAdmins + "/modifyAdmin");
 
         assertEquals(409, responsePut.getStatusCode());
 
-        responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
-        assertTrue(responseString.contains("\"login\":\"adminekRes2@9876\""));
+        assertTrue(responseString.contains("\"login\":\"adminek2@9876\""));
 
         assertTrue(responseString.contains(
                 "\"archive\":false," +
-                "\"id\":\"" + adminRes1.getId() + "\"," +
-                "\"login\":\"adminekRes1@1234\""));
+                "\"id\":\"" + admin1.getId() + "\"," +
+                "\"login\":\"adminek1@1234\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
-                "\"id\":\"" + adminRes1.getId() + "\"," +
-                "\"login\":\"adminekRes2@9876\""));
+                "\"id\":\"" + admin1.getId() + "\"," +
+                "\"login\":\"adminek2@9876\""));
     }
 
     @Test
     void archiveAndActivateAdminTest() throws URISyntaxException {
         RequestSpecification requestGet = RestAssured.given();
-        String responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        String responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
         /*Archive test*/
         assertTrue(responseString.contains(
             "\"archive\":false," +
-            "\"id\":\"" + adminRes1.getId() + "\""));
+            "\"id\":\"" + admin1.getId() + "\""));
         assertFalse(responseString.contains(
             "\"archive\":true," +
-            "\"id\":\"" + adminRes1.getId() + "\""));
+            "\"id\":\"" + admin1.getId() + "\""));
 
         RequestSpecification requestPost = RestAssured.given();
-        Response responsePost = requestPost.post(appUrlResAdmins + "/deactivate/" + adminRes1.getId());
+        Response responsePost = requestPost.post(appUrlAdmins + "/deactivate/" + admin1.getId());
 
         assertEquals(204, responsePost.getStatusCode());
 
-        responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
         assertFalse(responseString.contains(
                 "\"archive\":false," +
-                "\"id\":\"" + adminRes1.getId() + "\""));
+                "\"id\":\"" + admin1.getId() + "\""));
         assertTrue(responseString.contains(
                 "\"archive\":true," +
-                "\"id\":\"" + adminRes1.getId() + "\""));
+                "\"id\":\"" + admin1.getId() + "\""));
 
         /*Activate test*/
         RequestSpecification requestPost2 = RestAssured.given();
-        Response responsePost2 = requestPost2.post(appUrlResAdmins + "/activate/" + adminRes1.getId());
+        Response responsePost2 = requestPost2.post(appUrlAdmins + "/activate/" + admin1.getId());
 
         assertEquals(204, responsePost2.getStatusCode());
 
-        responseString = requestGet.get(new URI(appUrlResAdmins)).asString();
+        responseString = requestGet.get(new URI(appUrlAdmins)).asString();
 
         assertTrue(responseString.contains(
                 "\"archive\":false," +
-                "\"id\":\"" + adminRes1.getId() + "\""));
+                "\"id\":\"" + admin1.getId() + "\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
-                "\"id\":\"" + adminRes1.getId() + "\""));
+                "\"id\":\"" + admin1.getId() + "\""));
     }
 }

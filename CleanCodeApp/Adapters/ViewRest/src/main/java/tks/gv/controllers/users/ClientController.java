@@ -75,7 +75,6 @@ public class ClientController {
     @GetMapping
     public List<ClientDTO> getAllClients(HttpServletResponse response) {
         List<Client> resultList = getAllClientsUseCase.getAllClients();
-
         if (resultList.isEmpty()) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
             return null;

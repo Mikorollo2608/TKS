@@ -1,4 +1,4 @@
-package integrationtests;
+package tks.gv.integrationtests;
 
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.PortBinding;
