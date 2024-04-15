@@ -75,15 +75,7 @@
                         <source>src/main/java/tks/gv/data/dto</source>
                     </sources>
                     <outputDirectory>src/main/resources</outputDirectory>
-                    <!--TODO true or false on production???-->
                     <clearOutputDir>true</clearOutputDir>
-<!--                    <transformSchemas>-->
-<!--                        <transformSchema>-->
-<!--                            <uri>/data/dto</uri>-->
-<!--                            <toPrefix>user</toPrefix>-->
-<!--                            <toFile>user-gen.xsd</toFile>-->
-<!--                        </transformSchema>-->
-<!--                    </transformSchemas>-->
                 </configuration>
             </plugin>
         </plugins>

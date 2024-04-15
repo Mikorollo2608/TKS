@@ -108,7 +108,6 @@ public class UserMongoRepositoryAdapter implements
         repository.update(id, "archive", true);
     }
 
-    ///TODO static or non static, oto jest pytanie
     protected User autoMap(UserEntity userEntity) {
         if (userEntity == null) {
             return null;
