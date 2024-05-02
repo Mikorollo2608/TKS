@@ -1,30 +1,20 @@
 package tks.gv.rest;
 
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import tks.gv.AppREST;
 import tks.gv.controllers.reservations.ReservationController;
-import tks.gv.controllers.users.ClientController;
 import tks.gv.courts.Court;
-import tks.gv.integrationtests.NewCleaningClassForTests;
 import tks.gv.reservations.Reservation;
 import tks.gv.userinterface.reservations.ports.AddReservationUseCase;
 import tks.gv.userinterface.reservations.ports.CheckClientReservationBalanceUseCase;
@@ -40,7 +30,6 @@ import tks.gv.userinterface.reservations.ports.GetReservationByIdUseCase;
 import tks.gv.userinterface.reservations.ports.ReturnCourtUseCase;
 import tks.gv.users.Client;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

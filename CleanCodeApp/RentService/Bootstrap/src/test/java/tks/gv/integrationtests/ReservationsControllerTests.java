@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import tks.gv.AppREST;
+import tks.gv.RentServiceApp;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,11 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        classes = {AppREST.class, NewCleaningClassForTests.class})
+        classes = {RentServiceApp.class, NewCleaningClassForTests.class})
 @TestPropertySource(locations = {"classpath:application-integrationtest.properties"})
 public class ReservationsControllerTests {
 
-    static final String appUrlReservation = "http://localhost:8081/api-test/reservations";
+    static final String appUrlReservation = "http://localhost:8081/api-test/v1/reservations";
 
     @Autowired
     NewCleaningClassForTests newCleaningClassForTests;
