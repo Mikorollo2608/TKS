@@ -12,7 +12,7 @@
     </parent>
 
     <groupId>tks.gv</groupId>
-    <artifactId>CleanCodeApp</artifactId>
+    <artifactId>RentService</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
