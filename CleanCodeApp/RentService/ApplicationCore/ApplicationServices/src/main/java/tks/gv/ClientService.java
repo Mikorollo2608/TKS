@@ -1,21 +1,14 @@
-package tks.gv.userservice;
+package tks.gv;
 
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import tks.gv.exceptions.UnexpectedUserTypeException;
-import tks.gv.exceptions.UserException;
-
-import tks.gv.exceptions.UserReadServiceException;
 import tks.gv.infrastructure.users.ports.AddUserPort;
 import tks.gv.infrastructure.users.ports.ChangeUserStatusPort;
 import tks.gv.infrastructure.users.ports.GetAllUsersPort;
-
 import tks.gv.infrastructure.users.ports.GetUserByIdPort;
 import tks.gv.infrastructure.users.ports.GetUserByLoginPort;
 import tks.gv.infrastructure.users.ports.ModifyUserPort;
-
 import tks.gv.userinterface.users.ports.clients.ChangeClientStatusUseCase;
 import tks.gv.userinterface.users.ports.clients.GetAllClientsUseCase;
 import tks.gv.userinterface.users.ports.clients.GetClientByIdUseCase;
@@ -23,10 +16,6 @@ import tks.gv.userinterface.users.ports.clients.GetClientByLoginUseCase;
 import tks.gv.userinterface.users.ports.clients.ModifyClientUseCase;
 import tks.gv.userinterface.users.ports.clients.RegisterClientUseCase;
 
-import tks.gv.users.Client;
-import tks.gv.users.User;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,56 +50,27 @@ public class ClientService implements
 
     @Override
     public Client registerClient(Client client) {
-        try {
-            return userProjection(addUserPort.addUser(client));
-        } catch (UnexpectedUserTypeException exception) {
-            throw new UserException("Nie udalo sie zarejestrowac klienta w bazie! - " + exception.getMessage());
-        }
+        return addUserPort.addUser(client);
     }
 
     @Override
     public Client getClientById(UUID clientId) {
-        try {
-            return userProjection(getUserByIdPort.getUserById(clientId));
-        } catch (UnexpectedUserTypeException e) {
-            throw new UserReadServiceException("Proba odczytu niewspieranego typu klienta z bazy! - " + e.getMessage());
-        }
+        return getUserByIdPort.getUserById(clientId);
     }
 
     @Override
     public List<Client> getAllClients() {
-        List<Client> list = new ArrayList<>();
-        for (var user : getAllUsersPort.getAllUsers()) {
-            if (user instanceof Client client) {
-                list.add(client);
-            }
-        }
-
-        return list;
+        return getAllUsersPort.getAllUsers();
     }
 
     @Override
     public Client getClientByLogin(String login) {
-        try {
-            return userProjection(getUserByLoginPort.getUserByLogin(login));
-        } catch (UnexpectedUserTypeException e) {
-            throw new UserReadServiceException("Proba odczytu niewspieranego typu klienta z bazy! - " + e.getMessage());
-        }
+        return getUserByLoginPort.getUserByLogin(login);
     }
 
     @Override
     public List<Client> getClientByLoginMatching(String login) {
-        try {
-            List<Client> list = new ArrayList<>();
-            for (var user : getUserByLoginPort.getUserByLoginMatching(login)) {
-                if (user instanceof Client client) {
-                    list.add(client);
-                }
-            }
-            return list;
-        } catch (UnexpectedUserTypeException e) {
-            throw new UserReadServiceException("Proba odczytu niewspieranego typu klienta z bazy! - " + e.getMessage());
-        }
+        return getUserByLoginPort.getUserByLoginMatching(login);
     }
 
     @Override
@@ -128,10 +88,4 @@ public class ClientService implements
         changeUserStatusPort.deactivateUser(clientId);
     }
 
-    private Client userProjection(User user) {
-        if (user instanceof Client client) {
-            return client;
-        }
-        return null;
-    }
 }

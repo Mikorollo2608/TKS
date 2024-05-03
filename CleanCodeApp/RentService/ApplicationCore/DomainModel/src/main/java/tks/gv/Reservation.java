@@ -1,9 +1,7 @@
-package tks.gv.reservations;
+package tks.gv;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import tks.gv.courts.Court;
-import tks.gv.users.Client;
 import tks.gv.exceptions.ReservationException;
 
 import java.time.Duration;

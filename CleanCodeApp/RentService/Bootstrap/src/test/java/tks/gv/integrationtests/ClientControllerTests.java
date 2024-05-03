@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tks.gv.RentServiceApp;
-import tks.gv.userservice.ClientService;
 
 import java.net.URI;
 import java.net.URISyntaxException;

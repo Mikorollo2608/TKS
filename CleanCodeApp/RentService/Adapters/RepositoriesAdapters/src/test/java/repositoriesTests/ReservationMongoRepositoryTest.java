@@ -5,7 +5,7 @@ import com.mongodb.client.model.Filters;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tks.gv.courts.Court;
+import tks.gv.Court;
 import tks.gv.data.entities.ClientEntity;
 import tks.gv.data.entities.ReservationEntity;
 import tks.gv.data.mappers.entities.ClientMapper;
@@ -15,12 +15,12 @@ import tks.gv.exceptions.CourtException;
 import tks.gv.exceptions.MultiReservationException;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.ReservationException;
-import tks.gv.exceptions.UserException;
+import tks.gv.exceptions.ClientException;
 import tks.gv.repositories.CourtMongoRepository;
 import tks.gv.repositories.ReservationMongoRepository;
 import tks.gv.repositories.UserMongoRepository;
-import tks.gv.reservations.Reservation;
-import tks.gv.users.Client;
+import tks.gv.Reservation;
+import tks.gv.Client;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -58,7 +58,7 @@ public class ReservationMongoRepositoryTest extends SetupTestContainer {
 
     @AfterAll
     static void cleanFirstAndLastTimeDB() {
-        reservationRepository.getDatabase().getCollection("users").deleteMany(Filters.empty());
+        reservationRepository.getDatabase().getCollection("clients").deleteMany(Filters.empty());
         reservationRepository.getDatabase().getCollection("courts").deleteMany(Filters.empty());
         reservationRepository.getDatabase().getCollection("reservations").deleteMany(Filters.empty());
     }
@@ -72,9 +72,9 @@ public class ReservationMongoRepositoryTest extends SetupTestContainer {
         cleanFirstAndLastTimeDB();
         testClientType = "normal";
 
-        testClient1 = ClientMapper.fromUserEntity((ClientEntity) clientRepository.create(ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "John", "Smith", "12345678901", "12345678901", testClientType))));
-        testClient2 = ClientMapper.fromUserEntity((ClientEntity) clientRepository.create(ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "Eva", "Brown", "12345678902", "12345678902", testClientType))));
-        testClient3 = ClientMapper.fromUserEntity((ClientEntity) clientRepository.create(ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "Adam", "Long", "12345678903", "12345678903", testClientType))));
+        testClient1 = ClientMapper.fromUserEntity(clientRepository.create(ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "John", "Smith", "12345678901", "12345678901", testClientType))));
+        testClient2 = ClientMapper.fromUserEntity(clientRepository.create(ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "Eva", "Brown", "12345678902", "12345678902", testClientType))));
+        testClient3 = ClientMapper.fromUserEntity(clientRepository.create(ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "Adam", "Long", "12345678903", "12345678903", testClientType))));
 
         testCourt1 = CourtMapper.fromMongoCourt(courtRepository.create(CourtMapper.toMongoCourt(new Court(UUID.randomUUID(), 1000, 100, 1))));
         testCourt2 = CourtMapper.fromMongoCourt(courtRepository.create(CourtMapper.toMongoCourt(new Court(UUID.randomUUID(), 1000, 100, 2))));
@@ -128,7 +128,7 @@ public class ReservationMongoRepositoryTest extends SetupTestContainer {
 
         //Archive client
         clientRepository.update(testClient3.getId(), "archive", true);
-        assertThrows(UserException.class, () -> reservationRepository.create(ReservationMapper.toReservationEntity(new Reservation(UUID.randomUUID(),
+        assertThrows(ClientException.class, () -> reservationRepository.create(ReservationMapper.toReservationEntity(new Reservation(UUID.randomUUID(),
                 testClient3, testCourt3, testTimeStart))));
 
         //Archive court

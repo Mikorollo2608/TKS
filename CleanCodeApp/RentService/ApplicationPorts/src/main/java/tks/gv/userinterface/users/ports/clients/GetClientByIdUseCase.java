@@ -1,6 +1,6 @@
 package tks.gv.userinterface.users.ports.clients;
 
-import tks.gv.users.Client;
+import tks.gv.Client;
 
 import java.util.UUID;
 

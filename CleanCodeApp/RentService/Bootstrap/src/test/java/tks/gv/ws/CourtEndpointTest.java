@@ -11,7 +11,7 @@ import org.springframework.ws.test.server.MockWebServiceClient;
 import org.springframework.ws.test.server.RequestCreators;
 import org.springframework.ws.test.server.ResponseMatchers;
 import org.springframework.xml.transform.StringSource;
-import tks.gv.courts.Court;
+import tks.gv.Court;
 import tks.gv.endpoints.CourtEndpoint;
 import tks.gv.userinterface.courts.ports.AddCourtUseCase;
 import tks.gv.userinterface.courts.ports.GetAllCourtsUseCase;

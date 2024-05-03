@@ -7,13 +7,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tks.gv.data.entities.ClientEntity;
-import tks.gv.data.entities.UserEntity;
 import tks.gv.data.mappers.entities.ClientMapper;
 import tks.gv.exceptions.MyMongoException;
-import tks.gv.exceptions.UnexpectedUserTypeException;
-import tks.gv.exceptions.UserLoginException;
+import tks.gv.exceptions.ClientLoginException;
 import tks.gv.repositories.UserMongoRepository;
-import tks.gv.users.Client;
+import tks.gv.Client;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -40,7 +38,7 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
 
     @AfterAll
     static void cleanFirstAndLastTimeDB() {
-        clientRepository.getDatabase().getCollection("users").deleteMany(Filters.empty());
+        clientRepository.getDatabase().getCollection("clients").deleteMany(Filters.empty());
     }
 
     @BeforeEach
@@ -73,7 +71,7 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.create(client1));
         assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
-        assertThrows(UserLoginException.class, () -> clientRepository.create(client1));
+        assertThrows(ClientLoginException.class, () -> clientRepository.create(client1));
         assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
     }
 
@@ -105,18 +103,6 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
                 .into(new ArrayList<>()).get(0)
                 .get("_id")
         );
-    }
-
-    @Test
-    void testAddingNewDocumentToDBWithEmptyStringIdNewUserType() {
-        class NewUserEnt extends UserEntity {
-            public NewUserEnt(String id, String login, String password, boolean archive) {
-                super(id, login, password, archive);
-            }
-        }
-
-        assertThrows(UnexpectedUserTypeException.class,
-                () -> clientRepository.create(new NewUserEnt("", "tobiaszTrabRes", "Haslo1234!", false)));
     }
 
     @Test
@@ -170,11 +156,11 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
         ClientEntity client3 = (ClientEntity) clientRepository.create(this.client3);
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
 
-        UserEntity clMapper1 = clientRepository.readByUUID(UUID.fromString(client1.getId()));
+        ClientEntity clMapper1 = clientRepository.readByUUID(UUID.fromString(client1.getId()));
         assertNotNull(clMapper1);
         assertEquals(client1, clMapper1);
 
-        UserEntity clMapper3 = clientRepository.readByUUID(UUID.fromString(client3.getId()));
+        ClientEntity clMapper3 = clientRepository.readByUUID(UUID.fromString(client3.getId()));
         assertNotNull(clMapper3);
         assertEquals(client3, clMapper3);
     }
@@ -289,7 +275,7 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
     @Test
     void testGetCollectionNameMethod() {
         //Get collection name
-        assertEquals("users", clientRepository.getCollectionName());
+        assertEquals("clients", clientRepository.getCollectionName());
     }
 
     @Test

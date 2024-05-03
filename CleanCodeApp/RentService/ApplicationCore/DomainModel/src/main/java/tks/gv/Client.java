@@ -1,6 +1,8 @@
-package tks.gv.users;
+package tks.gv;
 
+import com.google.common.base.Objects;
 import jakarta.validation.constraints.NotBlank;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,9 +10,9 @@ import lombok.Setter;
 
 import java.util.UUID;
 
+@Getter
 @NoArgsConstructor
-public class Client extends User {
-
+public class Client {
     private enum ClientType {
         NORMAL(0, 3), ATHLETE(0.1, 6), COACH(0.2, 12);
 
@@ -32,6 +34,15 @@ public class Client extends User {
         }
     }
 
+    private UUID id;
+    @Setter
+    @NotBlank
+    private String login;
+    @Setter
+    private String password;
+    @Setter
+    private boolean archive = false;
+
     @Getter
     @Setter
     @NotBlank
@@ -46,7 +57,9 @@ public class Client extends User {
     private String clientTypeName;
 
     public Client(UUID id, String firstName, String lastName, String login, String password, String clientType) {
-        super(id, login, password);
+        this.id = id;
+        this.login = login;
+        this.password = password;
 
         this.firstName = firstName;
         this.lastName = lastName;
@@ -81,5 +94,13 @@ public class Client extends User {
             this.clientType = ClientType.NORMAL;
         }
         this.clientTypeName = this.clientType.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Client client = (Client) o;
+        return Objects.equal(id, client.id);
     }
 }

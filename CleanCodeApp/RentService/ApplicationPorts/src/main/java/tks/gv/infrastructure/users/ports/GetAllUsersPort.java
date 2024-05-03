@@ -1,10 +1,10 @@
 package tks.gv.infrastructure.users.ports;
 
-import tks.gv.users.User;
+import tks.gv.Client;
 
 import java.util.List;
 
 public interface GetAllUsersPort {
 
-    List<User> getAllUsers();
+    List<Client> getAllUsers();
 }

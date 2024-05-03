@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tks.gv.aggregates.CourtMongoRepositoryAdapter;
-import tks.gv.courts.Court;
+import tks.gv.Court;
 import tks.gv.data.entities.CourtEntity;
 import tks.gv.data.mappers.entities.CourtMapper;
 import tks.gv.exceptions.CourtException;

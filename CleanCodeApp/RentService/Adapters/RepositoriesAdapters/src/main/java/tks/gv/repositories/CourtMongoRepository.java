@@ -15,7 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.springframework.stereotype.Component;
-import tks.gv.courts.Court;
+import tks.gv.Court;
 import tks.gv.data.entities.CourtEntity;
 import tks.gv.data.entities.ReservationEntity;
 import tks.gv.data.mappers.entities.CourtMapper;

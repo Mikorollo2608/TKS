@@ -4,7 +4,7 @@ import tks.gv.exceptions.MainException;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.RepositoryException;
 import tks.gv.exceptions.ReservationException;
-import tks.gv.exceptions.UserException;
+import tks.gv.exceptions.ClientException;
 import tks.gv.exceptions.RepositoryAdapterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,8 +21,8 @@ public class ExceptionsTest {
 
     @Test
     void testClientException() {
-        RuntimeException clientException = new UserException("TEST");
-        assertThrows(UserException.class, () -> {throw clientException;});
+        RuntimeException clientException = new ClientException("TEST");
+        assertThrows(ClientException.class, () -> {throw clientException;});
         assertEquals("TEST", clientException.getMessage());
     }
 

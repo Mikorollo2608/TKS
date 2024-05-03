@@ -1,5 +1,5 @@
 import org.junit.jupiter.api.Test;
-import tks.gv.courts.Court;
+import tks.gv.Court;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

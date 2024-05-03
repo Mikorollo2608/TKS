@@ -5,9 +5,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import tks.gv.courts.Court;
+import tks.gv.Court;
 
-import tks.gv.courtservice.CourtService;
+import tks.gv.CourtService;
 import tks.gv.infrastructure.courts.ports.*;
 
 import java.util.ArrayList;

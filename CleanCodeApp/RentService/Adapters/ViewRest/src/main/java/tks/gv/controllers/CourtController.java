@@ -1,4 +1,4 @@
-package tks.gv.controllers.courts;
+package tks.gv.controllers;
 
 import jakarta.servlet.http.HttpServletResponse;
 

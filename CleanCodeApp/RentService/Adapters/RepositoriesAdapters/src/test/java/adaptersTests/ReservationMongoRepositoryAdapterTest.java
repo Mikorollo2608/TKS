@@ -9,14 +9,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tks.gv.aggregates.ReservationMongoRepositoryAdapter;
-import tks.gv.courts.Court;
+import tks.gv.Court;
 import tks.gv.data.entities.ReservationEntity;
 import tks.gv.data.mappers.entities.ReservationMapper;
 import tks.gv.infrastructure.courts.ports.GetCourtByIdPort;
 import tks.gv.infrastructure.users.ports.GetUserByIdPort;
 import tks.gv.repositories.ReservationMongoRepository;
-import tks.gv.reservations.Reservation;
-import tks.gv.users.Client;
+import tks.gv.Reservation;
+import tks.gv.Client;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

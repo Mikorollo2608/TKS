@@ -4,15 +4,21 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.util.Objects;
 
 @Getter
 @FieldDefaults(makeFinal = true)
-@BsonDiscriminator(key = "_clazz", value = "client")
-public class ClientEntity extends UserEntity {
+public class ClientEntity implements Entity {
+    @BsonProperty("_id")
+    private String id;
+    @BsonProperty("login")
+    private String login;
+    @BsonProperty("archive")
+    private boolean archive;
+    @BsonProperty("password")
+    private String password;
     @BsonProperty("firstname")
     private String firstName;
     @BsonProperty("lastname")
@@ -28,7 +34,10 @@ public class ClientEntity extends UserEntity {
                         @BsonProperty("password") String password,
                         @BsonProperty("archive") boolean archive,
                         @BsonProperty("clienttype") String clientType) {
-        super(id, login, password, archive);
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.archive = archive;
         this.firstName = firstName;
         this.lastName = lastName;
         this.clientType = clientType;
@@ -39,8 +48,13 @@ public class ClientEntity extends UserEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClientEntity that = (ClientEntity) o;
-        return isArchive() == that.isArchive() && Objects.equals(getId(), that.getId()) && Objects.equals(firstName,
-                that.firstName) && Objects.equals(lastName, that.lastName)
-                && Objects.equals(getLogin(), that.getLogin()) && Objects.equals(clientType, that.clientType);
+        return Objects.equals(id, that.id) &&
+                Objects.equals(login, that.login) &&
+                isArchive() == that.isArchive() &&
+                Objects.equals(getId(), that.getId()) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(getLogin(), that.getLogin()) &&
+                Objects.equals(clientType, that.clientType);
     }
 }

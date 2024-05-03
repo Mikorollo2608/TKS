@@ -13,13 +13,11 @@ import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tks.gv.data.entities.ClientEntity;
-import tks.gv.data.entities.UserEntity;
 import tks.gv.data.mappers.entities.ClientMapper;
 import tks.gv.exceptions.MyMongoException;
-import tks.gv.exceptions.UnexpectedUserTypeException;
-import tks.gv.exceptions.UserException;
-import tks.gv.exceptions.UserLoginException;
-import tks.gv.users.Client;
+import tks.gv.exceptions.ClientException;
+import tks.gv.exceptions.ClientLoginException;
+import tks.gv.Client;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -28,9 +26,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
+public class UserMongoRepository extends AbstractMongoRepository<ClientEntity> {
 
-    static final String COLLECTION_NAME = "users";
+    static final String COLLECTION_NAME = "clients";
 
     @Autowired
     public UserMongoRepository(MongoClient mongoClient, MongoDatabase mongoDatabase) {
@@ -55,8 +53,8 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
     }
 
     @Override
-    protected MongoCollection<UserEntity> getCollection() {
-        return getDatabase().getCollection(COLLECTION_NAME, UserEntity.class);
+    protected MongoCollection<ClientEntity> getCollection() {
+        return getDatabase().getCollection(COLLECTION_NAME, ClientEntity.class);
     }
 
     @Override
@@ -65,30 +63,26 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
     }
 
     @Override
-    public UserEntity create(UserEntity initUser) {
+    public ClientEntity create(ClientEntity initUser) {
         if (initUser.getId() == null || initUser.getId().isBlank()) {
-            if (initUser instanceof ClientEntity clientEntity) {
-                initUser = new ClientEntity(
-                        UUID.randomUUID().toString(),
-                        clientEntity.getFirstName(),
-                        clientEntity.getLastName(),
-                        clientEntity.getLogin(),
-                        clientEntity.getPassword(),
-                        clientEntity.isArchive(),
-                        clientEntity.getClientType()
-                );
-            } else {
-                throw new UnexpectedUserTypeException("Typ danego uzytkownika nie pasuje do zadnego z obslugiwanych!");
-            }
+            initUser = new ClientEntity(
+                    UUID.randomUUID().toString(),
+                    initUser.getFirstName(),
+                    initUser.getLastName(),
+                    initUser.getLogin(),
+                    initUser.getPassword(),
+                    initUser.isArchive(),
+                    initUser.getClientType()
+            );
         }
 
         try {
             if (!read(Filters.eq("login", initUser.getLogin())).isEmpty()) {
-                throw new UserLoginException("Nie udalo sie zarejestrowac uzytkownika w bazie! - uzytkownik o tym loginie " +
+                throw new ClientLoginException("Nie udalo sie zarejestrowac uzytkownika w bazie! - uzytkownik o tym loginie " +
                         "znajduje sie juz w bazie");
             }
             if (!this.getCollection().insertOne(initUser).wasAcknowledged()) {
-                throw new UserException("Nie udalo sie zarejestrowac uzytkownika w bazie! - brak odpowiedzi");
+                throw new ClientException("Nie udalo sie zarejestrowac uzytkownika w bazie! - brak odpowiedzi");
             }
 
         } catch (MongoWriteException e) {
@@ -99,30 +93,27 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
     }
 
     @Override
-    public List<UserEntity> read(Bson filter) {
-        List<UserEntity> list = new ArrayList<>();
-        String dispatcher;
+    public List<ClientEntity> read(Bson filter) {
+        ///TODO refactor
+        List<ClientEntity> list = new ArrayList<>();
         for (var doc : this.getDatabase().getCollection(COLLECTION_NAME, Document.class).find(filter).into(new ArrayList<>())) {
-            dispatcher = doc.getString("_clazz");
-            switch (dispatcher) {
-                case "client" -> list.add(
-                        new ClientEntity(
-                                doc.getString("_id"),
-                                doc.getString("firstname"),
-                                doc.getString("lastname"),
-                                doc.getString("login"),
-                                doc.getString("password"),
-                                doc.getBoolean("archive"),
-                                doc.getString("clienttype")
-                        )
-                );
-            }
+            list.add(new ClientEntity(
+                            doc.getString("_id"),
+                            doc.getString("firstname"),
+                            doc.getString("lastname"),
+                            doc.getString("login"),
+                            doc.getString("password"),
+                            doc.getBoolean("archive"),
+                            doc.getString("clienttype")
+                    )
+            );
+
         }
         return list;
     }
 
     @Override
-    public boolean updateByReplace(UUID uuid, UserEntity user) {
+    public boolean updateByReplace(UUID uuid, ClientEntity user) {
         UpdateResult result = getCollection().replaceOne(Filters.eq("_id", uuid.toString()), user);
 
         return result.getModifiedCount() != 0;

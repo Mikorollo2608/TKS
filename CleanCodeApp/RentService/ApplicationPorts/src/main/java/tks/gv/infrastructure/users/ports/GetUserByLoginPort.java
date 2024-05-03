@@ -1,12 +1,12 @@
 package tks.gv.infrastructure.users.ports;
 
-import tks.gv.users.User;
+import tks.gv.Client;
 
 import java.util.List;
 
 public interface GetUserByLoginPort {
 
-    User getUserByLogin(String login);
+    Client getUserByLogin(String login);
 
-    List<User> getUserByLoginMatching(String login);
+    List<Client> getUserByLoginMatching(String login);
 }

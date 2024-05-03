@@ -1,13 +1,13 @@
 package mappersTests;
 
-import tks.gv.courts.Court;
+import tks.gv.Court;
 import tks.gv.data.entities.CourtEntity;
 import tks.gv.data.entities.ReservationEntity;
 import tks.gv.data.mappers.entities.CourtMapper;
 import tks.gv.data.mappers.entities.ReservationMapper;
 import tks.gv.data.mappers.entities.ClientMapper;
-import tks.gv.reservations.Reservation;
-import tks.gv.users.Client;
+import tks.gv.Reservation;
+import tks.gv.Client;
 import tks.gv.data.entities.ClientEntity;
 
 import org.junit.jupiter.api.BeforeEach;

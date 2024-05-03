@@ -19,17 +19,17 @@ import org.springframework.stereotype.Component;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 import tks.gv.aggregates.ReservationMongoRepositoryAdapter;
-import tks.gv.courts.Court;
-import tks.gv.courtservice.CourtService;
+import tks.gv.Court;
+import tks.gv.CourtService;
 import tks.gv.data.dto.ClientDTO;
 import tks.gv.data.dto.CourtDTO;
 import tks.gv.data.mappers.dto.ClientMapper;
 import tks.gv.data.mappers.dto.CourtMapper;
 import tks.gv.data.mappers.dto.ReservationMapper;
-import tks.gv.reservationservice.ReservationService;
+import tks.gv.ReservationService;
 import tks.gv.restapi.data.dto.ReservationDTO;
-import tks.gv.users.Client;
-import tks.gv.userservice.ClientService;
+import tks.gv.Client;
+import tks.gv.ClientService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -100,7 +100,7 @@ public class NewCleaningClassForTests {
     private static final MongoDatabase mongoDatabase;
 
     static void cleanUsers() {
-        mongoDatabase.getCollection("users").deleteMany(Filters.empty());
+        mongoDatabase.getCollection("clients").deleteMany(Filters.empty());
     }
 
     static void cleanCourts() {

@@ -102,7 +102,7 @@ public class ReservationMongoRepository extends AbstractMongoRepository<Reservat
                 }
                 return result.wasAcknowledged() ? newReservation : null;
             } else if (clientFound.isArchive()) {
-                throw new UserException("Nie udalo sie utworzyc rezerwacji - klient jest archiwalny!");
+                throw new ClientException("Nie udalo sie utworzyc rezerwacji - klient jest archiwalny!");
             } else if (courtFound.isArchive()) {
                 throw new CourtException("Nie udalo sie utworzyc rezerwacji - boisko jest archiwalne!");
             } else {

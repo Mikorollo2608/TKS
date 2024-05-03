@@ -1,4 +1,4 @@
-package tks.gv.controllers.users;
+package tks.gv.controllers;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tks.gv.data.dto.ClientDTO;
-import tks.gv.data.dto.UserDTO;
-
 
 import tks.gv.data.mappers.dto.ClientMapper;
-import tks.gv.exceptions.UserException;
-import tks.gv.exceptions.UserLoginException;
+import tks.gv.exceptions.ClientException;
+import tks.gv.exceptions.ClientLoginException;
 
 import tks.gv.userinterface.users.ports.clients.ChangeClientStatusUseCase;
 import tks.gv.userinterface.users.ports.clients.GetAllClientsUseCase;
@@ -33,7 +31,7 @@ import tks.gv.userinterface.users.ports.clients.GetClientByIdUseCase;
 import tks.gv.userinterface.users.ports.clients.GetClientByLoginUseCase;
 import tks.gv.userinterface.users.ports.clients.ModifyClientUseCase;
 import tks.gv.userinterface.users.ports.clients.RegisterClientUseCase;
-import tks.gv.users.Client;
+import tks.gv.Client;
 
 import java.util.List;
 
@@ -49,7 +47,7 @@ public class ClientController {
     private final ChangeClientStatusUseCase changeClientStatusUseCase;
 
     @PostMapping(value = "/addClient")
-    public ResponseEntity<String> addClient(@Validated({UserDTO.BasicUserValidation.class, UserDTO.PasswordValidation.class}) @RequestBody ClientDTO client,
+    public ResponseEntity<String> addClient(@Validated({ClientDTO.BasicUserValidation.class, ClientDTO.PasswordValidation.class}) @RequestBody ClientDTO client,
                                             Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -63,9 +61,9 @@ public class ClientController {
 
         try {
             registerClientUseCase.registerClient(ClientMapper.fromUserDTO(client));
-        } catch (UserLoginException ule) {
+        } catch (ClientLoginException ule) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ule.getMessage());
-        } catch (UserException ue) {
+        } catch (ClientException ue) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ue.getMessage());
         }
 
@@ -117,7 +115,7 @@ public class ClientController {
     }
 
     @PutMapping("/modifyClient")
-    public ResponseEntity<String> modifyClient(@Validated(UserDTO.BasicUserValidation.class) @RequestBody ClientDTO modifiedClient,
+    public ResponseEntity<String> modifyClient(@Validated(ClientDTO.BasicUserValidation.class) @RequestBody ClientDTO modifiedClient,
                                                Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -140,9 +138,9 @@ public class ClientController {
                             modifiedClient.getClientType())
             ));
 
-        } catch (UserLoginException ule) {
+        } catch (ClientLoginException ule) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ule.getMessage());
-        } catch (UserException ue) {
+        } catch (ClientException ue) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ue.getMessage());
         }
 

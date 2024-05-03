@@ -5,16 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import tks.gv.data.entities.ClientEntity;
-import tks.gv.data.entities.UserEntity;
 
 import tks.gv.data.mappers.entities.ClientMapper;
 
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.RepositoryAdapterException;
-import tks.gv.exceptions.UnexpectedUserTypeException;
 
-import tks.gv.exceptions.UserException;
-import tks.gv.exceptions.UserLoginException;
+import tks.gv.exceptions.ClientException;
+import tks.gv.exceptions.ClientLoginException;
 import tks.gv.infrastructure.users.ports.AddUserPort;
 import tks.gv.infrastructure.users.ports.ChangeUserStatusPort;
 import tks.gv.infrastructure.users.ports.GetAllUsersPort;
@@ -24,8 +22,7 @@ import tks.gv.infrastructure.users.ports.GetUserByLoginPort;
 import tks.gv.infrastructure.users.ports.ModifyUserPort;
 import tks.gv.repositories.UserMongoRepository;
 
-import tks.gv.users.Client;
-import tks.gv.users.User;
+import tks.gv.Client;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,7 +39,7 @@ public class UserMongoRepositoryAdapter implements
     }
 
     @Override
-    public User addUser(User user) {
+    public Client addUser(Client user) {
         try {
             return autoMap(repository.create(autoMap(user)));
         } catch (MyMongoException e) {
@@ -51,7 +48,7 @@ public class UserMongoRepositoryAdapter implements
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<Client> getAllUsers() {
         return repository.readAll()
                 .stream()
                 .map(this::autoMap)
@@ -59,18 +56,18 @@ public class UserMongoRepositoryAdapter implements
     }
 
     @Override
-    public User getUserById(UUID id) {
+    public Client getUserById(UUID id) {
         return autoMap(repository.readByUUID(id));
     }
 
     @Override
-    public User getUserByLogin(String login) {
+    public Client getUserByLogin(String login) {
         var listUser = repository.read(Filters.eq("login", login));
         return !listUser.isEmpty() ? autoMap(listUser.get(0)) : null;
     }
 
     @Override
-    public List<User> getUserByLoginMatching(String login) {
+    public List<Client> getUserByLoginMatching(String login) {
         return repository.read(Filters.and(Filters.regex("login", ".*%s.*".formatted(login))))
                 .stream()
                 .map(this::autoMap)
@@ -78,17 +75,17 @@ public class UserMongoRepositoryAdapter implements
     }
 
     @Override
-    public void modifyUser(User modifiedUser) {
+    public void modifyUser(Client modifiedUser) {
         var list = repository.read(Filters.and(
                 Filters.eq("login", modifiedUser.getLogin()),
                 Filters.ne("_id", modifiedUser.getId().toString())));
         if (!list.isEmpty()) {
-            throw new UserLoginException("Nie udalo sie zmodyfikowac podanego uzytkownika - " +
+            throw new ClientLoginException("Nie udalo sie zmodyfikowac podanego uzytkownika - " +
                     "proba zmiany loginu na login wystepujacy juz u innego uzytkownika");
         }
 
         if (!repository.updateByReplace(modifiedUser.getId(), autoMap(modifiedUser))) {
-            throw new UserException("Nie udalo sie zmodyfikowac podanego uzytkownika.");
+            throw new ClientException("Nie udalo sie zmodyfikowac podanego uzytkownika.");
         }
     }
 
@@ -102,25 +99,19 @@ public class UserMongoRepositoryAdapter implements
         repository.update(id, "archive", true);
     }
 
-    protected User autoMap(UserEntity userEntity) {
-        if (userEntity == null) {
+    protected Client autoMap(ClientEntity clientEntity) {
+        if (clientEntity == null) {
             return null;
         }
-        if (userEntity instanceof ClientEntity clientEntity) {
-            return ClientMapper.fromUserEntity(clientEntity);
-        }
-        throw new UnexpectedUserTypeException("Typ danego uzytkownika nie pasuje do zadnego z obslugiwanych!");
+        return ClientMapper.fromUserEntity(clientEntity);
     }
 
-    protected UserEntity autoMap(User user) {
-        if (user == null) {
+    protected ClientEntity autoMap(Client client) {
+        if (client == null) {
             return null;
         }
-        if (user instanceof Client client) {
-            return ClientMapper.toUserEntity(client);
-        }
 
-        throw new UnexpectedUserTypeException("Typ danego uzytkownika nie pasuje do zadnego z obslugiwanych!");
+        return ClientMapper.toUserEntity(client);
     }
 
 }

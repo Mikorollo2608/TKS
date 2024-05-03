@@ -1,5 +1,5 @@
 package tks.gv.data.mappers.dto;
-import tks.gv.courts.Court;
+import tks.gv.Court;
 import tks.gv.data.dto.CourtDTO;
 
 import java.util.UUID;

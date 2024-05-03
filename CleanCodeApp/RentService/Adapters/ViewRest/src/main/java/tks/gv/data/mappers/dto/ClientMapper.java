@@ -3,7 +3,7 @@ package tks.gv.data.mappers.dto;
 
 
 import tks.gv.data.dto.ClientDTO;
-import tks.gv.users.Client;
+import tks.gv.Client;
 
 import java.util.UUID;
 

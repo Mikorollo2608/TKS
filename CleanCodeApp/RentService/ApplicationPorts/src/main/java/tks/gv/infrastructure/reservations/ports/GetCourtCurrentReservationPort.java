@@ -1,6 +1,6 @@
 package tks.gv.infrastructure.reservations.ports;
 
-import tks.gv.reservations.Reservation;
+import tks.gv.Reservation;
 
 import java.util.UUID;
 

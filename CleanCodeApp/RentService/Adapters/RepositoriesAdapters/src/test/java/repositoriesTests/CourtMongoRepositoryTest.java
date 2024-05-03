@@ -41,7 +41,7 @@ public class CourtMongoRepositoryTest extends SetupTestContainer {
 
     @AfterAll
     static void cleanFirstAndLastTimeDB() {
-        courtRepository.getDatabase().getCollection("users").deleteMany(Filters.empty());
+        courtRepository.getDatabase().getCollection("clients").deleteMany(Filters.empty());
         courtRepository.getDatabase().getCollection("courts").deleteMany(Filters.empty());
         courtRepository.getDatabase().getCollection("reservations").deleteMany(Filters.empty());
     }

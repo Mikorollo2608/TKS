@@ -1,7 +1,7 @@
 package tks.gv.data.mappers.entities;
 
 import tks.gv.data.entities.ClientEntity;
-import tks.gv.users.Client;
+import tks.gv.Client;
 
 import java.util.Objects;
 import java.util.UUID;

@@ -1,7 +1,7 @@
 package mappersTests;
 
 import org.junit.jupiter.api.Test;
-import tks.gv.courts.Court;
+import tks.gv.Court;
 import tks.gv.data.entities.CourtEntity;
 import tks.gv.data.mappers.entities.CourtMapper;
 

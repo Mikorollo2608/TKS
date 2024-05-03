@@ -6,19 +6,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import tks.gv.exceptions.UnexpectedUserTypeException;
-import tks.gv.exceptions.UserException;
-import tks.gv.exceptions.UserLoginException;
-import tks.gv.exceptions.UserReadServiceException;
+import tks.gv.exceptions.ClientException;
+import tks.gv.exceptions.ClientLoginException;
+import tks.gv.exceptions.ClientReadServiceException;
 import tks.gv.infrastructure.users.ports.AddUserPort;
 import tks.gv.infrastructure.users.ports.ChangeUserStatusPort;
 import tks.gv.infrastructure.users.ports.GetAllUsersPort;
 import tks.gv.infrastructure.users.ports.GetUserByIdPort;
 import tks.gv.infrastructure.users.ports.GetUserByLoginPort;
 import tks.gv.infrastructure.users.ports.ModifyUserPort;
-import tks.gv.users.Client;
-import tks.gv.users.User;
-import tks.gv.userservice.ClientService;
+import tks.gv.Client;
+import tks.gv.ClientService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,13 +113,6 @@ public class ClientServiceTest {
     }
 
     @Test
-    void testGetClientByIdNeg() {
-        Mockito.when(getUserByIdPort.getUserById(any())).thenThrow(UnexpectedUserTypeException.class);
-
-        assertThrows(UserReadServiceException.class, () -> cm.getClientById(UUID.randomUUID()));
-    }
-
-    @Test
     void testGetClientByIdString() {
         Mockito.when(getAllUsersPort.getAllUsers()).thenReturn(List.of(testClient, testClient2, testClient3));
         Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
@@ -148,11 +139,9 @@ public class ClientServiceTest {
     
     @Test
     void testRegisterNewClientNeg() {
-        Mockito.when(addUserPort.addUser(testClient)).thenThrow(UserLoginException.class);
-        Mockito.when(addUserPort.addUser(testClient3)).thenThrow(UnexpectedUserTypeException.class);
+        Mockito.when(addUserPort.addUser(testClient)).thenThrow(ClientLoginException.class);
 
-        assertThrows(UserLoginException.class, () -> cm.registerClient(testClient));
-        assertThrows(UserException.class, () -> cm.registerClient(testClient3));
+        assertThrows(ClientLoginException.class, () -> cm.registerClient(testClient));
     }
 
     @Test
@@ -167,13 +156,6 @@ public class ClientServiceTest {
         Mockito.when(getUserByLoginPort.getUserByLogin(anyString())).thenReturn(null);
 
         assertNull(cm.getClientByLogin("testClient"));
-    }
-
-    @Test
-    void testGetClientByLoginNeg() {
-        Mockito.when(getUserByLoginPort.getUserByLogin(anyString())).thenThrow(UnexpectedUserTypeException.class);
-
-        assertThrows(UserReadServiceException.class, () -> cm.getClientByLogin("testA"));
     }
 
     @Test
@@ -199,13 +181,6 @@ public class ClientServiceTest {
 
 
     @Test
-    void testGetClientByLoginMatchingNeg() {
-        Mockito.when(getUserByLoginPort.getUserByLoginMatching(anyString())).thenThrow(UnexpectedUserTypeException.class);
-
-        assertThrows(UserReadServiceException.class, () -> cm.getClientByLoginMatching("testA"));
-    }
-
-    @Test
     void testGetClientByLoginMatchingEmptyList() {
         Mockito.when(getUserByLoginPort.getUserByLoginMatching(anyString())).thenReturn(new ArrayList<>());
 
@@ -214,7 +189,7 @@ public class ClientServiceTest {
 
     @Test
     void testModifyClient() {
-        Mockito.doNothing().when(modifyUserPort).modifyUser(any(User.class));
+        Mockito.doNothing().when(modifyUserPort).modifyUser(any(Client.class));
 
         cm.modifyClient(testClient);
         Mockito.verify(modifyUserPort, Mockito.times(1)).modifyUser(testClient);

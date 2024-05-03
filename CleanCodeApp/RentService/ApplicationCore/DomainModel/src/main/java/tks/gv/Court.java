@@ -1,4 +1,4 @@
-package tks.gv.courts;
+package tks.gv;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.PositiveOrZero;

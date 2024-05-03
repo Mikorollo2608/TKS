@@ -3,26 +3,24 @@ package tks.gv.rest;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import tks.gv.controllers.users.ClientController;
-import tks.gv.exceptions.UserLoginException;
+import tks.gv.controllers.ClientController;
+import tks.gv.exceptions.ClientLoginException;
 import tks.gv.userinterface.users.ports.clients.ChangeClientStatusUseCase;
 import tks.gv.userinterface.users.ports.clients.GetAllClientsUseCase;
 import tks.gv.userinterface.users.ports.clients.GetClientByIdUseCase;
 import tks.gv.userinterface.users.ports.clients.GetClientByLoginUseCase;
 import tks.gv.userinterface.users.ports.clients.ModifyClientUseCase;
 import tks.gv.userinterface.users.ports.clients.RegisterClientUseCase;
-import tks.gv.users.Client;
+import tks.gv.Client;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,7 +125,7 @@ public class ClientControllerTests {
 
     @Test
     void createClientTestNegSameLogin() throws Exception {
-        Mockito.when(registerClientUseCase.registerClient(Mockito.any(Client.class))).thenThrow(new UserLoginException("bad login"));
+        Mockito.when(registerClientUseCase.registerClient(Mockito.any(Client.class))).thenThrow(new ClientLoginException("bad login"));
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/clients/addClient")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -247,7 +245,7 @@ public class ClientControllerTests {
 
     @Test
     void modifyClientTestNegRepeatLoginOfAnotherClient() throws Exception {
-        Mockito.doThrow(new UserLoginException("bad login")).when(modifyClientUseCase).modifyClient(Mockito.any(Client.class));
+        Mockito.doThrow(new ClientLoginException("bad login")).when(modifyClientUseCase).modifyClient(Mockito.any(Client.class));
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/clients/modifyClient")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -3,7 +3,7 @@ package tks.gv.aggregates;
 import com.mongodb.client.model.Filters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tks.gv.courts.Court;
+import tks.gv.Court;
 import tks.gv.data.entities.CourtEntity;
 import tks.gv.data.mappers.entities.CourtMapper;
 import tks.gv.exceptions.CourtException;

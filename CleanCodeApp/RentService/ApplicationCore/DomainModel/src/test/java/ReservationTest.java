@@ -1,6 +1,6 @@
-import tks.gv.courts.Court;
-import tks.gv.reservations.Reservation;
-import tks.gv.users.Client;
+import tks.gv.Court;
+import tks.gv.Reservation;
+import tks.gv.Client;
 import tks.gv.exceptions.ReservationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

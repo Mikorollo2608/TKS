@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import tks.gv.controllers.reservations.ReservationController;
-import tks.gv.courts.Court;
-import tks.gv.reservations.Reservation;
+import tks.gv.controllers.ReservationController;
+import tks.gv.Court;
+import tks.gv.Reservation;
 import tks.gv.userinterface.reservations.ports.AddReservationUseCase;
 import tks.gv.userinterface.reservations.ports.CheckClientReservationBalanceUseCase;
 import tks.gv.userinterface.reservations.ports.DeleteReservationUseCase;
@@ -26,7 +26,7 @@ import tks.gv.userinterface.reservations.ports.GetCourtCurrentReservationUseCase
 import tks.gv.userinterface.reservations.ports.GetCourtEndedReservationUseCase;
 import tks.gv.userinterface.reservations.ports.GetReservationByIdUseCase;
 import tks.gv.userinterface.reservations.ports.ReturnCourtUseCase;
-import tks.gv.users.Client;
+import tks.gv.Client;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

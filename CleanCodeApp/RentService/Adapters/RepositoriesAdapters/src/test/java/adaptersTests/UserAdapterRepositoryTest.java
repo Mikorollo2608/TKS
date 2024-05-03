@@ -8,14 +8,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tks.gv.aggregates.UserMongoRepositoryAdapter;
-import tks.gv.data.entities.UserEntity;
+import tks.gv.data.entities.ClientEntity;
 import tks.gv.data.mappers.entities.ClientMapper;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.RepositoryAdapterException;
-import tks.gv.exceptions.UserLoginException;
+import tks.gv.exceptions.ClientLoginException;
 import tks.gv.repositories.UserMongoRepository;
-import tks.gv.users.Client;
-import tks.gv.users.User;
+import tks.gv.Client;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +37,9 @@ public class UserAdapterRepositoryTest {
     Client testClient;
     Client testClient2;
     Client testClient3;
-    UserEntity testClientEntity;
-    UserEntity testClientEntity2;
-    UserEntity testClientEntity3;
+    ClientEntity testClientEntity;
+    ClientEntity testClientEntity2;
+    ClientEntity testClientEntity3;
 
     @BeforeEach
     void init() {
@@ -74,7 +73,7 @@ public class UserAdapterRepositoryTest {
 
     @Test
     void testGetAllUsers() {
-        List<UserEntity> users = new ArrayList<>();
+        List<ClientEntity> users = new ArrayList<>();
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
@@ -89,7 +88,7 @@ public class UserAdapterRepositoryTest {
         adapter.addUser(testClient3);
         assertEquals(3, users.size());
 
-        List<User> userList = adapter.getAllUsers();
+        List<Client> userList = adapter.getAllUsers();
         assertEquals(3, userList.size());
         assertEquals(testClient, userList.get(0));
         assertEquals(testClient2, userList.get(1));
@@ -98,7 +97,7 @@ public class UserAdapterRepositoryTest {
 
     @Test
     void testGetUserById() {
-        List<UserEntity> users = new ArrayList<>();
+        List<ClientEntity> users = new ArrayList<>();
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
@@ -120,7 +119,7 @@ public class UserAdapterRepositoryTest {
 
     @Test
     void testGetUserByLogin() {
-        List<UserEntity> users = new ArrayList<>();
+        List<ClientEntity> users = new ArrayList<>();
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
@@ -142,7 +141,7 @@ public class UserAdapterRepositoryTest {
 
     @Test
     void testGetUserByLoginMatching() {
-        List<UserEntity> users = new ArrayList<>();
+        List<ClientEntity> users = new ArrayList<>();
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
@@ -159,7 +158,7 @@ public class UserAdapterRepositoryTest {
         adapter.addUser(testClient3);
         assertEquals(3, repository.readAll().size());
 
-        List<User> userMatchingList = adapter.getUserByLoginMatching("testLogin");
+        List<Client> userMatchingList = adapter.getUserByLoginMatching("testLogin");
         assertEquals(2, userMatchingList.size());
         assertEquals(testClient, userMatchingList.get(0));
         assertEquals(testClient2, userMatchingList.get(1));
@@ -167,7 +166,7 @@ public class UserAdapterRepositoryTest {
 
     @Test
     void testModifyUser() {
-        List<UserEntity> users = new ArrayList<>();
+        List<ClientEntity> users = new ArrayList<>();
 
         Client modifiedClient = new Client(
                 testClient.getId(),
@@ -202,7 +201,7 @@ public class UserAdapterRepositoryTest {
 
     @Test
     void testModifyUserLoginToOccupiedLogin() {
-        List<UserEntity> users = new ArrayList<>();
+        List<ClientEntity> users = new ArrayList<>();
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
@@ -230,14 +229,14 @@ public class UserAdapterRepositoryTest {
         assertEquals(3, repository.readAll().size());
 
         assertEquals("testLoginKlient", ((Client) adapter.getUserById(testClient.getId())).getLogin());
-        assertThrows(UserLoginException.class, () -> adapter.modifyUser(modifiedClient));
+        assertThrows(ClientLoginException.class, () -> adapter.modifyUser(modifiedClient));
         assertEquals("testLoginKlient", ((Client) adapter.getUserById(testClient.getId())).getLogin());
 
     }
 
     @Test
     void testActivateUser() {
-        List<UserEntity> users = new ArrayList<>();
+        List<ClientEntity> users = new ArrayList<>();
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
@@ -264,7 +263,7 @@ public class UserAdapterRepositoryTest {
 
     @Test
     void testDeactivateUser() {
-        List<UserEntity> users = new ArrayList<>();
+        List<ClientEntity> users = new ArrayList<>();
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})

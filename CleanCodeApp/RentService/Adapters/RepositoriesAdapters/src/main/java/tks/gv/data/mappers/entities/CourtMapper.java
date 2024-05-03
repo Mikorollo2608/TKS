@@ -1,6 +1,6 @@
 package tks.gv.data.mappers.entities;
 
-import tks.gv.courts.Court;
+import tks.gv.Court;
 import tks.gv.data.entities.CourtEntity;
 
 import java.util.Objects;

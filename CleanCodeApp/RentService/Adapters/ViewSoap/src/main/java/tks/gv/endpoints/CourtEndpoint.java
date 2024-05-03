@@ -5,7 +5,7 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import tks.gv.courts.Court;
+import tks.gv.Court;
 import tks.gv.data.dto.AddCourtRequest;
 import tks.gv.data.dto.AddCourtResponse;
 import tks.gv.data.dto.GetAllCourtsRequest;

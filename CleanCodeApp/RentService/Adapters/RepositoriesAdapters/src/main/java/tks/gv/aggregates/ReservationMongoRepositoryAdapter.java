@@ -8,8 +8,8 @@ import tks.gv.infrastructure.courts.ports.GetCourtByIdPort;
 import tks.gv.infrastructure.reservations.ports.*;
 import tks.gv.infrastructure.users.ports.GetUserByIdPort;
 import tks.gv.repositories.ReservationMongoRepository;
-import tks.gv.reservations.Reservation;
-import tks.gv.users.Client;
+import tks.gv.Reservation;
+import tks.gv.Client;
 
 import java.util.List;
 import java.util.UUID;

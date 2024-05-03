@@ -1,6 +1,6 @@
 package tks.gv.userinterface.reservations.ports;
 
-import tks.gv.reservations.Reservation;
+import tks.gv.Reservation;
 
 import java.time.LocalDateTime;
 

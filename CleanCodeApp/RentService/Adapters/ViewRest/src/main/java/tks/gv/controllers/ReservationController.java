@@ -1,4 +1,4 @@
-package tks.gv.controllers.reservations;
+package tks.gv.controllers;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -18,7 +18,7 @@ import tks.gv.exceptions.MultiReservationException;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.ReservationException;
 
-import tks.gv.reservations.Reservation;
+import tks.gv.Reservation;
 import tks.gv.restapi.data.dto.ReservationDTO;
 
 import tks.gv.userinterface.reservations.ports.AddReservationUseCase;

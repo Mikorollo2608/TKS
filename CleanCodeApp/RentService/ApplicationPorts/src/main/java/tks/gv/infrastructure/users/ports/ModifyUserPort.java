@@ -1,8 +1,8 @@
 package tks.gv.infrastructure.users.ports;
 
-import tks.gv.users.User;
+import tks.gv.Client;
 
 public interface ModifyUserPort {
 
-    void modifyUser(User user);
+    void modifyUser(Client user);
 }

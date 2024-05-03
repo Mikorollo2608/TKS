@@ -1,9 +1,9 @@
 package tks.gv.data.mappers.entities;
 
-import tks.gv.courts.Court;
+import tks.gv.Court;
 import tks.gv.data.entities.ReservationEntity;
-import tks.gv.reservations.Reservation;
-import tks.gv.users.Client;
+import tks.gv.Reservation;
+import tks.gv.Client;
 
 import java.util.Objects;
 import java.util.UUID;
