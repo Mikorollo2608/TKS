@@ -57,7 +57,7 @@ public class DBConfig {
 
     @Bean
     public MongoDatabase mongoDatabase(MongoClient mongoClient) {
-        return mongoClient.getDatabase("reserveACourt");
+        return mongoClient.getDatabase("userAccounts");
     }
 
 }
