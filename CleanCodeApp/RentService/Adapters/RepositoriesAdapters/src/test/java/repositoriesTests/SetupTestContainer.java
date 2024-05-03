@@ -40,7 +40,6 @@ public class SetupTestContainer {
                 .withCreateContainerCmdModifier(createContainerCmd -> {
                     createContainerCmd.withName(testDBName);
                     createContainerCmd.withHostName(testDBName);
-                    createContainerCmd.withEnv(List.of("MONGO_INITDB_ROOT_USERNAME=admin", "MONGO_INITDB_ROOT_PASSWORD=adminpassword"));
                     createContainerCmd.withEntrypoint("/bin/bash", "-c",
                             "openssl rand -base64 756 > docker-entrypoint-initdb.d/keyFile && chmod 400 docker-entrypoint-initdb.d/keyFile && " +
                                     "mkdir /etc/mongo && mv /docker-entrypoint-initdb.d/keyFile /etc/mongo &&" +

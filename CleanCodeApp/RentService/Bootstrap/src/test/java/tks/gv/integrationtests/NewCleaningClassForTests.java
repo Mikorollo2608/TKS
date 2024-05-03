@@ -60,7 +60,6 @@ public class NewCleaningClassForTests {
     private static final String testDBName = "testmongodb_rent1";
 
     static {
-        ///FIXME really??
         Map<String, String> map = new HashMap<>(
                 Map.of(
                         "MONGO_INITDB_ROOT_USERNAME", "admin",
@@ -73,7 +72,6 @@ public class NewCleaningClassForTests {
                 .withCreateContainerCmdModifier(createContainerCmd -> {
                     createContainerCmd.withName(testDBName);
                     createContainerCmd.withHostName(testDBName);
-                    createContainerCmd.withEnv(List.of("MONGO_INITDB_ROOT_USERNAME=admin", "MONGO_INITDB_ROOT_PASSWORD=adminpassword"));
                     createContainerCmd.withEntrypoint("/bin/bash", "-c",
                             "openssl rand -base64 756 > docker-entrypoint-initdb.d/keyFile && chmod 400 docker-entrypoint-initdb.d/keyFile && " +
                                     "mkdir /etc/mongo && mv /docker-entrypoint-initdb.d/keyFile /etc/mongo &&" +

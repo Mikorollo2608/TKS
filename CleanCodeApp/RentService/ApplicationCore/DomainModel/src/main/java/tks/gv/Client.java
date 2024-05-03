@@ -7,7 +7,6 @@ import lombok.Setter;
 import java.util.UUID;
 import java.util.Objects;
 
-@Getter
 @NoArgsConstructor
 public class Client {
     private enum ClientType {
@@ -31,14 +30,18 @@ public class Client {
         }
     }
 
+    @Getter
     private UUID id;
     @Setter
+    @Getter
     private String login;
     ///FIXME maybe delete???
     @Setter
+    @Getter
     private boolean archive = false;
 
     private ClientType clientType;
+    @Getter
     private String clientTypeName;
 
     public Client(UUID id, String login, String clientType) {
