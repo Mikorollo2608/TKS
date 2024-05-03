@@ -3,15 +3,12 @@ package tks.gv;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tks.gv.Court;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.ReservationException;
-import tks.gv.Reservation;
 import tks.gv.infrastructure.reservations.ports.*;
-import tks.gv.userinterface.courts.ports.GetCourtByIdUseCase;
-import tks.gv.userinterface.courts.ports.ModifyCourtUseCase;
-import tks.gv.userinterface.reservations.ports.*;
-import tks.gv.Client;
+import tks.gv.ui.courts.ports.GetCourtByIdUseCase;
+import tks.gv.ui.courts.ports.ModifyCourtUseCase;
+import tks.gv.ui.reservations.ports.*;
 
 import java.time.LocalDateTime;
 import java.util.List;

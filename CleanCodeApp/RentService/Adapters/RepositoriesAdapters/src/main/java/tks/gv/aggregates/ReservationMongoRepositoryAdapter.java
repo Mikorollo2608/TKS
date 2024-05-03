@@ -6,10 +6,9 @@ import org.springframework.stereotype.Component;
 import tks.gv.data.mappers.entities.ReservationMapper;
 import tks.gv.infrastructure.courts.ports.GetCourtByIdPort;
 import tks.gv.infrastructure.reservations.ports.*;
-import tks.gv.infrastructure.users.ports.GetUserByIdPort;
+import tks.gv.infrastructure.clients.ports.GetClientByIdPort;
 import tks.gv.repositories.ReservationMongoRepository;
 import tks.gv.Reservation;
-import tks.gv.Client;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,12 +23,12 @@ public class ReservationMongoRepositoryAdapter implements AddReservationPort,
 
     private final ReservationMongoRepository reservationMongoRepository;
     private final GetCourtByIdPort getCourtByIdPort;
-    private final GetUserByIdPort getUserByIdPort;
+    private final GetClientByIdPort getClientByIdPort;
 
     private Reservation alaReservationBuidler(Reservation reservation){
         if (reservation == null) return null;
         Reservation retReservation = new Reservation(reservation.getId(),
-                (Client)getUserByIdPort.getUserById(reservation.getClient().getId()),
+                getClientByIdPort.getClientById(reservation.getClient().getId()),
                 getCourtByIdPort.getCourtById(reservation.getCourt().getId()),
                 reservation.getBeginTime(),
                 reservation.getEndTime(),
@@ -40,9 +39,9 @@ public class ReservationMongoRepositoryAdapter implements AddReservationPort,
 
     @Autowired
     public ReservationMongoRepositoryAdapter(ReservationMongoRepository reservationMongoRepository,
-                                             GetUserByIdPort getUserByIdPort, GetCourtByIdPort getCourtByIdPort) {
+                                             GetClientByIdPort getClientByIdPort, GetCourtByIdPort getCourtByIdPort) {
         this.getCourtByIdPort = getCourtByIdPort;
-        this.getUserByIdPort = getUserByIdPort;
+        this.getClientByIdPort = getClientByIdPort;
         this.reservationMongoRepository = reservationMongoRepository;
     }
 

@@ -23,7 +23,7 @@ import tks.gv.data.mappers.dto.CourtMapper;
 import tks.gv.exceptions.CourtException;
 import tks.gv.exceptions.CourtNumberException;
 import tks.gv.exceptions.MyMongoException;
-import tks.gv.userinterface.courts.ports.*;
+import tks.gv.ui.courts.ports.*;
 
 import java.util.List;
 import java.util.UUID;

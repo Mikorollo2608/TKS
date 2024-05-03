@@ -13,7 +13,7 @@ import tks.gv.Court;
 import tks.gv.data.entities.ReservationEntity;
 import tks.gv.data.mappers.entities.ReservationMapper;
 import tks.gv.infrastructure.courts.ports.GetCourtByIdPort;
-import tks.gv.infrastructure.users.ports.GetUserByIdPort;
+import tks.gv.infrastructure.clients.ports.GetClientByIdPort;
 import tks.gv.repositories.ReservationMongoRepository;
 import tks.gv.Reservation;
 import tks.gv.Client;
@@ -39,7 +39,7 @@ public class ReservationMongoRepositoryAdapterTest {
     @Mock
     GetCourtByIdPort getCourtByIdPort;
     @Mock
-    GetUserByIdPort getUserByIdPort;
+    GetClientByIdPort getClientByIdPort;
     @Mock
     ReservationMongoRepository repository;
     @InjectMocks
@@ -66,7 +66,7 @@ public class ReservationMongoRepositoryAdapterTest {
     @Test
     void testAddReservation() {
         Mockito.when(getCourtByIdPort.getCourtById(court2.getId())).thenReturn(court2);
-        Mockito.when(getUserByIdPort.getUserById(testClient2.getId())).thenReturn(testClient2);
+        Mockito.when(getClientByIdPort.getClientById(testClient2.getId())).thenReturn(testClient2);
 
         ReservationEntity blankCreated = new ReservationEntity(UUID.randomUUID().toString(),
                 reservationBlank.getClient().getId().toString(), reservationBlank.getCourt().getId().toString(), reservationBlank.getBeginTime(), null, 0);
@@ -90,7 +90,7 @@ public class ReservationMongoRepositoryAdapterTest {
     @Test
     void testGetAllArchiveReservations(){
         Mockito.when(getCourtByIdPort.getCourtById(court2.getId())).thenReturn(court2);
-        Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
+        Mockito.when(getClientByIdPort.getClientById(testClient.getId())).thenReturn(testClient);
         Mockito.when(repository.read(eq(Filters.ne("endtime",null)))).thenReturn(List.of(ReservationMapper.toReservationEntity(reservationEnded)));
         assertEquals(reservationEnded, adapter.getAllArchiveReservations().get(0));
     }
@@ -98,7 +98,7 @@ public class ReservationMongoRepositoryAdapterTest {
     @Test
     void testGetAllCurrentReservations(){
         Mockito.when(getCourtByIdPort.getCourtById(court1.getId())).thenReturn(court1);
-        Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
+        Mockito.when(getClientByIdPort.getClientById(testClient.getId())).thenReturn(testClient);
         Mockito.when(repository.read(eq(Filters.eq("endtime",null)))).thenReturn(List.of(ReservationMapper.toReservationEntity(reservationCurrent)));
         assertEquals(reservationCurrent, adapter.getAllCurrentReservations().get(0));
     }
@@ -108,7 +108,7 @@ public class ReservationMongoRepositoryAdapterTest {
         Mockito.when(getCourtByIdPort.getCourtById(court1.getId())).thenReturn(court1);
         Mockito.when(getCourtByIdPort.getCourtById(court2.getId())).thenReturn(court2);
 
-        Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
+        Mockito.when(getClientByIdPort.getClientById(testClient.getId())).thenReturn(testClient);
 
         Mockito.when(repository.read(eq(Filters.eq("clientid",testClient.getId().toString()))))
                 .thenReturn(
@@ -123,7 +123,7 @@ public class ReservationMongoRepositoryAdapterTest {
     void testGetClientCurrentReservations(){
         Mockito.when(getCourtByIdPort.getCourtById(court1.getId())).thenReturn(court1);
 
-        Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
+        Mockito.when(getClientByIdPort.getClientById(testClient.getId())).thenReturn(testClient);
 
         Mockito.when(repository.read(eq(Filters.and(Filters.eq("endtime", null), Filters.eq("clientid", testClient.getId().toString())))))
                 .thenReturn(
@@ -136,7 +136,7 @@ public class ReservationMongoRepositoryAdapterTest {
     void testGetClientEndedReservations(){
         Mockito.when(getCourtByIdPort.getCourtById(court2.getId())).thenReturn(court2);
 
-        Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
+        Mockito.when(getClientByIdPort.getClientById(testClient.getId())).thenReturn(testClient);
 
         Mockito.when(repository.read(eq(Filters.and(Filters.ne("endtime", null), Filters.eq("clientid", testClient.getId().toString())))))
                 .thenReturn(
@@ -149,7 +149,7 @@ public class ReservationMongoRepositoryAdapterTest {
     void testGetCourtCurrentReservations(){
         Mockito.when(getCourtByIdPort.getCourtById(court1.getId())).thenReturn(court1);
 
-        Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
+        Mockito.when(getClientByIdPort.getClientById(testClient.getId())).thenReturn(testClient);
 
         Mockito.when(repository.read(eq(Filters.and(Filters.eq("endtime", null), Filters.eq("courtid", court1.getId().toString())))))
                 .thenReturn(
@@ -162,7 +162,7 @@ public class ReservationMongoRepositoryAdapterTest {
     void testGetCourtEndedReservations(){
         Mockito.when(getCourtByIdPort.getCourtById(court2.getId())).thenReturn(court2);
 
-        Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
+        Mockito.when(getClientByIdPort.getClientById(testClient.getId())).thenReturn(testClient);
 
         Mockito.when(repository.read(eq(Filters.and(Filters.ne("endtime", null), Filters.eq("courtid", court2.getId().toString())))))
                 .thenReturn(
@@ -175,7 +175,7 @@ public class ReservationMongoRepositoryAdapterTest {
     void testGetReservationById(){
         Mockito.when(getCourtByIdPort.getCourtById(court1.getId())).thenReturn(court1);
 
-        Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
+        Mockito.when(getClientByIdPort.getClientById(testClient.getId())).thenReturn(testClient);
 
         Mockito.when(repository.readByUUID(eq(reservationCurrent.getId())))
                 .thenReturn(ReservationMapper.toReservationEntity(reservationCurrent));

@@ -6,15 +6,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import tks.gv.exceptions.ClientException;
 import tks.gv.exceptions.ClientLoginException;
-import tks.gv.exceptions.ClientReadServiceException;
-import tks.gv.infrastructure.users.ports.AddUserPort;
-import tks.gv.infrastructure.users.ports.ChangeUserStatusPort;
-import tks.gv.infrastructure.users.ports.GetAllUsersPort;
-import tks.gv.infrastructure.users.ports.GetUserByIdPort;
-import tks.gv.infrastructure.users.ports.GetUserByLoginPort;
-import tks.gv.infrastructure.users.ports.ModifyUserPort;
+import tks.gv.infrastructure.clients.ports.AddClientPort;
+import tks.gv.infrastructure.clients.ports.ChangeClientStatusPort;
+import tks.gv.infrastructure.clients.ports.GetAllClientsPort;
+import tks.gv.infrastructure.clients.ports.GetClientByIdPort;
+import tks.gv.infrastructure.clients.ports.GetClientByLoginPort;
+import tks.gv.infrastructure.clients.ports.ModifyClientPort;
 import tks.gv.Client;
 import tks.gv.ClientService;
 
@@ -33,17 +31,17 @@ import static org.mockito.ArgumentMatchers.anyString;
 @ExtendWith(MockitoExtension.class)
 public class ClientServiceTest {
     @Mock
-    AddUserPort addUserPort;
+    AddClientPort addClientPort;
     @Mock
-    GetAllUsersPort getAllUsersPort;
+    GetAllClientsPort getAllClientsPort;
     @Mock
-    GetUserByIdPort getUserByIdPort;
+    GetClientByIdPort getClientByIdPort;
     @Mock
-    GetUserByLoginPort getUserByLoginPort;
+    GetClientByLoginPort getClientByLoginPort;
     @Mock
-    ModifyUserPort modifyUserPort;
+    ModifyClientPort modifyClientPort;
     @Mock
-    ChangeUserStatusPort changeUserStatusPort;
+    ChangeClientStatusPort changeClientStatusPort;
     @InjectMocks
     final ClientService cm = new ClientService();
 
@@ -68,14 +66,14 @@ public class ClientServiceTest {
 
     @Test
     void testCreatingClientManagerAllArgs() {
-        ClientService clientService = new ClientService(addUserPort, getAllUsersPort, getUserByIdPort,
-                getUserByLoginPort, modifyUserPort, changeUserStatusPort);
+        ClientService clientService = new ClientService(addClientPort, getAllClientsPort, getClientByIdPort,
+                getClientByLoginPort, modifyClientPort, changeClientStatusPort);
         assertNotNull(clientService);
     }
 
     @Test
     void testGetAllClientsOnlyClients() {
-        Mockito.when(getAllUsersPort.getAllUsers()).thenReturn(List.of(testClient, testClient2, testClient3));
+        Mockito.when(getAllClientsPort.getAllClients()).thenReturn(List.of(testClient, testClient2, testClient3));
 
         List<Client> clientList = cm.getAllClients();
         assertEquals(clientList.size(), 3);
@@ -85,8 +83,8 @@ public class ClientServiceTest {
     }
 
     @Test
-    void testGetAllClientsDiffUsers() {
-        Mockito.when(getAllUsersPort.getAllUsers()).thenReturn(List.of(testClient));
+    void testGetAllClientsDiffClients() {
+        Mockito.when(getAllClientsPort.getAllClients()).thenReturn(List.of(testClient));
 
         List<Client> clientList = cm.getAllClients();
         assertEquals(clientList.size(), 1);
@@ -96,8 +94,8 @@ public class ClientServiceTest {
 
     @Test
     void testGetClientById() {
-        Mockito.when(getAllUsersPort.getAllUsers()).thenReturn(List.of(testClient, testClient2, testClient3));
-        Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
+        Mockito.when(getAllClientsPort.getAllClients()).thenReturn(List.of(testClient, testClient2, testClient3));
+        Mockito.when(getClientByIdPort.getClientById(testClient.getId())).thenReturn(testClient);
 
         List<Client> clientList = cm.getAllClients();
         assertEquals(clientList.size(), 3);
@@ -107,15 +105,15 @@ public class ClientServiceTest {
 
     @Test
     void testGetClientByIdNull() {
-        Mockito.when(getUserByIdPort.getUserById(any())).thenReturn(null);
+        Mockito.when(getClientByIdPort.getClientById(any())).thenReturn(null);
 
         assertNull(cm.getClientById(UUID.randomUUID()));
     }
 
     @Test
     void testGetClientByIdString() {
-        Mockito.when(getAllUsersPort.getAllUsers()).thenReturn(List.of(testClient, testClient2, testClient3));
-        Mockito.when(getUserByIdPort.getUserById(testClient.getId())).thenReturn(testClient);
+        Mockito.when(getAllClientsPort.getAllClients()).thenReturn(List.of(testClient, testClient2, testClient3));
+        Mockito.when(getClientByIdPort.getClientById(testClient.getId())).thenReturn(testClient);
 
         List<Client> clientList = cm.getAllClients();
         assertEquals(clientList.size(), 3);
@@ -125,42 +123,42 @@ public class ClientServiceTest {
 
     @Test
     void testRegisterNewClient() {
-        Mockito.when(addUserPort.addUser(testClient)).thenReturn(testClient);
+        Mockito.when(addClientPort.addClient(testClient)).thenReturn(testClient);
 
         assertEquals(testClient, cm.registerClient(testClient));
     }
 
     @Test
     void testRegisterClientNull() {
-        Mockito.when(addUserPort.addUser(testClient)).thenReturn(null);
+        Mockito.when(addClientPort.addClient(testClient)).thenReturn(null);
 
         assertNull(cm.registerClient(testClient));
     }
     
     @Test
     void testRegisterNewClientNeg() {
-        Mockito.when(addUserPort.addUser(testClient)).thenThrow(ClientLoginException.class);
+        Mockito.when(addClientPort.addClient(testClient)).thenThrow(ClientLoginException.class);
 
         assertThrows(ClientLoginException.class, () -> cm.registerClient(testClient));
     }
 
     @Test
     void testGetClientByLogin() {
-        Mockito.when(getUserByLoginPort.getUserByLogin("testLoginKlient2")).thenReturn(testClient2);
+        Mockito.when(getClientByLoginPort.getClientByLogin("testLoginKlient2")).thenReturn(testClient2);
 
         assertEquals(testClient2, cm.getClientByLogin("testLoginKlient2"));
     }
 
     @Test
     void testGetClientByLoginNull() {
-        Mockito.when(getUserByLoginPort.getUserByLogin(anyString())).thenReturn(null);
+        Mockito.when(getClientByLoginPort.getClientByLogin(anyString())).thenReturn(null);
 
         assertNull(cm.getClientByLogin("testClient"));
     }
 
     @Test
     void testGetClientByLoginMatching() {
-        Mockito.when(getUserByLoginPort.getUserByLoginMatching("testLogin")).thenReturn(List.of(testClient2, testClient3));
+        Mockito.when(getClientByLoginPort.getClientByLoginMatching("testLogin")).thenReturn(List.of(testClient2, testClient3));
 
         List<Client> clientList = cm.getClientByLoginMatching("testLogin");
         assertEquals(clientList.size(), 2);
@@ -170,8 +168,8 @@ public class ClientServiceTest {
     }
 
     @Test
-    void testGetClientByLoginMatchingDiffUsers() {
-        Mockito.when(getUserByLoginPort.getUserByLoginMatching("testLogin")).thenReturn(List.of(testClient2));
+    void testGetClientByLoginMatchingDiffClients() {
+        Mockito.when(getClientByLoginPort.getClientByLoginMatching("testLogin")).thenReturn(List.of(testClient2));
 
         List<Client> clientList = cm.getClientByLoginMatching("testLogin");
         assertEquals(clientList.size(), 1);
@@ -182,52 +180,52 @@ public class ClientServiceTest {
 
     @Test
     void testGetClientByLoginMatchingEmptyList() {
-        Mockito.when(getUserByLoginPort.getUserByLoginMatching(anyString())).thenReturn(new ArrayList<>());
+        Mockito.when(getClientByLoginPort.getClientByLoginMatching(anyString())).thenReturn(new ArrayList<>());
 
         assertEquals(0, cm.getClientByLoginMatching("testA").size());
     }
 
     @Test
     void testModifyClient() {
-        Mockito.doNothing().when(modifyUserPort).modifyUser(any(Client.class));
+        Mockito.doNothing().when(modifyClientPort).modifyClient(any(Client.class));
 
         cm.modifyClient(testClient);
-        Mockito.verify(modifyUserPort, Mockito.times(1)).modifyUser(testClient);
+        Mockito.verify(modifyClientPort, Mockito.times(1)).modifyClient(testClient);
     }
 
     @Test
     void testActivateClient() {
-        Mockito.doNothing().when(changeUserStatusPort).activateUser(any(UUID.class));
+        Mockito.doNothing().when(changeClientStatusPort).activateClient(any(UUID.class));
 
         UUID id = UUID.randomUUID();
         cm.activateClient(id);
-        Mockito.verify(changeUserStatusPort, Mockito.times(1)).activateUser(id);
+        Mockito.verify(changeClientStatusPort, Mockito.times(1)).activateClient(id);
     }
 
     @Test
     void testActivateClientStringId() {
-        Mockito.doNothing().when(changeUserStatusPort).activateUser(any(UUID.class));
+        Mockito.doNothing().when(changeClientStatusPort).activateClient(any(UUID.class));
 
         UUID id = UUID.randomUUID();
         cm.activateClient(id.toString());
-        Mockito.verify(changeUserStatusPort, Mockito.times(1)).activateUser(id);
+        Mockito.verify(changeClientStatusPort, Mockito.times(1)).activateClient(id);
     }
 
     @Test
     void testDeactivateClient() {
-        Mockito.doNothing().when(changeUserStatusPort).deactivateUser(any(UUID.class));
+        Mockito.doNothing().when(changeClientStatusPort).deactivateClient(any(UUID.class));
 
         UUID id = UUID.randomUUID();
         cm.deactivateClient(id);
-        Mockito.verify(changeUserStatusPort, Mockito.times(1)).deactivateUser(id);
+        Mockito.verify(changeClientStatusPort, Mockito.times(1)).deactivateClient(id);
     }
 
     @Test
     void testDeactivateClientStringId() {
-        Mockito.doNothing().when(changeUserStatusPort).deactivateUser(any(UUID.class));
+        Mockito.doNothing().when(changeClientStatusPort).deactivateClient(any(UUID.class));
 
         UUID id = UUID.randomUUID();
         cm.deactivateClient(id.toString());
-        Mockito.verify(changeUserStatusPort, Mockito.times(1)).deactivateUser(id);
+        Mockito.verify(changeClientStatusPort, Mockito.times(1)).deactivateClient(id);
     }
 }

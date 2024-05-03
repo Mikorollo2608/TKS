@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class ClientMapper {
 
-    public static ClientDTO toUserDTO(Client client) {
+    public static ClientDTO toDTO(Client client) {
         if (client == null) {
             return null;
         }
@@ -23,7 +23,7 @@ public class ClientMapper {
                 client.getClientTypeName());
     }
 
-    public static Client fromUserDTO(ClientDTO clientDTO) {
+    public static Client fromDTO(ClientDTO clientDTO) {
         if (clientDTO == null) {
             return null;
         }

@@ -10,13 +10,13 @@ import tks.gv.data.dto.AddCourtRequest;
 import tks.gv.data.dto.AddCourtResponse;
 import tks.gv.data.dto.GetAllCourtsRequest;
 import tks.gv.data.dto.GetAllCourtsResponse;
-import tks.gv.userinterface.courts.ports.AddCourtUseCase;
-import tks.gv.userinterface.courts.ports.GetAllCourtsUseCase;
+import tks.gv.ui.courts.ports.AddCourtUseCase;
+import tks.gv.ui.courts.ports.GetAllCourtsUseCase;
 import tks.gv.util.SoapConstants;
 import tks.gv.data.dto.GetCourtByNumberRequest;
 import tks.gv.data.dto.GetCourtByNumberResponse;
 import tks.gv.data.mappers.dto.CourtMapperXml;
-import tks.gv.userinterface.courts.ports.GetCourtByCourtNumberUseCase;
+import tks.gv.ui.courts.ports.GetCourtByCourtNumberUseCase;
 
 @Endpoint
 public class CourtEndpoint {

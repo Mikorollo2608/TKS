@@ -3,18 +3,18 @@ package tks.gv;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tks.gv.infrastructure.users.ports.AddUserPort;
-import tks.gv.infrastructure.users.ports.ChangeUserStatusPort;
-import tks.gv.infrastructure.users.ports.GetAllUsersPort;
-import tks.gv.infrastructure.users.ports.GetUserByIdPort;
-import tks.gv.infrastructure.users.ports.GetUserByLoginPort;
-import tks.gv.infrastructure.users.ports.ModifyUserPort;
-import tks.gv.userinterface.users.ports.clients.ChangeClientStatusUseCase;
-import tks.gv.userinterface.users.ports.clients.GetAllClientsUseCase;
-import tks.gv.userinterface.users.ports.clients.GetClientByIdUseCase;
-import tks.gv.userinterface.users.ports.clients.GetClientByLoginUseCase;
-import tks.gv.userinterface.users.ports.clients.ModifyClientUseCase;
-import tks.gv.userinterface.users.ports.clients.RegisterClientUseCase;
+import tks.gv.infrastructure.clients.ports.AddClientPort;
+import tks.gv.infrastructure.clients.ports.ChangeClientStatusPort;
+import tks.gv.infrastructure.clients.ports.GetAllClientsPort;
+import tks.gv.infrastructure.clients.ports.GetClientByIdPort;
+import tks.gv.infrastructure.clients.ports.GetClientByLoginPort;
+import tks.gv.infrastructure.clients.ports.ModifyClientPort;
+import tks.gv.ui.clients.ports.ChangeClientStatusUseCase;
+import tks.gv.ui.clients.ports.GetAllClientsUseCase;
+import tks.gv.ui.clients.ports.GetClientByIdUseCase;
+import tks.gv.ui.clients.ports.GetClientByLoginUseCase;
+import tks.gv.ui.clients.ports.ModifyClientUseCase;
+import tks.gv.ui.clients.ports.RegisterClientUseCase;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,63 +29,63 @@ public class ClientService implements
         ModifyClientUseCase,
         ChangeClientStatusUseCase {
 
-    private AddUserPort addUserPort;
-    private GetAllUsersPort getAllUsersPort;
-    private GetUserByIdPort getUserByIdPort;
-    private GetUserByLoginPort getUserByLoginPort;
-    private ModifyUserPort modifyUserPort;
-    private ChangeUserStatusPort changeUserStatusPort;
+    private AddClientPort addClientPort;
+    private GetAllClientsPort getAllClientsPort;
+    private GetClientByIdPort getClientByIdPort;
+    private GetClientByLoginPort getClientByLoginPort;
+    private ModifyClientPort modifyClientPort;
+    private ChangeClientStatusPort changeClientStatusPort;
 
     @Autowired
-    public ClientService(AddUserPort addUserPort, GetAllUsersPort getAllUsersPort, GetUserByIdPort getUserByIdPort,
-                         GetUserByLoginPort getUserByLoginPort, ModifyUserPort modifyUserPort,
-                         ChangeUserStatusPort changeUserStatusPort) {
-        this.addUserPort = addUserPort;
-        this.getAllUsersPort = getAllUsersPort;
-        this.getUserByIdPort = getUserByIdPort;
-        this.getUserByLoginPort = getUserByLoginPort;
-        this.modifyUserPort = modifyUserPort;
-        this.changeUserStatusPort = changeUserStatusPort;
+    public ClientService(AddClientPort addClientPort, GetAllClientsPort getAllClientsPort, GetClientByIdPort getClientByIdPort,
+                         GetClientByLoginPort getClientByLoginPort, ModifyClientPort modifyClientPort,
+                         ChangeClientStatusPort changeClientStatusPort) {
+        this.addClientPort = addClientPort;
+        this.getAllClientsPort = getAllClientsPort;
+        this.getClientByIdPort = getClientByIdPort;
+        this.getClientByLoginPort = getClientByLoginPort;
+        this.modifyClientPort = modifyClientPort;
+        this.changeClientStatusPort = changeClientStatusPort;
     }
 
     @Override
     public Client registerClient(Client client) {
-        return addUserPort.addUser(client);
+        return addClientPort.addClient(client);
     }
 
     @Override
     public Client getClientById(UUID clientId) {
-        return getUserByIdPort.getUserById(clientId);
+        return getClientByIdPort.getClientById(clientId);
     }
 
     @Override
     public List<Client> getAllClients() {
-        return getAllUsersPort.getAllUsers();
+        return getAllClientsPort.getAllClients();
     }
 
     @Override
     public Client getClientByLogin(String login) {
-        return getUserByLoginPort.getUserByLogin(login);
+        return getClientByLoginPort.getClientByLogin(login);
     }
 
     @Override
     public List<Client> getClientByLoginMatching(String login) {
-        return getUserByLoginPort.getUserByLoginMatching(login);
+        return getClientByLoginPort.getClientByLoginMatching(login);
     }
 
     @Override
     public void modifyClient(Client modifiedClient) {
-        modifyUserPort.modifyUser(modifiedClient);
+        modifyClientPort.modifyClient(modifiedClient);
     }
 
     @Override
     public void activateClient(UUID clientId) {
-        changeUserStatusPort.activateUser(clientId);
+        changeClientStatusPort.activateClient(clientId);
     }
 
     @Override
     public void deactivateClient(UUID clientId) {
-        changeUserStatusPort.deactivateUser(clientId);
+        changeClientStatusPort.deactivateClient(clientId);
     }
 
 }

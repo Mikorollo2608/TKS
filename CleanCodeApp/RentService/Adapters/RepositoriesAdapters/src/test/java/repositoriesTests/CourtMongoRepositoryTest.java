@@ -13,7 +13,7 @@ import tks.gv.exceptions.CourtNumberException;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.repositories.CourtMongoRepository;
 import tks.gv.repositories.ReservationMongoRepository;
-import tks.gv.repositories.UserMongoRepository;
+import tks.gv.repositories.ClientMongoRepository;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -204,8 +204,8 @@ public class CourtMongoRepositoryTest extends SetupTestContainer {
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
 
         ReservationMongoRepository reservationMongoRepository = new ReservationMongoRepository(mongoClient, mongoDatabase);
-        UserMongoRepository userMongoRepository = new UserMongoRepository(mongoClient, mongoDatabase);
-        ClientEntity testClient1 = (ClientEntity) userMongoRepository.create(new ClientEntity(UUID.randomUUID().toString(), "John",
+        ClientMongoRepository clientMongoRepository = new ClientMongoRepository(mongoClient, mongoDatabase);
+        ClientEntity testClient1 = clientMongoRepository.create(new ClientEntity(UUID.randomUUID().toString(), "John",
                 "Smith", "999999999999", "999999999999", false, "normal"));
         ReservationEntity testReservation1 = new ReservationEntity(UUID.randomUUID().toString(), testClient1.getId(),
                 testCourt1.getId(), testTimeStart, null, 0);

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tks.gv.Court;
-import tks.gv.data.entities.ClientEntity;
 import tks.gv.data.entities.ReservationEntity;
 import tks.gv.data.mappers.entities.ClientMapper;
 import tks.gv.data.mappers.entities.CourtMapper;
@@ -18,7 +17,7 @@ import tks.gv.exceptions.ReservationException;
 import tks.gv.exceptions.ClientException;
 import tks.gv.repositories.CourtMongoRepository;
 import tks.gv.repositories.ReservationMongoRepository;
-import tks.gv.repositories.UserMongoRepository;
+import tks.gv.repositories.ClientMongoRepository;
 import tks.gv.Reservation;
 import tks.gv.Client;
 
@@ -38,7 +37,7 @@ public class ReservationMongoRepositoryTest extends SetupTestContainer {
 
     static ReservationMongoRepository reservationRepository;
     static CourtMongoRepository courtRepository;
-    static UserMongoRepository clientRepository;
+    static ClientMongoRepository clientRepository;
     String testClientType;
 
     Client testClient1;
@@ -67,14 +66,14 @@ public class ReservationMongoRepositoryTest extends SetupTestContainer {
     void initData() {
         reservationRepository = new ReservationMongoRepository(mongoClient, mongoDatabase);
         courtRepository = new CourtMongoRepository(mongoClient, mongoDatabase);
-        clientRepository = new UserMongoRepository(mongoClient, mongoDatabase);
+        clientRepository = new ClientMongoRepository(mongoClient, mongoDatabase);
 
         cleanFirstAndLastTimeDB();
         testClientType = "normal";
 
-        testClient1 = ClientMapper.fromUserEntity(clientRepository.create(ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "John", "Smith", "12345678901", "12345678901", testClientType))));
-        testClient2 = ClientMapper.fromUserEntity(clientRepository.create(ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "Eva", "Brown", "12345678902", "12345678902", testClientType))));
-        testClient3 = ClientMapper.fromUserEntity(clientRepository.create(ClientMapper.toUserEntity(new Client(UUID.randomUUID(), "Adam", "Long", "12345678903", "12345678903", testClientType))));
+        testClient1 = ClientMapper.fromEntity(clientRepository.create(ClientMapper.toEntity(new Client(UUID.randomUUID(), "John", "Smith", "12345678901", "12345678901", testClientType))));
+        testClient2 = ClientMapper.fromEntity(clientRepository.create(ClientMapper.toEntity(new Client(UUID.randomUUID(), "Eva", "Brown", "12345678902", "12345678902", testClientType))));
+        testClient3 = ClientMapper.fromEntity(clientRepository.create(ClientMapper.toEntity(new Client(UUID.randomUUID(), "Adam", "Long", "12345678903", "12345678903", testClientType))));
 
         testCourt1 = CourtMapper.fromMongoCourt(courtRepository.create(CourtMapper.toMongoCourt(new Court(UUID.randomUUID(), 1000, 100, 1))));
         testCourt2 = CourtMapper.fromMongoCourt(courtRepository.create(CourtMapper.toMongoCourt(new Court(UUID.randomUUID(), 1000, 100, 2))));

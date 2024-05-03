@@ -3,9 +3,8 @@ package tks.gv;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tks.gv.Court;
 import tks.gv.infrastructure.courts.ports.*;
-import tks.gv.userinterface.courts.ports.*;
+import tks.gv.ui.courts.ports.*;
 
 import java.util.List;
 import java.util.UUID;

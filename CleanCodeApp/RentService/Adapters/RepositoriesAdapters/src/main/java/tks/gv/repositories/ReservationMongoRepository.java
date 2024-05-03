@@ -62,7 +62,7 @@ public class ReservationMongoRepository extends AbstractMongoRepository<Reservat
     public ReservationEntity create(ReservationEntity initReservation) {
         try {
             //Check client
-            var list1 = getDatabase().getCollection(UserMongoRepository.COLLECTION_NAME, ClientEntity.class)
+            var list1 = getDatabase().getCollection(ClientMongoRepository.COLLECTION_NAME, ClientEntity.class)
                     .find(Filters.eq("_id", initReservation.getClientId())).into(new ArrayList<>());
             if (list1.isEmpty()) {
                 throw new ReservationException("Brak podanego klienta w bazie!");
@@ -120,8 +120,7 @@ public class ReservationMongoRepository extends AbstractMongoRepository<Reservat
 
     @Override
     public boolean updateByReplace(UUID uuid, ReservationEntity reservation) {
-        Bson filter = Filters.eq("_id", uuid.toString());
-        UpdateResult result = getCollection().replaceOne(filter, reservation);
+        UpdateResult result = getCollection().replaceOne(Filters.eq("_id", uuid.toString()), reservation);
         return result.getModifiedCount() != 0;
     }
 
@@ -165,9 +164,9 @@ public class ReservationMongoRepository extends AbstractMongoRepository<Reservat
         LocalDateTime dataStart = LocalDateTime.of(2023, Month.NOVEMBER, 30, 14, 20, 7, 200);
         LocalDateTime secondDate = LocalDateTime.of(2023, Month.NOVEMBER, 28, 14, 20, 1, 300);
 
-       createNew(new ReservationEntity(UUID.randomUUID().toString(), UUID.fromString("b6f5bcb8-7f01-4470-8238-cc3320326157").toString(), UUID.fromString("fe6a35bb-7535-4c23-a259-a14ac0ccedba").toString(), dataStart , null, 0));
-       createNew(new ReservationEntity(UUID.randomUUID().toString(), UUID.fromString("80e62401-6517-4392-856c-e22ef5f3d6a2").toString(), UUID.fromString("634d9130-0015-42bb-a70a-543dee846760").toString(), dataStart , dataStart.plusHours(1L), 100));
-       createNew(new ReservationEntity(UUID.randomUUID().toString(), UUID.fromString("6dc63417-0a21-462c-a97a-e0bf6055a3ea").toString(), UUID.fromString("30ac2027-dcc8-4af7-920f-831b51023bc9").toString(), secondDate, null, 0));
+        createNew(new ReservationEntity(UUID.randomUUID().toString(), UUID.fromString("b6f5bcb8-7f01-4470-8238-cc3320326157").toString(), UUID.fromString("fe6a35bb-7535-4c23-a259-a14ac0ccedba").toString(), dataStart, null, 0));
+        createNew(new ReservationEntity(UUID.randomUUID().toString(), UUID.fromString("80e62401-6517-4392-856c-e22ef5f3d6a2").toString(), UUID.fromString("634d9130-0015-42bb-a70a-543dee846760").toString(), dataStart, dataStart.plusHours(1L), 100));
+        createNew(new ReservationEntity(UUID.randomUUID().toString(), UUID.fromString("6dc63417-0a21-462c-a97a-e0bf6055a3ea").toString(), UUID.fromString("30ac2027-dcc8-4af7-920f-831b51023bc9").toString(), secondDate, null, 0));
     }
 
     @PreDestroy

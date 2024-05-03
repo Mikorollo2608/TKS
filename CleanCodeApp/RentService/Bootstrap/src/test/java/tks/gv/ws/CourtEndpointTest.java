@@ -13,9 +13,9 @@ import org.springframework.ws.test.server.ResponseMatchers;
 import org.springframework.xml.transform.StringSource;
 import tks.gv.Court;
 import tks.gv.endpoints.CourtEndpoint;
-import tks.gv.userinterface.courts.ports.AddCourtUseCase;
-import tks.gv.userinterface.courts.ports.GetAllCourtsUseCase;
-import tks.gv.userinterface.courts.ports.GetCourtByCourtNumberUseCase;
+import tks.gv.ui.courts.ports.AddCourtUseCase;
+import tks.gv.ui.courts.ports.GetAllCourtsUseCase;
+import tks.gv.ui.courts.ports.GetCourtByCourtNumberUseCase;
 
 import java.io.IOException;
 import java.util.ArrayList;

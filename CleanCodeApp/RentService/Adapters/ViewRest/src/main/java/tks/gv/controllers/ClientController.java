@@ -25,12 +25,12 @@ import tks.gv.data.mappers.dto.ClientMapper;
 import tks.gv.exceptions.ClientException;
 import tks.gv.exceptions.ClientLoginException;
 
-import tks.gv.userinterface.users.ports.clients.ChangeClientStatusUseCase;
-import tks.gv.userinterface.users.ports.clients.GetAllClientsUseCase;
-import tks.gv.userinterface.users.ports.clients.GetClientByIdUseCase;
-import tks.gv.userinterface.users.ports.clients.GetClientByLoginUseCase;
-import tks.gv.userinterface.users.ports.clients.ModifyClientUseCase;
-import tks.gv.userinterface.users.ports.clients.RegisterClientUseCase;
+import tks.gv.ui.clients.ports.ChangeClientStatusUseCase;
+import tks.gv.ui.clients.ports.GetAllClientsUseCase;
+import tks.gv.ui.clients.ports.GetClientByIdUseCase;
+import tks.gv.ui.clients.ports.GetClientByLoginUseCase;
+import tks.gv.ui.clients.ports.ModifyClientUseCase;
+import tks.gv.ui.clients.ports.RegisterClientUseCase;
 import tks.gv.Client;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class ClientController {
     private final ChangeClientStatusUseCase changeClientStatusUseCase;
 
     @PostMapping(value = "/addClient")
-    public ResponseEntity<String> addClient(@Validated({ClientDTO.BasicUserValidation.class, ClientDTO.PasswordValidation.class}) @RequestBody ClientDTO client,
+    public ResponseEntity<String> addClient(@Validated({ClientDTO.BasicClientValidation.class, ClientDTO.PasswordValidation.class}) @RequestBody ClientDTO client,
                                             Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -60,7 +60,7 @@ public class ClientController {
         }
 
         try {
-            registerClientUseCase.registerClient(ClientMapper.fromUserDTO(client));
+            registerClientUseCase.registerClient(ClientMapper.fromDTO(client));
         } catch (ClientLoginException ule) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ule.getMessage());
         } catch (ClientException ue) {
@@ -79,7 +79,7 @@ public class ClientController {
         }
 
         return resultList.stream()
-                .map(ClientMapper::toUserDTO)
+                .map(ClientMapper::toDTO)
                 .toList();
     }
 
@@ -89,7 +89,7 @@ public class ClientController {
         if (client == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
         }
-        return ClientMapper.toUserDTO(client);
+        return ClientMapper.toDTO(client);
     }
 
     @GetMapping("/get")
@@ -98,7 +98,7 @@ public class ClientController {
         if (client == null) {
             response.setStatus(HttpStatus.NO_CONTENT.value());
         }
-        return ClientMapper.toUserDTO(client);
+        return ClientMapper.toDTO(client);
     }
 
     @GetMapping("/match")
@@ -110,12 +110,12 @@ public class ClientController {
         }
 
         return resultList.stream()
-                .map(ClientMapper::toUserDTO)
+                .map(ClientMapper::toDTO)
                 .toList();
     }
 
     @PutMapping("/modifyClient")
-    public ResponseEntity<String> modifyClient(@Validated(ClientDTO.BasicUserValidation.class) @RequestBody ClientDTO modifiedClient,
+    public ResponseEntity<String> modifyClient(@Validated(ClientDTO.BasicClientValidation.class) @RequestBody ClientDTO modifiedClient,
                                                Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -127,7 +127,7 @@ public class ClientController {
         }
 
         try {
-            modifyClientUseCase.modifyClient(ClientMapper.fromUserDTO(
+            modifyClientUseCase.modifyClient(ClientMapper.fromDTO(
                     new ClientDTO(
                             modifiedClient.getId(),
                             modifiedClient.getFirstName(),

@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(makeFinal = true)
 @JsonPropertyOrder({"archive", "id", "login", "clientTypeName", "firstName", "lastName"})
 public class ClientDTO {
-    public interface BasicUserValidation {
+    public interface BasicClientValidation {
     }
 
     public interface PasswordValidation {
@@ -24,7 +24,7 @@ public class ClientDTO {
     @JsonProperty("id")
     private String id;
     @JsonProperty("login")
-    @NotBlank(groups = {BasicUserValidation.class})
+    @NotBlank(groups = {BasicClientValidation.class})
     private String login;
     @JsonProperty("archive")
     private boolean archive;
@@ -34,10 +34,10 @@ public class ClientDTO {
     private String password;
 
     @JsonProperty("firstName")
-    @NotBlank(groups = {BasicUserValidation.class})
+    @NotBlank(groups = {BasicClientValidation.class})
     private String firstName;
     @JsonProperty("lastName")
-    @NotBlank(groups = {BasicUserValidation.class})
+    @NotBlank(groups = {BasicClientValidation.class})
     private String lastName;
     @JsonProperty("clientTypeName")
     private String clientType;

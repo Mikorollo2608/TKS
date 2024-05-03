@@ -14,12 +14,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import tks.gv.controllers.ClientController;
 import tks.gv.exceptions.ClientLoginException;
-import tks.gv.userinterface.users.ports.clients.ChangeClientStatusUseCase;
-import tks.gv.userinterface.users.ports.clients.GetAllClientsUseCase;
-import tks.gv.userinterface.users.ports.clients.GetClientByIdUseCase;
-import tks.gv.userinterface.users.ports.clients.GetClientByLoginUseCase;
-import tks.gv.userinterface.users.ports.clients.ModifyClientUseCase;
-import tks.gv.userinterface.users.ports.clients.RegisterClientUseCase;
+import tks.gv.ui.clients.ports.ChangeClientStatusUseCase;
+import tks.gv.ui.clients.ports.GetAllClientsUseCase;
+import tks.gv.ui.clients.ports.GetClientByIdUseCase;
+import tks.gv.ui.clients.ports.GetClientByLoginUseCase;
+import tks.gv.ui.clients.ports.ModifyClientUseCase;
+import tks.gv.ui.clients.ports.RegisterClientUseCase;
 import tks.gv.Client;
 
 import java.util.ArrayList;

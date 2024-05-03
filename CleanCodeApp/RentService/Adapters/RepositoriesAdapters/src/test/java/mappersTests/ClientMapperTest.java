@@ -53,7 +53,7 @@ public class ClientMapperTest {
         Client client = new Client(UUID.randomUUID(), testFirstName, testLastName, testLogin, testPassword, testTypeNormal);
         assertNotNull(client);
 
-        ClientEntity clientDTO = ClientMapper.toUserEntity(client);
+        ClientEntity clientDTO = ClientMapper.toEntity(client);
         assertNotNull(clientDTO);
 
         assertEquals(client.getId(), UUID.fromString(clientDTO.getId()));
@@ -70,7 +70,7 @@ public class ClientMapperTest {
                 true, testTypeNormal);
         assertNotNull(clientDTO1);
 
-        Client client1 = ClientMapper.fromUserEntity(clientDTO1);
+        Client client1 = ClientMapper.fromEntity(clientDTO1);
         assertNotNull(client1);
 
         assertEquals(UUID.fromString(clientDTO1.getId()), client1.getId());
@@ -85,7 +85,7 @@ public class ClientMapperTest {
                 testFirstName, testLastName, testLogin, testPassword, false, testTypeAthlete);
         assertNotNull(clientDTO2);
 
-        Client client2 = ClientMapper.fromUserEntity(clientDTO2);
+        Client client2 = ClientMapper.fromEntity(clientDTO2);
         assertNotNull(client2);
         assertEquals(clientDTO2.getClientType(), client2.getClientTypeName());
 
@@ -93,7 +93,7 @@ public class ClientMapperTest {
                 testLogin, testPassword, false, testTypeCoach);
         assertNotNull(clientDTO3);
 
-        Client client3 = ClientMapper.fromUserEntity(clientDTO3);
+        Client client3 = ClientMapper.fromEntity(clientDTO3);
         assertNotNull(client3);
         assertEquals(clientDTO3.getClientType(), client3.getClientTypeName());
     }

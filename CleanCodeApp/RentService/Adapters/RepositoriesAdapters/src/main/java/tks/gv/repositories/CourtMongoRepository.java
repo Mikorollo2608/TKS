@@ -90,12 +90,19 @@ public class CourtMongoRepository extends AbstractMongoRepository<CourtEntity> {
 
     @Override
     public CourtEntity create(CourtEntity court) {
-        if(court.getId() == null || court.getId().isBlank()){
-            court = new CourtEntity(UUID.randomUUID().toString(), court.getArea(), court.getBaseCost(), court.getCourtNumber(), court.isArchive(), court.isRented());
+        if (court.getId() == null || court.getId().isBlank()) {
+            court = new CourtEntity(
+                    UUID.randomUUID().toString(),
+                    court.getArea(),
+                    court.getBaseCost(),
+                    court.getCourtNumber(),
+                    court.isArchive(),
+                    court.isRented()
+            );
         }
         if (!read(Filters.eq("courtnumber", court.getCourtNumber())).isEmpty()) {
             throw new CourtNumberException("Nie udalo sie zarejestrowac boiska w bazie! - boisko o tym numerze " +
-                "znajduje sie juz w bazie");
+                    "znajduje sie juz w bazie");
         }
         if (!createNew(court)) {
             throw new CourtException("Nie udalo sie zarejestrowac boiska w bazie! - brak odpowiedzi");
@@ -105,13 +112,12 @@ public class CourtMongoRepository extends AbstractMongoRepository<CourtEntity> {
 
     @Override
     public List<CourtEntity> read(Bson filter) {
-        return new ArrayList<CourtEntity>(this.getCollection().find(filter).into(new ArrayList<>()));
+        return new ArrayList<>(this.getCollection().find(filter).into(new ArrayList<>()));
     }
 
     @Override
     public boolean updateByReplace(UUID uuid, CourtEntity court) {
-        Bson filter = Filters.eq("_id", uuid.toString());
-        UpdateResult result = getCollection().replaceOne(filter, court);
+        UpdateResult result = getCollection().replaceOne(Filters.eq("_id", uuid.toString()), court);
         return result.getModifiedCount() != 0;
     }
 
@@ -149,12 +155,12 @@ public class CourtMongoRepository extends AbstractMongoRepository<CourtEntity> {
         destroy();
 
         createNew(CourtMapper.toMongoCourt(new Court(UUID.fromString("634d9130-0015-42bb-a70a-543dee846760"), 100, 100, 991)));
-        createNew(CourtMapper.toMongoCourt(new Court(UUID.fromString("fe6a35bb-7535-4c23-a259-a14ac0ccedba"),100, 200, 992)));
+        createNew(CourtMapper.toMongoCourt(new Court(UUID.fromString("fe6a35bb-7535-4c23-a259-a14ac0ccedba"), 100, 200, 992)));
         update(UUID.fromString("fe6a35bb-7535-4c23-a259-a14ac0ccedba"), "rented", 1);
-        createNew(CourtMapper.toMongoCourt(new Court(UUID.fromString("30ac2027-dcc8-4af7-920f-831b51023bc9"),300, 200, 993)));
+        createNew(CourtMapper.toMongoCourt(new Court(UUID.fromString("30ac2027-dcc8-4af7-920f-831b51023bc9"), 300, 200, 993)));
         update(UUID.fromString("30ac2027-dcc8-4af7-920f-831b51023bc9"), "rented", 1);
-        createNew(CourtMapper.toMongoCourt(new Court(UUID.fromString("d820d682-0f5d-46b7-9963-66291e5f64b0"),350, 100, 994)));
-        createNew(CourtMapper.toMongoCourt(new Court(UUID.fromString("2e9258b2-98dd-4f9a-8f73-6f4f56c2e618"),150, 200, 995)));
+        createNew(CourtMapper.toMongoCourt(new Court(UUID.fromString("d820d682-0f5d-46b7-9963-66291e5f64b0"), 350, 100, 994)));
+        createNew(CourtMapper.toMongoCourt(new Court(UUID.fromString("2e9258b2-98dd-4f9a-8f73-6f4f56c2e618"), 150, 200, 995)));
     }
 
     @PreDestroy

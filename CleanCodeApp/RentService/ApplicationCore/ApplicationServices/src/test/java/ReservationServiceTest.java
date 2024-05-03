@@ -21,8 +21,8 @@ import tks.gv.infrastructure.reservations.ports.GetReservationByIdPort;
 import tks.gv.infrastructure.reservations.ports.ReturnCourtPort;
 import tks.gv.Reservation;
 import tks.gv.ReservationService;
-import tks.gv.userinterface.courts.ports.GetCourtByIdUseCase;
-import tks.gv.userinterface.courts.ports.ModifyCourtUseCase;
+import tks.gv.ui.courts.ports.GetCourtByIdUseCase;
+import tks.gv.ui.courts.ports.ModifyCourtUseCase;
 import tks.gv.Client;
 
 import java.time.LocalDateTime;
@@ -87,9 +87,9 @@ public class ReservationServiceTest {
     Client testClient2;
     Client testClient3;
 
-//    String UserUUID1 = "6d4eaba3-7277-4364-9d77-0030ca3d9529";
-//    String UserUUID2 = "1e83883c-4d8f-46ad-b6b9-19d125d5599f";
-//    String UserUUID3 = "e7e364a9-0183-4f46-b8c0-7ab248adbc1d";
+//    String ClientUUID1 = "6d4eaba3-7277-4364-9d77-0030ca3d9529";
+//    String ClientUUID2 = "1e83883c-4d8f-46ad-b6b9-19d125d5599f";
+//    String ClientUUID3 = "e7e364a9-0183-4f46-b8c0-7ab248adbc1d";
 //
 //    String CourtUUID1 = "7a3eda80-be8e-4ff6-a788-18da81387a87";
 

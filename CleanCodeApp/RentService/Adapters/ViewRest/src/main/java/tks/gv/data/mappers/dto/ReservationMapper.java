@@ -9,7 +9,7 @@ public class ReservationMapper {
 
     public static ReservationDTO toJsonReservation(Reservation reservation) {
         return new ReservationDTO(reservation.getId().toString(),
-                ClientMapper.toUserDTO(reservation.getClient()),
+                ClientMapper.toDTO(reservation.getClient()),
                 CourtMapper.toJsonCourt(reservation.getCourt()),
                 reservation.getBeginTime(),
                 reservation.getEndTime(),
@@ -19,7 +19,7 @@ public class ReservationMapper {
 
     public static Reservation fromJsonReservation(ReservationDTO reservationDTO) {
         Reservation newReservation = new Reservation(reservationDTO.getId() != null ? UUID.fromString(reservationDTO.getId()) : null,
-                ClientMapper.fromUserDTO(reservationDTO.getClient()),
+                ClientMapper.fromDTO(reservationDTO.getClient()),
                 CourtMapper.fromJsonCourt(reservationDTO.getCourt()),
                 reservationDTO.getBeginTime()
         );
