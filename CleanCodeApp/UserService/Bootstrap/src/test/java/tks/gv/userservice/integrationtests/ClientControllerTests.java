@@ -1,4 +1,4 @@
-package tks.gv.integrationtests;
+package tks.gv.userservice.integrationtests;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -11,14 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import tks.gv.RentServiceApp;
-import tks.gv.userservice.ClientService;
+import tks.gv.userservice.UserServiceApp;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
-
-import static tks.gv.integrationtests.NewCleaningClassForTests.cleanUsers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -27,15 +24,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        classes = {RentServiceApp.class, NewCleaningClassForTests.class})
+        classes = {UserServiceApp.class, NewCleaningClassForTests.class})
 @TestPropertySource(locations = {"classpath:application-integrationtest.properties"})
 public class ClientControllerTests {
 
-    final String appUrlClient = "http://localhost:8081/api-test/v1/clients";
+    final String appUrlClient = "http://localhost:8182/api-test/v2/clients";
 
     @AfterAll
     static void cleanAtTheEnd() {
-        cleanUsers();
+        NewCleaningClassForTests.cleanUsers();
     }
 
     @Autowired
@@ -43,7 +40,7 @@ public class ClientControllerTests {
 
     @BeforeEach
     void cleanAndInitDatabase() {
-        cleanUsers();
+        NewCleaningClassForTests.cleanUsers();
         newCleaningClassForTests.initClients();
     }
 
@@ -72,7 +69,7 @@ public class ClientControllerTests {
 
     @Test
     void getAllClientsTestNoCont() throws URISyntaxException {
-        cleanUsers();
+        NewCleaningClassForTests.cleanUsers();
         RequestSpecification request = RestAssured.given();
         Response response = request.get(new URI(appUrlClient));
         String responseString = response.asString();
@@ -83,7 +80,7 @@ public class ClientControllerTests {
 
     @Test
     void createClientTestPos() throws URISyntaxException {
-        cleanUsers();
+        NewCleaningClassForTests.cleanUsers();
         String JSON = """
                 {
                   "firstName": "John",

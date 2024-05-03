@@ -33,7 +33,7 @@ import java.util.UUID;
 
 
 @Import(CourtController.class)
-@ExtendWith(SpringExtension.class)
+//@ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = {CourtController.class})
 public class CourtControllerTests {
 

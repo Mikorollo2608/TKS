@@ -18,9 +18,9 @@
 
     <modules>
         <module>Bootstrap</module>
-<!--        <module>ApplicationCore</module>-->
-<!--        <module>Adapters</module>-->
-<!--        <module>ApplicationPorts</module>-->
+        <module>ApplicationCore</module>
+        <module>Adapters</module>
+        <module>ApplicationPorts</module>
     </modules>
 
     <properties>

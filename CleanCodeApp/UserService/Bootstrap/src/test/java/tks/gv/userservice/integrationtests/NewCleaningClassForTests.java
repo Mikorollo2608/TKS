@@ -1,0 +1,175 @@
+package tks.gv.userservice.integrationtests;
+
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCredential;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import org.bson.UuidRepresentation;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.Conventions;
+import org.bson.codecs.pojo.PojoCodecProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.utility.DockerImageName;
+import tks.gv.userservice.data.dto.AdminDTO;
+import tks.gv.userservice.data.dto.ClientDTO;
+import tks.gv.userservice.data.dto.ResourceAdminDTO;
+import tks.gv.userservice.data.mappers.dto.AdminMapper;
+import tks.gv.userservice.data.mappers.dto.ClientMapper;
+import tks.gv.userservice.data.mappers.dto.ResourceAdminMapper;
+import tks.gv.userservice.Admin;
+import tks.gv.userservice.Client;
+import tks.gv.userservice.ResourceAdmin;
+import tks.gv.userservice.AdminService;
+import tks.gv.userservice.ClientService;
+import tks.gv.userservice.ResourceAdminService;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+@Component
+public class NewCleaningClassForTests {
+
+    private static final CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder()
+            .automatic(true)
+            .conventions(List.of(Conventions.ANNOTATION_CONVENTION))
+            .build());
+
+    private static final MongoClientSettings settings = MongoClientSettings.builder()
+            .credential(MongoCredential.createCredential("admin", "admin", "adminpassword".toCharArray()))
+            .applyConnectionString(new ConnectionString("mongodb://localhost:27017/?replicaSet=rs0"))
+            .uuidRepresentation(UuidRepresentation.STANDARD)
+            .codecRegistry(CodecRegistries.fromRegistries(
+                    MongoClientSettings.getDefaultCodecRegistry(),
+                    pojoCodecRegistry
+            ))
+            .build();
+
+    private static final String testDBName = "testmongodb1";
+
+    static {
+        Map<String, String> map = new HashMap<>(
+                Map.of(
+                        "MONGO_INITDB_ROOT_USERNAME", "admin",
+                        "MONGO_INITDB_ROOT_PASSWORD", "adminpassword"
+                )
+        );
+
+        GenericContainer<?> mongoDBContainer = new GenericContainer<>(DockerImageName.parse("mongo:7.0.2"))
+                .withEnv(map)
+                .withCreateContainerCmdModifier(createContainerCmd -> {
+                    createContainerCmd.withName(testDBName);
+                    createContainerCmd.withHostName(testDBName);
+                    createContainerCmd.withEnv(List.of("MONGO_INITDB_ROOT_USERNAME=admin", "MONGO_INITDB_ROOT_PASSWORD=adminpassword"));
+                    createContainerCmd.withEntrypoint("/bin/bash", "-c",
+                            "openssl rand -base64 756 > docker-entrypoint-initdb.d/keyFile && chmod 400 docker-entrypoint-initdb.d/keyFile && " +
+                                    "mkdir /etc/mongo && mv /docker-entrypoint-initdb.d/keyFile /etc/mongo &&" +
+                                    "echo \"replication:\n" +
+                                    "    replSetName: rs0\n" +
+                                    "security:\n" +
+                                    "    keyFile: /etc/mongo/keyFile\"" +
+                                    "> /etc/mongod.conf"
+                                    + " && mongod --config /etc/mongod.conf --auth --bind_ip localhost,%s".formatted(testDBName));
+                    createContainerCmd.withPortBindings(new PortBinding(Ports.Binding.bindPort(27017), new ExposedPort(27017)));
+                })
+                .withExposedPorts(27017);
+        mongoDBContainer.start();
+
+        try {
+            mongoDBContainer.execInContainer("/bin/bash", "-c", "mongosh --host localhost:27017 --authenticationDatabase admin --eval 'rs.initiate()'");
+            mongoDBContainer.execInContainer("/bin/bash", "-c", "printf \" use admin\ndb.createUser({user: \\\"admin\\\", pwd: \\\"adminpassword\\\", roles: [{ role: \\\"root\\\", db: \\\"admin\\\" }] })\n\" > /tmp/test.js");
+            mongoDBContainer.execInContainer("/bin/bash", "-c", "mongosh --host localhost:27017 < /tmp/test.js");
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        mongoDatabase = MongoClients.create(settings).getDatabase("reserveACourt");
+    }
+    private static final MongoDatabase mongoDatabase;
+
+    static void cleanUsers() {
+        mongoDatabase.getCollection("users").deleteMany(Filters.empty());
+    }
+
+    static void cleanCourts() {
+        mongoDatabase.getCollection("courts").deleteMany(Filters.empty());
+    }
+
+    static void cleanReservations() {
+        mongoDatabase.getCollection("reservations").deleteMany(Filters.empty());
+    }
+
+    static ClientDTO client1;
+    static ClientDTO client2;
+    static ClientDTO client3;
+    static ClientDTO client4;
+
+    static final String testPass = "P@ssword!";
+
+    static final LocalDateTime dataStart = LocalDateTime.of(2023, Month.NOVEMBER, 30, 14, 20);
+
+    static void cleanAll() {
+        cleanReservations();
+        cleanUsers();
+        cleanCourts();
+    }
+
+    @Autowired
+    ClientService clientServiceTest;
+
+    void initClients() {
+
+        cleanUsers();
+        client1 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
+                new Client(UUID.fromString("8d83bbda-e38a-4cf2-9136-40e5310c5761"), "Adam", "Smith", "loginek", testPass, "normal"))
+        );
+        client2 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
+                new Client(UUID.fromString("692251d0-4da6-4099-b999-98df0812d5de"), "Eva", "Braun", "loginek13", testPass, "athlete"))
+        );
+        client3 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
+                new Client(UUID.fromString("491008d4-c1ac-4af8-97ae-8a91e6f086f6"), "Michal", "Pi", "michas13", testPass, "coach"))
+        );
+        client4 = ClientMapper.toUserDTO(clientServiceTest.registerClient(
+                new Client(UUID.fromString("f13ab7a5-7306-4675-95f2-5190fec1304c"), "Peter", "Grif", "griffPet", testPass, "normal"))
+        );
+    }
+
+//    /*----------------------------------------------------------------------------------------------------------------*/
+
+    static AdminDTO admin1;
+    static AdminDTO admin2;
+
+    @Autowired
+    AdminService adminServiceServiceTest;
+
+    void initAdmins() {
+        cleanUsers();
+        admin1 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("fd60c176-d427-4591-ac13-6fb84d904862"), "adminek1@1234", testPass)));
+        admin2 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("6f736fcc-d19d-4bcc-b1da-966b3c7c9758"), "adminek2@9876", testPass)));
+    }
+
+    static ResourceAdminDTO adminRes1;
+    static ResourceAdminDTO adminRes2;
+
+    @Autowired
+    ResourceAdminService resourceAdminServiceTest;
+
+    void initResAdmins() {
+        cleanUsers();
+        adminRes1 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("0c5f74c8-5a7e-4809-a6d3-bed663083b07"),"adminekRes1@1234", testPass)));
+        adminRes2 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("ce9f05b5-fb28-4b07-9bee-9e069b6965ba"),"adminekRes2@9876", testPass)));
+    }
+}

@@ -1,4 +1,4 @@
-package tks.gv.rest;
+package tks.gv.userservice.rest;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
@@ -8,21 +8,22 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import tks.gv.controllers.users.ClientController;
-import tks.gv.exceptions.UserLoginException;
-import tks.gv.userinterface.users.ports.clients.ChangeClientStatusUseCase;
-import tks.gv.userinterface.users.ports.clients.GetAllClientsUseCase;
-import tks.gv.userinterface.users.ports.clients.GetClientByIdUseCase;
-import tks.gv.userinterface.users.ports.clients.GetClientByLoginUseCase;
-import tks.gv.userinterface.users.ports.clients.ModifyClientUseCase;
-import tks.gv.userinterface.users.ports.clients.RegisterClientUseCase;
-import tks.gv.users.Client;
+import tks.gv.userservice.controllers.ClientController;
+import tks.gv.userservice.exceptions.UserLoginException;
+import tks.gv.userservice.userinterface.ports.clients.ChangeClientStatusUseCase;
+import tks.gv.userservice.userinterface.ports.clients.GetAllClientsUseCase;
+import tks.gv.userservice.userinterface.ports.clients.GetClientByIdUseCase;
+import tks.gv.userservice.userinterface.ports.clients.GetClientByLoginUseCase;
+import tks.gv.userservice.userinterface.ports.clients.ModifyClientUseCase;
+import tks.gv.userservice.userinterface.ports.clients.RegisterClientUseCase;
+import tks.gv.userservice.Client;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,6 @@ import java.util.UUID;
 
 
 @Import(ClientController.class)
-//@ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = {ClientController.class})
 public class ClientControllerTests {
 
