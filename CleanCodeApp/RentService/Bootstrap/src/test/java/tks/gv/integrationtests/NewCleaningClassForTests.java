@@ -9,7 +9,11 @@ import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-
+import org.bson.UuidRepresentation;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.Conventions;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.testcontainers.containers.GenericContainer;
@@ -17,31 +21,15 @@ import org.testcontainers.utility.DockerImageName;
 import tks.gv.aggregates.ReservationMongoRepositoryAdapter;
 import tks.gv.courts.Court;
 import tks.gv.courtservice.CourtService;
-import tks.gv.data.dto.AdminDTO;
 import tks.gv.data.dto.ClientDTO;
 import tks.gv.data.dto.CourtDTO;
-import tks.gv.data.dto.ResourceAdminDTO;
-import tks.gv.data.mappers.dto.AdminMapper;
 import tks.gv.data.mappers.dto.ClientMapper;
-
 import tks.gv.data.mappers.dto.CourtMapper;
 import tks.gv.data.mappers.dto.ReservationMapper;
-import tks.gv.restapi.data.dto.ReservationDTO;
-
-import tks.gv.data.mappers.dto.ResourceAdminMapper;
 import tks.gv.reservationservice.ReservationService;
-import tks.gv.users.Admin;
+import tks.gv.restapi.data.dto.ReservationDTO;
 import tks.gv.users.Client;
-import tks.gv.users.ResourceAdmin;
-import tks.gv.userservice.AdminService;
 import tks.gv.userservice.ClientService;
-
-import org.bson.UuidRepresentation;
-import org.bson.codecs.configuration.CodecRegistries;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.Conventions;
-import org.bson.codecs.pojo.PojoCodecProvider;
-import tks.gv.userservice.ResourceAdminService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -220,31 +208,5 @@ public class NewCleaningClassForTests {
         reservationServiceTest.returnCourt(UUID.fromString(court4.getId()));
         reservation6 = ReservationMapper.toJsonReservation(reservationServiceTest.addReservation(client1.getId(), court3.getId(), LocalDateTime.of(2023, Month.DECEMBER, 15, 10, 0)));
         reservation7 = ReservationMapper.toJsonReservation(reservationServiceTest.addReservation(client3.getId(), court5.getId(), LocalDateTime.of(2023, Month.DECEMBER, 16, 10, 0)));
-    }
-
-//    /*----------------------------------------------------------------------------------------------------------------*/
-
-    static AdminDTO admin1;
-    static AdminDTO admin2;
-
-    @Autowired
-    AdminService adminServiceServiceTest;
-
-    void initAdmins() {
-        cleanUsers();
-        admin1 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("fd60c176-d427-4591-ac13-6fb84d904862"), "adminek1@1234", testPass)));
-        admin2 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("6f736fcc-d19d-4bcc-b1da-966b3c7c9758"), "adminek2@9876", testPass)));
-    }
-
-    static ResourceAdminDTO adminRes1;
-    static ResourceAdminDTO adminRes2;
-
-    @Autowired
-    ResourceAdminService resourceAdminServiceTest;
-
-    void initResAdmins() {
-        cleanUsers();
-        adminRes1 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("0c5f74c8-5a7e-4809-a6d3-bed663083b07"),"adminekRes1@1234", testPass)));
-        adminRes2 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("ce9f05b5-fb28-4b07-9bee-9e069b6965ba"),"adminekRes2@9876", testPass)));
     }
 }

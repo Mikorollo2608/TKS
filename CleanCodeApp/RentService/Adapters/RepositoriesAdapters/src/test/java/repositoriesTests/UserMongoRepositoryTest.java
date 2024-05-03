@@ -6,20 +6,14 @@ import org.bson.Document;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tks.gv.data.entities.AdminEntity;
 import tks.gv.data.entities.ClientEntity;
-import tks.gv.data.entities.ResourceAdminEntity;
 import tks.gv.data.entities.UserEntity;
-import tks.gv.data.mappers.entities.AdminMapper;
 import tks.gv.data.mappers.entities.ClientMapper;
-import tks.gv.data.mappers.entities.ResourceAdminMapper;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.UnexpectedUserTypeException;
 import tks.gv.exceptions.UserLoginException;
 import tks.gv.repositories.UserMongoRepository;
-import tks.gv.users.Admin;
 import tks.gv.users.Client;
-import tks.gv.users.ResourceAdmin;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -96,27 +90,6 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
                 .into(new ArrayList<>()).get(0)
                 .get("_id")
         );
-
-        assertNotNull(clientRepository.create(
-                new AdminEntity(null, "tobiaszTrab", "Haslo1234!", false)));
-        assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
-        assertNotNull(clientRepository.getDatabase()
-                .getCollection(clientRepository.getCollectionName())
-                .find(Filters.eq("login", "tobiaszTrab"))
-                .into(new ArrayList<>()).get(0)
-                .get("_id")
-        );
-
-
-        assertNotNull(clientRepository.create(
-                new ResourceAdminEntity(null, "tobiaszTrabRes", "Haslo1234!", false)));
-        assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
-        assertNotNull(clientRepository.getDatabase()
-                .getCollection(clientRepository.getCollectionName())
-                .find(Filters.eq("login", "tobiaszTrabRes"))
-                .into(new ArrayList<>()).get(0)
-                .get("_id")
-        );
     }
 
     @Test
@@ -129,27 +102,6 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
         assertNotNull(clientRepository.getDatabase()
                 .getCollection(clientRepository.getCollectionName())
                 .find(Filters.eq("login", "adasNiezg"))
-                .into(new ArrayList<>()).get(0)
-                .get("_id")
-        );
-
-        assertNotNull(clientRepository.create(
-                new AdminEntity("", "tobiaszTrab", "Haslo1234!", false)));
-        assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
-        assertNotNull(clientRepository.getDatabase()
-                .getCollection(clientRepository.getCollectionName())
-                .find(Filters.eq("login", "tobiaszTrab"))
-                .into(new ArrayList<>()).get(0)
-                .get("_id")
-        );
-
-
-        assertNotNull(clientRepository.create(
-                new ResourceAdminEntity("", "tobiaszTrabRes", "Haslo1234!", false)));
-        assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
-        assertNotNull(clientRepository.getDatabase()
-                .getCollection(clientRepository.getCollectionName())
-                .find(Filters.eq("login", "tobiaszTrabRes"))
                 .into(new ArrayList<>()).get(0)
                 .get("_id")
         );
@@ -338,56 +290,6 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
     void testGetCollectionNameMethod() {
         //Get collection name
         assertEquals("users", clientRepository.getCollectionName());
-    }
-
-    @Test
-    void testAddingNewDocumentAdminToDBPositive() {
-        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
-        assertNotNull(clientRepository.create(
-                AdminMapper.toUserEntity(new Admin(UUID.randomUUID(), "testowyAdmin", "Haslo1234!"))));
-        assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
-        assertNotNull(clientRepository.create(
-                AdminMapper.toUserEntity(new Admin(UUID.randomUUID(), "testowyAdmin2", "Haslo1234!"))));
-        assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
-    }
-
-    @Test
-    void testReadingDocumentAdminFromDB() {
-        // Adding Admin document
-        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
-        AdminEntity testAdminEnt = AdminMapper.toUserEntity(
-                new Admin(UUID.randomUUID(), "testowyAdmin", "Haslo1234!"));
-        assertNotNull(clientRepository.create(testAdminEnt));
-        assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
-
-        // Test reading
-        assertEquals(testAdminEnt,
-                (AdminEntity) clientRepository.read(Filters.eq("login", "testowyAdmin")).get(0));
-    }
-
-    @Test
-    void testAddingNewDocumentResAdminToDBPositive() {
-        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
-        assertNotNull(clientRepository.create(
-                ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.randomUUID(), "testowyResAdmin", "Haslo1234!"))));
-        assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
-        assertNotNull(clientRepository.create(
-                ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.randomUUID(), "testowyResAdmin2", "Haslo1234!"))));
-        assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
-    }
-
-    @Test
-    void testReadingDocumentResAdminFromDB() {
-        // Adding Admin document
-        assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
-        ResourceAdminEntity testResAdminEnt = ResourceAdminMapper.toUserEntity(
-                new ResourceAdmin(UUID.randomUUID(), "testowyResAdmin", "Haslo1234!"));
-        assertNotNull(clientRepository.create(testResAdminEnt));
-        assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
-
-        // Test reading
-        assertEquals(testResAdminEnt,
-                (ResourceAdminEntity) clientRepository.read(Filters.eq("login", "testowyResAdmin")).get(0));
     }
 
     @Test

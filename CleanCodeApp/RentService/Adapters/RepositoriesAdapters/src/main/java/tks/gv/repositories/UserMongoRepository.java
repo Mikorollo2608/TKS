@@ -1,43 +1,28 @@
 package tks.gv.repositories;
 
 import com.mongodb.MongoWriteException;
-
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ValidationOptions;
-
 import com.mongodb.client.result.UpdateResult;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import org.bson.Document;
 import org.bson.conversions.Bson;
-
-import tks.gv.data.entities.AdminEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import tks.gv.data.entities.ClientEntity;
-import tks.gv.data.entities.ResourceAdminEntity;
 import tks.gv.data.entities.UserEntity;
-
-import tks.gv.data.mappers.entities.AdminMapper;
 import tks.gv.data.mappers.entities.ClientMapper;
-
-import tks.gv.data.mappers.entities.ResourceAdminMapper;
 import tks.gv.exceptions.MyMongoException;
-
 import tks.gv.exceptions.UnexpectedUserTypeException;
 import tks.gv.exceptions.UserException;
 import tks.gv.exceptions.UserLoginException;
-import tks.gv.users.Admin;
 import tks.gv.users.Client;
-import tks.gv.users.ResourceAdmin;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -92,20 +77,6 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
                         clientEntity.isArchive(),
                         clientEntity.getClientType()
                 );
-            } else if (initUser instanceof AdminEntity adminEntity) {
-                initUser = new AdminEntity(
-                        UUID.randomUUID().toString(),
-                        adminEntity.getLogin(),
-                        adminEntity.getPassword(),
-                        adminEntity.isArchive()
-                );
-            } else if (initUser instanceof ResourceAdminEntity resourceAdminEntity) {
-                initUser = new ResourceAdminEntity(
-                        UUID.randomUUID().toString(),
-                        resourceAdminEntity.getLogin(),
-                        resourceAdminEntity.getPassword(),
-                        resourceAdminEntity.isArchive()
-                );
             } else {
                 throw new UnexpectedUserTypeException("Typ danego uzytkownika nie pasuje do zadnego z obslugiwanych!");
             }
@@ -145,22 +116,6 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
                                 doc.getString("clienttype")
                         )
                 );
-                case "admin" -> list.add(
-                        new AdminEntity(
-                                doc.getString("_id"),
-                                doc.getString("login"),
-                                doc.getString("password"),
-                                doc.getBoolean("archive")
-                        )
-                );
-                case "resourceadmin" -> list.add(
-                        new ResourceAdminEntity(
-                                doc.getString("_id"),
-                                doc.getString("login"),
-                                doc.getString("password"),
-                                doc.getBoolean("archive")
-                        )
-                );
             }
         }
         return list;
@@ -182,12 +137,6 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
         create(ClientMapper.toUserEntity(new Client(UUID.fromString("6dc63417-0a21-462c-a97a-e0bf6055a3ea"), "John", "Lee", "leeJo15", "haselko", "coach")));
         create(ClientMapper.toUserEntity(new Client(UUID.fromString("3a722080-9668-42a2-9788-4695a4b9f5a7"), "Krzysztof", "Scala", "scKrzy", "haselko", "normal")));
         create(ClientMapper.toUserEntity(new Client(UUID.fromString("126778af-0e19-46d4-b329-0b6b92548f9a"), "Adam", "Scout", "scAdam", "haselko", "normal")));
-
-        create(AdminMapper.toUserEntity(new Admin(UUID.fromString("3b197615-6931-4aad-941a-44f78f527053"), "mainAdmin1@example", "haselko")));
-        create(AdminMapper.toUserEntity(new Admin(UUID.fromString("4844c398-5cf1-44e0-a6d8-34c8a939d2ea"), "secondAdmin2@example", "haselko")));
-
-        create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("83b29a7a-aa96-4ff2-823d-f3d0d6372c94"), "admRes1@test", "haselko")));
-        create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("a2f6cb49-5e9d-4069-ab91-f337224e833a"), "admRes2@test", "haselko")));
     }
 
     @PreDestroy

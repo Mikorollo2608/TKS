@@ -1,5 +1,3 @@
-package users;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +16,7 @@ import tks.gv.infrastructure.users.ports.GetAllUsersPort;
 import tks.gv.infrastructure.users.ports.GetUserByIdPort;
 import tks.gv.infrastructure.users.ports.GetUserByLoginPort;
 import tks.gv.infrastructure.users.ports.ModifyUserPort;
-import tks.gv.users.Admin;
 import tks.gv.users.Client;
-import tks.gv.users.ResourceAdmin;
 import tks.gv.users.User;
 import tks.gv.userservice.ClientService;
 
@@ -92,7 +88,7 @@ public class ClientServiceTest {
 
     @Test
     void testGetAllClientsDiffUsers() {
-        Mockito.when(getAllUsersPort.getAllUsers()).thenReturn(List.of(testClient, new Admin(), new ResourceAdmin()));
+        Mockito.when(getAllUsersPort.getAllUsers()).thenReturn(List.of(testClient));
 
         List<Client> clientList = cm.getAllClients();
         assertEquals(clientList.size(), 1);
@@ -193,7 +189,7 @@ public class ClientServiceTest {
 
     @Test
     void testGetClientByLoginMatchingDiffUsers() {
-        Mockito.when(getUserByLoginPort.getUserByLoginMatching("testLogin")).thenReturn(List.of(testClient2, new Admin(), new ResourceAdmin()));
+        Mockito.when(getUserByLoginPort.getUserByLoginMatching("testLogin")).thenReturn(List.of(testClient2));
 
         List<Client> clientList = cm.getClientByLoginMatching("testLogin");
         assertEquals(clientList.size(), 1);

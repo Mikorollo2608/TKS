@@ -4,14 +4,10 @@ import com.mongodb.client.model.Filters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import tks.gv.data.entities.AdminEntity;
 import tks.gv.data.entities.ClientEntity;
-import tks.gv.data.entities.ResourceAdminEntity;
 import tks.gv.data.entities.UserEntity;
 
-import tks.gv.data.mappers.entities.AdminMapper;
 import tks.gv.data.mappers.entities.ClientMapper;
-import tks.gv.data.mappers.entities.ResourceAdminMapper;
 
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.RepositoryAdapterException;
@@ -28,9 +24,7 @@ import tks.gv.infrastructure.users.ports.GetUserByLoginPort;
 import tks.gv.infrastructure.users.ports.ModifyUserPort;
 import tks.gv.repositories.UserMongoRepository;
 
-import tks.gv.users.Admin;
 import tks.gv.users.Client;
-import tks.gv.users.ResourceAdmin;
 import tks.gv.users.User;
 
 import java.util.List;
@@ -115,13 +109,6 @@ public class UserMongoRepositoryAdapter implements
         if (userEntity instanceof ClientEntity clientEntity) {
             return ClientMapper.fromUserEntity(clientEntity);
         }
-        if (userEntity instanceof AdminEntity adminEntity) {
-            return AdminMapper.fromUserEntity(adminEntity);
-        }
-        if (userEntity instanceof ResourceAdminEntity adminEntity) {
-            return ResourceAdminMapper.fromUserEntity(adminEntity);
-        }
-
         throw new UnexpectedUserTypeException("Typ danego uzytkownika nie pasuje do zadnego z obslugiwanych!");
     }
 
@@ -131,12 +118,6 @@ public class UserMongoRepositoryAdapter implements
         }
         if (user instanceof Client client) {
             return ClientMapper.toUserEntity(client);
-        }
-        if (user instanceof Admin admin) {
-            return AdminMapper.toUserEntity(admin);
-        }
-        if (user instanceof ResourceAdmin resourceAdmin) {
-            return ResourceAdminMapper.toUserEntity(resourceAdmin);
         }
 
         throw new UnexpectedUserTypeException("Typ danego uzytkownika nie pasuje do zadnego z obslugiwanych!");

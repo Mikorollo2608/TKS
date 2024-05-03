@@ -9,17 +9,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tks.gv.aggregates.UserMongoRepositoryAdapter;
 import tks.gv.data.entities.UserEntity;
-import tks.gv.data.mappers.entities.AdminMapper;
 import tks.gv.data.mappers.entities.ClientMapper;
-import tks.gv.data.mappers.entities.ResourceAdminMapper;
 import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.RepositoryAdapterException;
-import tks.gv.exceptions.UnexpectedUserTypeException;
 import tks.gv.exceptions.UserLoginException;
 import tks.gv.repositories.UserMongoRepository;
-import tks.gv.users.Admin;
 import tks.gv.users.Client;
-import tks.gv.users.ResourceAdmin;
 import tks.gv.users.User;
 
 import java.util.ArrayList;
@@ -41,21 +36,21 @@ public class UserAdapterRepositoryTest {
     UserMongoRepositoryAdapter adapter;
 
     Client testClient;
-    Admin testAdmin;
-    ResourceAdmin testResourceAdmin;
+    Client testClient2;
+    Client testClient3;
     UserEntity testClientEntity;
-    UserEntity testAdminEntity;
-    UserEntity testResourceAdminEntity;
+    UserEntity testClientEntity2;
+    UserEntity testClientEntity3;
 
     @BeforeEach
     void init() {
         testClient = new Client(UUID.randomUUID(), "Adam", "Niezgodka", "testLoginKlient", "Haslo1234!", "normal");
-        testAdmin = new Admin(UUID.randomUUID(), "testLoginAdmin", "Haslo1234!");
-        testResourceAdmin = new ResourceAdmin(UUID.randomUUID(), "testResAdmin", "Haslo1234!");
+        testClient2 = new Client(UUID.randomUUID(), "Krzysztof", "Scala", "testLoginClient2", "Haslo1234!", "normal");
+        testClient3 = new Client(UUID.randomUUID(), "Jan", "Kann", "testClient3", "Haslo1234!", "normal");
 
         testClientEntity = ClientMapper.toUserEntity(testClient);
-        testAdminEntity = AdminMapper.toUserEntity(testAdmin);
-        testResourceAdminEntity = ResourceAdminMapper.toUserEntity(testResourceAdmin);
+        testClientEntity2 = ClientMapper.toUserEntity(testClient2);
+        testClientEntity3 = ClientMapper.toUserEntity(testClient3);
     }
 
     @Test
@@ -72,32 +67,9 @@ public class UserAdapterRepositoryTest {
     }
 
     @Test
-    void testAddAdmin() {
-        Mockito.when(repository.create(eq(AdminMapper.toUserEntity(testAdmin)))).thenReturn(AdminMapper.toUserEntity(testAdmin));
-        adapter.addUser(testAdmin);
-        Mockito.verify(repository, Mockito.times(1)).create(AdminMapper.toUserEntity(testAdmin));
-    }
-
-    @Test
-    void testAddResourceAdmin() {
-        Mockito.when(repository.create(eq(ResourceAdminMapper.toUserEntity(testResourceAdmin)))).thenReturn(ResourceAdminMapper.toUserEntity(testResourceAdmin));
-        adapter.addUser(testResourceAdmin);
-        Mockito.verify(repository, Mockito.times(1)).create(ResourceAdminMapper.toUserEntity(testResourceAdmin));
-    }
-
-    @Test
-    void testAddNewUserType() {
-        class NewUser extends User {
-        }
-
-        assertThrows(UnexpectedUserTypeException.class, () -> adapter.addUser(new NewUser()));
-        Mockito.verify(repository, Mockito.times(0)).create(Mockito.any());
-    }
-
-    @Test
     void testAddNeg() {
         Mockito.when(repository.create(Mockito.any())).thenThrow(new MyMongoException("Test exception"));
-        assertThrows(RepositoryAdapterException.class, () -> adapter.addUser(testAdmin));
+        assertThrows(RepositoryAdapterException.class, () -> adapter.addUser(testClient2));
     }
 
     @Test
@@ -106,22 +78,22 @@ public class UserAdapterRepositoryTest {
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
-                .then(i -> {users.add(testAdminEntity); return testAdminEntity;})
-                .then(i -> {users.add(testResourceAdminEntity); return testResourceAdminEntity;});
+                .then(i -> {users.add(testClientEntity2); return testClientEntity2;})
+                .then(i -> {users.add(testClientEntity3); return testClientEntity3;});
 
         Mockito.when(repository.readAll()).thenReturn(users);
 
         assertEquals(0, users.size());
         adapter.addUser(testClient);
-        adapter.addUser(testAdmin);
-        adapter.addUser(testResourceAdmin);
+        adapter.addUser(testClient2);
+        adapter.addUser(testClient3);
         assertEquals(3, users.size());
 
         List<User> userList = adapter.getAllUsers();
         assertEquals(3, userList.size());
         assertEquals(testClient, userList.get(0));
-        assertEquals(testAdmin, userList.get(1));
-        assertEquals(testResourceAdmin, userList.get(2));
+        assertEquals(testClient2, userList.get(1));
+        assertEquals(testClient3, userList.get(2));
     }
 
     @Test
@@ -130,8 +102,8 @@ public class UserAdapterRepositoryTest {
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
-                .then(i -> {users.add(testAdminEntity); return testAdminEntity;})
-                .then(i -> {users.add(testResourceAdminEntity); return testResourceAdminEntity;});
+                .then(i -> {users.add(testClientEntity2); return testClientEntity2;})
+                .then(i -> {users.add(testClientEntity3); return testClientEntity3;});
 
         Mockito.when(repository.readAll()).thenReturn(users);
 
@@ -139,8 +111,8 @@ public class UserAdapterRepositoryTest {
 
         assertEquals(0, repository.readAll().size());
         adapter.addUser(testClient);
-        adapter.addUser(testAdmin);
-        adapter.addUser(testResourceAdmin);
+        adapter.addUser(testClient2);
+        adapter.addUser(testClient3);
         assertEquals(3, repository.readAll().size());
 
         assertEquals(testClient, adapter.getUserById(testClient.getId()));
@@ -152,20 +124,20 @@ public class UserAdapterRepositoryTest {
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
-                .then(i -> {users.add(testAdminEntity); return testAdminEntity;})
-                .then(i -> {users.add(testResourceAdminEntity); return testResourceAdminEntity;});
+                .then(i -> {users.add(testClientEntity2); return testClientEntity2;})
+                .then(i -> {users.add(testClientEntity3); return testClientEntity3;});
 
         Mockito.when(repository.readAll()).thenReturn(users);
 
-        Mockito.when(repository.read(Mockito.any())).thenReturn(List.of(testAdminEntity));
+        Mockito.when(repository.read(Mockito.any())).thenReturn(List.of(testClientEntity2));
 
         assertEquals(0, repository.readAll().size());
         adapter.addUser(testClient);
-        adapter.addUser(testAdmin);
-        adapter.addUser(testResourceAdmin);
+        adapter.addUser(testClient2);
+        adapter.addUser(testClient3);
         assertEquals(3, repository.readAll().size());
 
-        assertEquals(testAdmin, adapter.getUserByLogin(testAdmin.getLogin()));
+        assertEquals(testClient2, adapter.getUserByLogin(testClient2.getLogin()));
     }
 
     @Test
@@ -174,23 +146,23 @@ public class UserAdapterRepositoryTest {
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
-                .then(i -> {users.add(testAdminEntity); return testAdminEntity;})
-                .then(i -> {users.add(testResourceAdminEntity); return testResourceAdminEntity;});
+                .then(i -> {users.add(testClientEntity2); return testClientEntity2;})
+                .then(i -> {users.add(testClientEntity3); return testClientEntity3;});
 
         Mockito.when(repository.readAll()).thenReturn(users);
 
-        Mockito.when(repository.read(Mockito.any())).thenReturn(List.of(testClientEntity, testAdminEntity));
+        Mockito.when(repository.read(Mockito.any())).thenReturn(List.of(testClientEntity, testClientEntity2));
 
         assertEquals(0, repository.readAll().size());
         adapter.addUser(testClient);
-        adapter.addUser(testAdmin);
-        adapter.addUser(testResourceAdmin);
+        adapter.addUser(testClient2);
+        adapter.addUser(testClient3);
         assertEquals(3, repository.readAll().size());
 
         List<User> userMatchingList = adapter.getUserByLoginMatching("testLogin");
         assertEquals(2, userMatchingList.size());
         assertEquals(testClient, userMatchingList.get(0));
-        assertEquals(testAdmin, userMatchingList.get(1));
+        assertEquals(testClient2, userMatchingList.get(1));
     }
 
     @Test
@@ -208,8 +180,8 @@ public class UserAdapterRepositoryTest {
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
-                .then(i -> {users.add(testAdminEntity); return testAdminEntity;})
-                .then(i -> {users.add(testResourceAdminEntity); return testResourceAdminEntity;});
+                .then(i -> {users.add(testClientEntity2); return testClientEntity2;})
+                .then(i -> {users.add(testClientEntity3); return testClientEntity3;});
 
         Mockito.when(repository.readAll()).thenReturn(users);
 
@@ -219,8 +191,8 @@ public class UserAdapterRepositoryTest {
 
         assertEquals(0, repository.readAll().size());
         adapter.addUser(testClient);
-        adapter.addUser(testAdmin);
-        adapter.addUser(testResourceAdmin);
+        adapter.addUser(testClient2);
+        adapter.addUser(testClient3);
         assertEquals(3, repository.readAll().size());
 
         assertEquals("Adam", ((Client) adapter.getUserById(testClient.getId())).getFirstName());
@@ -234,8 +206,8 @@ public class UserAdapterRepositoryTest {
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
-                .then(i -> {users.add(testAdminEntity); return testAdminEntity;})
-                .then(i -> {users.add(testResourceAdminEntity); return testResourceAdminEntity;});
+                .then(i -> {users.add(testClientEntity2); return testClientEntity2;})
+                .then(i -> {users.add(testClientEntity3); return testClientEntity3;});
 
         Mockito.when(repository.readAll()).thenReturn(users);
 
@@ -246,15 +218,15 @@ public class UserAdapterRepositoryTest {
                 testClient.getId(),
                 testClient.getFirstName(),
                 testClient.getLastName(),
-                "testLoginAdmin",
+                "testLoginClient2",
                 testClient.getPassword(),
                 testClient.getClientTypeName()
         );
 
         assertEquals(0, repository.readAll().size());
         adapter.addUser(testClient);
-        adapter.addUser(testAdmin);
-        adapter.addUser(testResourceAdmin);
+        adapter.addUser(testClient2);
+        adapter.addUser(testClient3);
         assertEquals(3, repository.readAll().size());
 
         assertEquals("testLoginKlient", ((Client) adapter.getUserById(testClient.getId())).getLogin());
@@ -269,8 +241,8 @@ public class UserAdapterRepositoryTest {
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
-                .then(i -> {users.add(testAdminEntity); return testAdminEntity;})
-                .then(i -> {users.add(testResourceAdminEntity); return testResourceAdminEntity;});
+                .then(i -> {users.add(testClientEntity2); return testClientEntity2;})
+                .then(i -> {users.add(testClientEntity3); return testClientEntity3;});
 
         Mockito.when(repository.readAll()).thenReturn(users);
 
@@ -281,8 +253,8 @@ public class UserAdapterRepositoryTest {
 
         assertEquals(0, repository.readAll().size());
         adapter.addUser(testClient);
-        adapter.addUser(testAdmin);
-        adapter.addUser(testResourceAdmin);
+        adapter.addUser(testClient2);
+        adapter.addUser(testClient3);
         assertEquals(3, repository.readAll().size());
 
         assertTrue(adapter.getUserById(testClient.getId()).isArchive());
@@ -296,8 +268,8 @@ public class UserAdapterRepositoryTest {
 
         Mockito.when(repository.create(Mockito.any()))
                 .then(i -> {users.add(testClientEntity); return testClientEntity;})
-                .then(i -> {users.add(testAdminEntity); return testAdminEntity;})
-                .then(i -> {users.add(testResourceAdminEntity); return testResourceAdminEntity;});
+                .then(i -> {users.add(testClientEntity2); return testClientEntity2;})
+                .then(i -> {users.add(testClientEntity3); return testClientEntity3;});
 
         Mockito.when(repository.readAll()).thenReturn(users);
 
@@ -308,8 +280,8 @@ public class UserAdapterRepositoryTest {
 
         assertEquals(0, repository.readAll().size());
         adapter.addUser(testClient);
-        adapter.addUser(testAdmin);
-        adapter.addUser(testResourceAdmin);
+        adapter.addUser(testClient2);
+        adapter.addUser(testClient3);
         assertEquals(3, repository.readAll().size());
 
         assertFalse(adapter.getUserById(testClient.getId()).isArchive());
