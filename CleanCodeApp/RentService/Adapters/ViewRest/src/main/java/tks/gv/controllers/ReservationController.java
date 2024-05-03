@@ -19,7 +19,7 @@ import tks.gv.exceptions.MyMongoException;
 import tks.gv.exceptions.ReservationException;
 
 import tks.gv.Reservation;
-import tks.gv.restapi.data.dto.ReservationDTO;
+import tks.gv.data.dto.ReservationDTO;
 
 import tks.gv.ui.reservations.ports.AddReservationUseCase;
 import tks.gv.ui.reservations.ports.CheckClientReservationBalanceUseCase;

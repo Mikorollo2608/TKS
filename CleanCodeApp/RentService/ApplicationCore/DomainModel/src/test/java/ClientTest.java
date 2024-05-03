@@ -9,21 +9,16 @@ import tks.gv.Client;
 import java.util.UUID;
 
 public class ClientTest {
-    String testFirstName = "John";
-    String testLastName = "Smith";
     String testLogin = "12345678";
-    String testPassword = "12345678";
     String testTypeAthlete = "athlete";
     String testTypeCoach = "coach";
     String testTypeNormal = "normal";
 
     @Test
     void testCreatingClient() {
-        Client client = new Client(UUID.randomUUID(), testFirstName, testLastName, testLogin, testPassword, testTypeNormal);
+        Client client = new Client(UUID.randomUUID(), testLogin, testTypeNormal);
         assertNotNull(client);
 
-        assertEquals(testFirstName, client.getFirstName());
-        assertEquals(testLastName, client.getLastName());
         assertEquals(testLogin, client.getLogin());
         assertEquals(testTypeNormal, client.getClientTypeName());
         assertFalse(client.isArchive());
@@ -31,16 +26,8 @@ public class ClientTest {
 
     @Test
     void testSetters() {
-        Client client = new Client(UUID.randomUUID(), testFirstName, testLastName, testLogin, testPassword, testTypeNormal);
+        Client client = new Client(UUID.randomUUID(), testLogin, testTypeNormal);
         assertNotNull(client);
-
-        assertEquals(testFirstName, client.getFirstName());
-        client.setFirstName("Adam");
-        assertEquals("Adam", client.getFirstName());
-
-        assertEquals(testLastName, client.getLastName());
-        client.setLastName("Long");
-        assertEquals("Long", client.getLastName());
 
         assertFalse(client.isArchive());
         client.setArchive(true);
@@ -57,11 +44,11 @@ public class ClientTest {
 
     @Test
     void testGettingClientMaxHoursAndApplyingDiscount() {
-        Client client = new Client(UUID.randomUUID(), testFirstName, testLastName, testLogin, testPassword, testTypeNormal);
+        Client client = new Client(UUID.randomUUID(), testLogin, testTypeNormal);
         assertNotNull(client);
-        Client client1 = new Client(UUID.randomUUID(), testFirstName, testLastName, testLogin, testPassword, testTypeAthlete);
+        Client client1 = new Client(UUID.randomUUID(), testLogin, testTypeAthlete);
         assertNotNull(client1);
-        Client client2 = new Client(UUID.randomUUID(), testFirstName, testLastName, testLogin, testPassword, testTypeCoach);
+        Client client2 = new Client(UUID.randomUUID(), testLogin, testTypeCoach);
         assertNotNull(client2);
 
         assertEquals(0, client.applyDiscount());

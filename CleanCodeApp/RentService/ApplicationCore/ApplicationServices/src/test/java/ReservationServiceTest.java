@@ -101,8 +101,7 @@ public class ReservationServiceTest {
     Client client4;
 
     final String testClientType = "normal";
-    final String testClientPass = "Haslo1234!";
-    Client testClient = new Client(UUID.randomUUID(), "Adam", "Niezgodka", "testKlient", testClientPass, testClientType);
+    Client testClient = new Client(UUID.randomUUID(), "testKlient", testClientType);
 
 
     Court testCourt = new Court(UUID.fromString("bd67f4f3-bddf-4ad8-b563-38e2c0b8d34e"), 10, 2, 1);
@@ -184,7 +183,7 @@ public class ReservationServiceTest {
         String clientId = UUID.randomUUID().toString();
         String courtId = UUID.randomUUID().toString();
         LocalDateTime beginTime = LocalDateTime.now();
-        Reservation testReservation = new Reservation(UUID.randomUUID(), new Client(UUID.randomUUID(), "", "", "", "", ""), new Court(UUID.randomUUID(), 0, 0, 0), beginTime);
+        Reservation testReservation = new Reservation(UUID.randomUUID(), new Client(UUID.randomUUID(), "", ""), new Court(UUID.randomUUID(), 0, 0, 0), beginTime);
         Court testCourt = new Court(UUID.fromString(courtId), 0, 0, 0);
 
         when(addReservationPort.addReservation(any(Reservation.class))).thenReturn(testReservation);

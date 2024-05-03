@@ -47,7 +47,7 @@ public class ClientController {
     private final ChangeClientStatusUseCase changeClientStatusUseCase;
 
     @PostMapping(value = "/addClient")
-    public ResponseEntity<String> addClient(@Validated({ClientDTO.BasicClientValidation.class, ClientDTO.PasswordValidation.class}) @RequestBody ClientDTO client,
+    public ResponseEntity<String> addClient(@Validated({ClientDTO.BasicClientValidation.class}) @RequestBody ClientDTO client,
                                             Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -130,10 +130,7 @@ public class ClientController {
             modifyClientUseCase.modifyClient(ClientMapper.fromDTO(
                     new ClientDTO(
                             modifiedClient.getId(),
-                            modifiedClient.getFirstName(),
-                            modifiedClient.getLastName(),
                             modifiedClient.getLogin(),
-                            null,
                             modifiedClient.isArchive(),
                             modifiedClient.getClientType())
             ));

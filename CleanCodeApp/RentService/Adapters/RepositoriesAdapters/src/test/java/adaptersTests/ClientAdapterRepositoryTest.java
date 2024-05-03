@@ -43,9 +43,9 @@ public class ClientAdapterRepositoryTest {
 
     @BeforeEach
     void init() {
-        testClient = new Client(UUID.randomUUID(), "Adam", "Niezgodka", "testLoginKlient", "Haslo1234!", "normal");
-        testClient2 = new Client(UUID.randomUUID(), "Krzysztof", "Scala", "testLoginClient2", "Haslo1234!", "normal");
-        testClient3 = new Client(UUID.randomUUID(), "Jan", "Kann", "testClient3", "Haslo1234!", "normal");
+        testClient = new Client(UUID.randomUUID(), "testLoginKlient", "normal");
+        testClient2 = new Client(UUID.randomUUID(), "testLoginClient2", "normal");
+        testClient3 = new Client(UUID.randomUUID(), "testClient3", "normal");
 
         testClientEntity = ClientMapper.toEntity(testClient);
         testClientEntity2 = ClientMapper.toEntity(testClient2);
@@ -170,11 +170,8 @@ public class ClientAdapterRepositoryTest {
 
         Client modifiedClient = new Client(
                 testClient.getId(),
-                "Artur",
-                testClient.getLastName(),
                 testClient.getLogin(),
-                testClient.getPassword(),
-                testClient.getClientTypeName()
+                "athlete"
         );
 
         Mockito.when(repository.create(Mockito.any()))
@@ -194,9 +191,9 @@ public class ClientAdapterRepositoryTest {
         adapter.addClient(testClient3);
         assertEquals(3, repository.readAll().size());
 
-        assertEquals("Adam", ((Client) adapter.getClientById(testClient.getId())).getFirstName());
+        assertEquals("normal", adapter.getClientById(testClient.getId()).getClientTypeName().toLowerCase());
         adapter.modifyClient(modifiedClient);
-        assertEquals("Artur", ((Client) adapter.getClientById(testClient.getId())).getFirstName());
+        assertEquals("athlete", adapter.getClientById(testClient.getId()).getClientTypeName().toLowerCase());
     }
 
     @Test
@@ -215,10 +212,7 @@ public class ClientAdapterRepositoryTest {
 
         Client modifiedClient = new Client(
                 testClient.getId(),
-                testClient.getFirstName(),
-                testClient.getLastName(),
                 "testLoginClient2",
-                testClient.getPassword(),
                 testClient.getClientTypeName()
         );
 
@@ -228,9 +222,9 @@ public class ClientAdapterRepositoryTest {
         adapter.addClient(testClient3);
         assertEquals(3, repository.readAll().size());
 
-        assertEquals("testLoginKlient", ((Client) adapter.getClientById(testClient.getId())).getLogin());
+        assertEquals("testLoginKlient", adapter.getClientById(testClient.getId()).getLogin());
         assertThrows(ClientLoginException.class, () -> adapter.modifyClient(modifiedClient));
-        assertEquals("testLoginKlient", ((Client) adapter.getClientById(testClient.getId())).getLogin());
+        assertEquals("testLoginKlient", adapter.getClientById(testClient.getId()).getLogin());
 
     }
 

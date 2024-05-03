@@ -17,11 +17,11 @@ import java.util.UUID;
 @Service
 @NoArgsConstructor
 public class ReservationService implements AddReservationUseCase, CheckClientReservationBalanceUseCase,
-                                    DeleteReservationUseCase, GetAllArchiveReservationsUseCase,
-                                    GetAllClientReservationsUseCase, GetAllCurrentReservationsUseCase,
-                                    GetClientCurrentReservationsUseCase, GetClientEndedReservationsUseCase,
-                                    GetCourtCurrentReservationUseCase, GetCourtEndedReservationUseCase,
-                                    GetReservationByIdUseCase, ReturnCourtUseCase {
+        DeleteReservationUseCase, GetAllArchiveReservationsUseCase,
+        GetAllClientReservationsUseCase, GetAllCurrentReservationsUseCase,
+        GetClientCurrentReservationsUseCase, GetClientEndedReservationsUseCase,
+        GetCourtCurrentReservationUseCase, GetCourtEndedReservationUseCase,
+        GetReservationByIdUseCase, ReturnCourtUseCase {
 
     private AddReservationPort addReservationPort;
     private DeleteReservationPort deleteReservationPort;
@@ -63,13 +63,12 @@ public class ReservationService implements AddReservationUseCase, CheckClientRes
     }
 
 
-
     @Override
     public Reservation addReservation(String clientId, String courtId, LocalDateTime beginTime) {
         try {
             Reservation newReservation = addReservationPort.addReservation(
                     new Reservation(null,
-                            new Client(UUID.fromString(clientId), "", "", "", "", ""),
+                            new Client(UUID.fromString(clientId), "", ""),
                             new Court(UUID.fromString(courtId), 0, 0, 0),
                             beginTime));
             if (newReservation == null) {

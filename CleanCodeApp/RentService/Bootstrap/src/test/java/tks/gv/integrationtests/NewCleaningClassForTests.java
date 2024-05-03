@@ -27,7 +27,7 @@ import tks.gv.data.mappers.dto.ClientMapper;
 import tks.gv.data.mappers.dto.CourtMapper;
 import tks.gv.data.mappers.dto.ReservationMapper;
 import tks.gv.ReservationService;
-import tks.gv.restapi.data.dto.ReservationDTO;
+import tks.gv.data.dto.ReservationDTO;
 import tks.gv.Client;
 import tks.gv.ClientService;
 
@@ -148,16 +148,16 @@ public class NewCleaningClassForTests {
 
         cleanClients();
         client1 = ClientMapper.toDTO(clientServiceTest.registerClient(
-                new Client(UUID.fromString("8d83bbda-e38a-4cf2-9136-40e5310c5761"), "Adam", "Smith", "loginek", testPass, "normal"))
+                new Client(UUID.fromString("8d83bbda-e38a-4cf2-9136-40e5310c5761"), "loginek", "normal"))
         );
         client2 = ClientMapper.toDTO(clientServiceTest.registerClient(
-                new Client(UUID.fromString("692251d0-4da6-4099-b999-98df0812d5de"), "Eva", "Braun", "loginek13", testPass, "athlete"))
+                new Client(UUID.fromString("692251d0-4da6-4099-b999-98df0812d5de"), "loginek13", "athlete"))
         );
         client3 = ClientMapper.toDTO(clientServiceTest.registerClient(
-                new Client(UUID.fromString("491008d4-c1ac-4af8-97ae-8a91e6f086f6"), "Michal", "Pi", "michas13", testPass, "coach"))
+                new Client(UUID.fromString("491008d4-c1ac-4af8-97ae-8a91e6f086f6"), "michas13", "coach"))
         );
         client4 = ClientMapper.toDTO(clientServiceTest.registerClient(
-                new Client(UUID.fromString("f13ab7a5-7306-4675-95f2-5190fec1304c"), "Peter", "Grif", "griffPet", testPass, "normal"))
+                new Client(UUID.fromString("f13ab7a5-7306-4675-95f2-5190fec1304c"), "griffPet", "normal"))
         );
     }
 

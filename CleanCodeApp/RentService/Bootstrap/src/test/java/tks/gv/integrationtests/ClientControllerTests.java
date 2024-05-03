@@ -57,14 +57,10 @@ public class ClientControllerTests {
         assertTrue(responseString.contains("\"id\":\""));
         assertTrue(responseString.contains("\"login\":\"loginek\""));
         assertTrue(responseString.contains("\"clientTypeName\":\"normal\""));
-        assertTrue(responseString.contains("\"firstName\":\"Adam\""));
-        assertTrue(responseString.contains("\"lastName\":\"Smith\""));
 
         //Third Client
         assertTrue(responseString.contains("\"login\":\"michas13\""));
         assertTrue(responseString.contains("\"clientTypeName\":\"coach\""));
-        assertTrue(responseString.contains("\"firstName\":\"Michal\""));
-        assertTrue(responseString.contains("\"lastName\":\"Pi\""));
 
         assertEquals(200, response.getStatusCode());
     }
@@ -85,10 +81,7 @@ public class ClientControllerTests {
         cleanClients();
         String JSON = """
                 {
-                  "firstName": "John",
-                  "lastName": "Bravo",
                   "login": "johnBravo",
-                  "password": "johnBravo1",
                   "clientTypeName": "normal"
                 }
                 """;
@@ -109,18 +102,13 @@ public class ClientControllerTests {
 
         assertTrue(responseString.contains("\"login\":\"johnBravo\""));
         assertTrue(responseString.contains("\"clientTypeName\":\"normal\""));
-        assertTrue(responseString.contains("\"firstName\":\"John\""));
-        assertTrue(responseString.contains("\"lastName\":\"Bravo\""));
     }
 
     @Test
     void createClientTestNegInvalidData() throws URISyntaxException {
         String json = """
                 {
-                  "firstName": "John",
-                  "lastName": "  ",
-                  "login": "johnBravo",
-                  "password": "johnBravo1",
+                  "login": " ",
                   "clientTypeName": "normal"
                 }
                 """;
@@ -131,8 +119,7 @@ public class ClientControllerTests {
         RequestSpecification requestGet = RestAssured.given();
         String responseString = requestGet.get(new URI(appUrlClient)).asString();
 
-        assertFalse(responseString.contains("\"login\":\"johnBravo\""));
-        assertFalse(responseString.contains("\"lastName\":\"  \""));
+        assertFalse(responseString.contains("\"login\":\" \""));
 
         Response responsePost = requestPost.post(appUrlClient + "/addClient");
 
@@ -140,18 +127,14 @@ public class ClientControllerTests {
 
         responseString = requestGet.get(new URI(appUrlClient)).asString();
 
-        assertFalse(responseString.contains("\"login\":\"johnBravo\""));
-        assertFalse(responseString.contains("\"lastName\":\"  \""));
+        assertFalse(responseString.contains("\"login\":\" \""));
     }
 
     @Test
     void createClientTestNegSameLogin() throws URISyntaxException {
         String json = """
                 {
-                  "firstName": "John",
-                  "lastName": "Bravo",
                   "login": "michas13",
-                  "password": "michaS13",
                   "clientTypeName": "normal"
                 }
                 """;
@@ -164,17 +147,11 @@ public class ClientControllerTests {
 
         assertTrue(responseString.contains("\"login\":\"michas13\""));
 
-        assertFalse(responseString.contains("\"firstName\":\"John\""));
-        assertFalse(responseString.contains("\"lastName\":\"Bravo\""));
-
         Response responsePost = requestPost.post(appUrlClient + "/addClient");
 
         assertEquals(409, responsePost.getStatusCode());
 
         responseString = requestGet.get(new URI(appUrlClient)).asString();
-
-        assertFalse(responseString.contains("\"firstName\":\"John\""));
-        assertFalse(responseString.contains("\"lastName\":\"Bravo\""));
     }
 
     @Test
@@ -183,7 +160,7 @@ public class ClientControllerTests {
         Response response = request.get(new URI(appUrlClient + "/get?login=michas13"));
         String responseString = response.asString();
 
-        assertTrue(responseString.contains("\"login\":\"michas13\",\"clientTypeName\":\"coach\",\"firstName\":\"Michal\",\"lastName\":\"Pi\""));
+        assertTrue(responseString.contains("\"login\":\"michas13\",\"clientTypeName\":\"coach\""));
 
         assertEquals(200, response.getStatusCode());
     }
@@ -210,7 +187,7 @@ public class ClientControllerTests {
         Response responseById = request.get(new URI(appUrlClient + "/" + clientId));
         String responseByIdString = responseById.asString();
 
-        assertTrue(responseByIdString.contains("\"login\":\"michas13\",\"clientTypeName\":\"coach\",\"firstName\":\"Michal\",\"lastName\":\"Pi\""));
+        assertTrue(responseByIdString.contains("\"login\":\"michas13\",\"clientTypeName\":\"coach\""));
 
         assertEquals(200, responseById.getStatusCode());
     }
@@ -238,16 +215,11 @@ public class ClientControllerTests {
         //First Client
         assertTrue(splitRespStr[0].contains(
                 "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
-                        "\"firstName\":\"Adam\"," +
-                        "\"lastName\":\"Smith\""));
-
+                        "\"clientTypeName\":\"normal\""));
         //Second Client
         assertTrue(splitRespStr[1].contains(
                 "\"login\":\"loginek13\"," +
-                        "\"clientTypeName\":\"athlete\"," +
-                        "\"firstName\":\"Eva\"," +
-                        "\"lastName\":\"Braun\""));
+                        "\"clientTypeName\":\"athlete\""));
 
         assertEquals(200, response.getStatusCode());
     }
@@ -269,8 +241,6 @@ public class ClientControllerTests {
                 {
                   "archive": true,
                   "id": "8d83bbda-e38a-4cf2-9136-40e5310c5761",
-                  "firstName": "John",
-                  "lastName": "Smith",
                   "login": "loginek",
                   "clientTypeName": "coach"
                 }
@@ -292,16 +262,12 @@ public class ClientControllerTests {
                 "\"archive\":false," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
-                        "\"firstName\":\"Adam\"," +
-                        "\"lastName\":\"Smith\""));
+                        "\"clientTypeName\":\"normal\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"coach\"," +
-                        "\"firstName\":\"John\"," +
-                        "\"lastName\":\"Smith\""));
+                        "\"clientTypeName\":\"coach\""));
 
         Response responsePut = requestPut.put(appUrlClient + "/modifyClient");
 
@@ -313,16 +279,12 @@ public class ClientControllerTests {
                 "\"archive\":false," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
-                        "\"firstName\":\"Adam\"," +
-                        "\"lastName\":\"Smith\""));
+                        "\"clientTypeName\":\"normal\""));
         assertTrue(responseString.contains(
                 "\"archive\":true," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"coach\"," +
-                        "\"firstName\":\"John\"," +
-                        "\"lastName\":\"Smith\""));
+                        "\"clientTypeName\":\"coach\""));
     }
 
     @Test
@@ -331,10 +293,8 @@ public class ClientControllerTests {
                 {
                   "archive": true,
                   "id": "8d83bbda-e38a-4cf2-9136-40e5310c5761",
-                  "firstName": "   ",
-                  "lastName": "Smith",
-                  "login": "loginek",
-                  "clientTypeName": "coach"
+                  "login": " ",
+                  "clientTypeName": "normal"
                 }
                 """;
         RequestSpecification requestPut = RestAssured.given();
@@ -354,16 +314,12 @@ public class ClientControllerTests {
                 "\"archive\":false," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
-                        "\"firstName\":\"Adam\"," +
-                        "\"lastName\":\"Smith\""));
+                        "\"clientTypeName\":\"normal\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
                         "\"id\":\"" + clientId + "\"," +
-                        "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"coach\"," +
-                        "\"firstName\":\"John\"," +
-                        "\"lastName\":\"Smith\""));
+                        "\"login\":\" \"," +
+                        "\"clientTypeName\":\"normal\""));
 
         Response responsePut = requestPut.put(appUrlClient + "/modifyClient");
 
@@ -375,16 +331,12 @@ public class ClientControllerTests {
                 "\"archive\":false," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
-                        "\"firstName\":\"Adam\"," +
-                        "\"lastName\":\"Smith\""));
+                        "\"clientTypeName\":\"normal\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
                         "\"id\":\"" + clientId + "\"," +
-                        "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"coach\"," +
-                        "\"firstName\":\"John\"," +
-                        "\"lastName\":\"Smith\""));
+                        "\"login\":\" \"," +
+                        "\"clientTypeName\":\"normal\""));
     }
 
     @Test
@@ -393,8 +345,6 @@ public class ClientControllerTests {
                 {
                   "archive": true,
                   "id": "8d83bbda-e38a-4cf2-9136-40e5310c5761",
-                  "firstName": "John",
-                  "lastName": "Smith",
                   "login": "michas13",
                   "clientTypeName": "coach"
                 }
@@ -418,16 +368,12 @@ public class ClientControllerTests {
                 "\"archive\":false," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
-                        "\"firstName\":\"Adam\"," +
-                        "\"lastName\":\"Smith\""));
+                        "\"clientTypeName\":\"normal\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"michas13\"," +
-                        "\"clientTypeName\":\"coach\"," +
-                        "\"firstName\":\"John\"," +
-                        "\"lastName\":\"Smith\""));
+                        "\"clientTypeName\":\"coach\""));
 
         Response responsePut = requestPut.put(appUrlClient + "/modifyClient");
 
@@ -441,16 +387,12 @@ public class ClientControllerTests {
                 "\"archive\":false," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
-                        "\"firstName\":\"Adam\"," +
-                        "\"lastName\":\"Smith\""));
+                        "\"clientTypeName\":\"normal\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"michas13\"," +
-                        "\"clientTypeName\":\"coach\"," +
-                        "\"firstName\":\"John\"," +
-                        "\"lastName\":\"Smith\""));
+                        "\"clientTypeName\":\"coach\""));
     }
 
     @Test

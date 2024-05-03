@@ -1,16 +1,14 @@
-package tks.gv.restapi.data.dto;
+package tks.gv.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.google.common.base.Objects;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import tks.gv.data.dto.ClientDTO;
-import tks.gv.data.dto.CourtDTO;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @FieldDefaults(makeFinal = true)
@@ -54,9 +52,9 @@ public class ReservationDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ReservationDTO that = (ReservationDTO) o;
-        return Objects.equal(id, that.id) &&
+        return Objects.equals(id, that.id) &&
                 Double.compare(reservationCost, that.reservationCost) == 0  &&
-                Objects.equal(client, that.client) &&
-                Objects.equal(court, that.court);
+                Objects.equals(client, that.client) &&
+                Objects.equals(court, that.court);
     }
 }

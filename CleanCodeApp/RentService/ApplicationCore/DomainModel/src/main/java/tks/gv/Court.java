@@ -1,7 +1,5 @@
 package tks.gv;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,11 +15,8 @@ public class Court {
     @Setter(AccessLevel.NONE)
     private UUID id;
 
-    @PositiveOrZero
     private double area;
-    @PositiveOrZero
     private int baseCost;
-    @Min(value = 1)
     private int courtNumber;
 
     private boolean archive = false;

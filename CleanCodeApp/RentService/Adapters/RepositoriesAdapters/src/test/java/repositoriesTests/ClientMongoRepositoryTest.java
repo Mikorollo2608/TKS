@@ -46,9 +46,9 @@ public class ClientMongoRepositoryTest extends SetupTestContainer {
         clientRepository = new ClientMongoRepository(mongoClient, mongoDatabase);
 
         cleanFirstAndLastTimeDB();
-        client1 = ClientMapper.toEntity(new Client(UUID.randomUUID(), "Adam", "Smith", "12345678901", "12345678901", testClientType));
-        client2 = ClientMapper.toEntity(new Client(UUID.randomUUID(), "Eva", "Smith", "12345678902", "12345678902", testClientType));
-        client3 = ClientMapper.toEntity(new Client(UUID.randomUUID(), "John", "Lenon", "12345678903", "12345678903", testClientType));
+        client1 = ClientMapper.toEntity(new Client(UUID.randomUUID(), "12345678901", testClientType));
+        client2 = ClientMapper.toEntity(new Client(UUID.randomUUID(), "12345678902", testClientType));
+        client3 = ClientMapper.toEntity(new Client(UUID.randomUUID(), "12345678903", testClientType));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class ClientMongoRepositoryTest extends SetupTestContainer {
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
 
         assertNotNull(clientRepository.create(
-                new ClientEntity(null, "Adam", "Niezgodka", "adasNiezg", "Haslo1234!", false, "normal")));
+                new ClientEntity(null, "adasNiezg", false, "normal")));
         assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.getDatabase()
                 .getCollection(clientRepository.getCollectionName())
@@ -95,7 +95,7 @@ public class ClientMongoRepositoryTest extends SetupTestContainer {
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
 
         assertNotNull(clientRepository.create(
-                new ClientEntity("", "Adam", "Niezgodka", "adasNiezg", "Haslo1234!", false, "normal")));
+                new ClientEntity("", "adasNiezg", false, "normal")));
         assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.getDatabase()
                 .getCollection(clientRepository.getCollectionName())
@@ -108,19 +108,18 @@ public class ClientMongoRepositoryTest extends SetupTestContainer {
     @Test
     void testFindingDocumentsInDBPositive() {
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
-        ClientEntity client1 = (ClientEntity) clientRepository.create(this.client1);
-        ClientEntity client2 = (ClientEntity) clientRepository.create(this.client2);
-        ClientEntity client3 = (ClientEntity) clientRepository.create(this.client3);
+        ClientEntity client1 = clientRepository.create(this.client1);
+        ClientEntity client2 = clientRepository.create(this.client2);
+        ClientEntity client3 = clientRepository.create(this.client3);
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
 
-        var clientsList1 = clientRepository.read(Filters.eq("firstname", "John"));
+        var clientsList1 = clientRepository.read(Filters.eq("login", "12345678903"));
         assertEquals(1, clientsList1.size());
         assertEquals(client3, clientsList1.get(0));
 
-        var clientsList2 = clientRepository.read(Filters.eq("lastname", "Smith"));
-        assertEquals(2, clientsList2.size());
-        assertEquals(client1, clientsList2.get(0));
-        assertEquals(client2, clientsList2.get(1));
+        var clientsList2 = clientRepository.read(Filters.eq("login", "12345678902"));
+        assertEquals(1, clientsList2.size());
+        assertEquals(client2, clientsList2.get(0));
     }
 
     @Test
@@ -129,16 +128,16 @@ public class ClientMongoRepositoryTest extends SetupTestContainer {
         assertNotNull(clientRepository.create(client1));
         assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
 
-        var clientsList = clientRepository.read(Filters.eq("firstname", "John"));
+        var clientsList = clientRepository.read(Filters.eq("login", "12345678909"));
         assertEquals(0, clientsList.size());
     }
 
     @Test
     void testFindingAllDocumentsInDB() {
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
-        ClientEntity client1 = (ClientEntity) clientRepository.create(this.client1);
-        ClientEntity client2 = (ClientEntity) clientRepository.create(this.client2);
-        ClientEntity client3 = (ClientEntity) clientRepository.create(this.client3);
+        ClientEntity client1 = clientRepository.create(this.client1);
+        ClientEntity client2 = clientRepository.create(this.client2);
+        ClientEntity client3 = clientRepository.create(this.client3);
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
 
         var clientsList = clientRepository.readAll();
@@ -151,9 +150,9 @@ public class ClientMongoRepositoryTest extends SetupTestContainer {
     @Test
     void testFindingByUUID() {
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
-        ClientEntity client1 = (ClientEntity) clientRepository.create(this.client1);
+        ClientEntity client1 = clientRepository.create(this.client1);
         clientRepository.create(this.client2);
-        ClientEntity client3 = (ClientEntity) clientRepository.create(this.client3);
+        ClientEntity client3 = clientRepository.create(this.client3);
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
 
         ClientEntity clMapper1 = clientRepository.readByUUID(UUID.fromString(client1.getId()));
@@ -177,9 +176,9 @@ public class ClientMongoRepositoryTest extends SetupTestContainer {
     @Test
     void testDeletingDocumentsInDBPositive() {
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
-        ClientEntity client1 = (ClientEntity) clientRepository.create(this.client1);
-        ClientEntity client2 = (ClientEntity) clientRepository.create(this.client2);
-        ClientEntity client3 = (ClientEntity) clientRepository.create(this.client3);
+        ClientEntity client1 = clientRepository.create(this.client1);
+        ClientEntity client2 = clientRepository.create(this.client2);
+        ClientEntity client3 = clientRepository.create(this.client3);
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
 
         assertTrue(clientRepository.delete(UUID.fromString(client2.getId())));
@@ -197,7 +196,7 @@ public class ClientMongoRepositoryTest extends SetupTestContainer {
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.create(client1));
         assertNotNull(clientRepository.create(client2));
-        ClientEntity client = (ClientEntity) clientRepository.create(client3);
+        ClientEntity client = clientRepository.create(client3);
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
 
         assertTrue(clientRepository.delete(UUID.fromString(client.getId())));
@@ -210,17 +209,17 @@ public class ClientMongoRepositoryTest extends SetupTestContainer {
     @Test
     void testUpdatingDocumentsInDBPositive() {
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
-        ClientEntity client1 = (ClientEntity) clientRepository.create(this.client1);
-        ClientEntity client2 = (ClientEntity) clientRepository.create(this.client2);
+        ClientEntity client1 = clientRepository.create(this.client1);
+        ClientEntity client2 = clientRepository.create(this.client2);
         assertNotNull(clientRepository.create(this.client3));
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
 
-        assertEquals("Adam",
-                ((ClientEntity) clientRepository.readByUUID(UUID.fromString(client1.getId()))).getFirstName());
+        assertEquals("normal",
+                (clientRepository.readByUUID(UUID.fromString(client1.getId()))).getClientType());
         assertTrue(clientRepository.update(UUID.fromString(client1.getId()),
-                "firstname", "Chris"));
-        assertEquals("Chris",
-                ((ClientEntity) clientRepository.readByUUID(UUID.fromString(client1.getId()))).getFirstName());
+                "clienttype", "athlete"));
+        assertEquals("athlete",
+                (clientRepository.readByUUID(UUID.fromString(client1.getId()))).getClientType());
 
         //Test adding new value to document
         assertFalse(clientRepository.getDatabase().getCollection(clientRepository.getCollectionName(), Document.class)
@@ -252,7 +251,7 @@ public class ClientMongoRepositoryTest extends SetupTestContainer {
                 () -> clientRepository.update(UUID.fromString(client3.getId()),
                         "_id", UUID.randomUUID().toString()));
 
-        assertFalse(clientRepository.update(UUID.randomUUID(), "firstname", "Harry"));
+        assertFalse(clientRepository.update(UUID.randomUUID(), "login", "HarryA"));
     }
 
     @Test
@@ -263,8 +262,8 @@ public class ClientMongoRepositoryTest extends SetupTestContainer {
 
         assertEquals(client1, clientRepository.readByUUID(UUID.fromString(client1.getId())));
 
-        ClientEntity clientEntity = new ClientEntity(client1.getId(), "AAA", "BBB",
-                "loginek2134124", "Haslo1234!", false, "normal");
+        ClientEntity clientEntity = new ClientEntity(client1.getId(), "loginek2134124",
+                false, "normal");
 
         assertTrue(clientRepository.updateByReplace(UUID.fromString(client1.getId()), clientEntity));
 

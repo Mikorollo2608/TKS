@@ -83,16 +83,16 @@ public class ReservationsControllerTests {
     @BeforeAll
     static void init() {
         reservation1 = new Reservation(UUID.randomUUID(),
-                new Client(UUID.randomUUID(), "", "", "c1", "", ""),
+                new Client(UUID.randomUUID(), "c1", ""),
                 new Court(UUID.randomUUID(), 100.0, 100, 1), LocalDateTime.now()
         );
         reservation2 = new Reservation(UUID.randomUUID(),
-                new Client(UUID.randomUUID(), "", "", "c2", "", ""),
+                new Client(UUID.randomUUID(), "c2", ""),
                 new Court(UUID.randomUUID(), 100.0, 100, 2),
                 LocalDateTime.now()
         );
         reservation3 = new Reservation(UUID.randomUUID(),
-                new Client(UUID.randomUUID(), "", "", "c3", "", ""),
+                new Client(UUID.randomUUID(), "c3", ""),
                 new Court(UUID.randomUUID(), 100.0, 100, 3),
                 LocalDateTime.now()
         );

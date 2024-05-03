@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.PositiveOrZero;
 
@@ -54,7 +54,7 @@ public class CourtDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CourtDTO courtDTO = (CourtDTO) o;
-        return Objects.equal(id, courtDTO.id) &&
+        return Objects.equals(id, courtDTO.id) &&
                 Double.compare(area, courtDTO.area) == 0 &&
                 baseCost == courtDTO.baseCost &&
                 courtNumber == courtDTO.courtNumber &&

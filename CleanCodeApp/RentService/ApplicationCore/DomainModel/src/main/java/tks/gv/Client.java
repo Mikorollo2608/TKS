@@ -1,14 +1,11 @@
 package tks.gv;
 
-import com.google.common.base.Objects;
-import jakarta.validation.constraints.NotBlank;
-
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.UUID;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
@@ -36,33 +33,18 @@ public class Client {
 
     private UUID id;
     @Setter
-    @NotBlank
     private String login;
-    @Setter
-    private String password;
+    ///FIXME maybe delete???
     @Setter
     private boolean archive = false;
 
-    @Getter
-    @Setter
-    @NotBlank
-    private String firstName;
-    @Getter
-    @Setter
-    @NotBlank
-    private String lastName;
     private ClientType clientType;
-
-    @Getter
     private String clientTypeName;
 
-    public Client(UUID id, String firstName, String lastName, String login, String password, String clientType) {
+    public Client(UUID id, String login, String clientType) {
         this.id = id;
         this.login = login;
-        this.password = password;
 
-        this.firstName = firstName;
-        this.lastName = lastName;
         if (clientType != null) {
             this.clientType = switch (clientType.toLowerCase()) {
                 case "athlete" -> ClientType.ATHLETE;
@@ -83,7 +65,7 @@ public class Client {
         return clientType.getMaxHours();
     }
 
-    public void setClientTypeName(@NotNull String clientType) {
+    public void setClientTypeName(String clientType) {
         if (clientType != null) {
             this.clientType = switch (clientType.toLowerCase()) {
                 case "athlete" -> ClientType.ATHLETE;
@@ -101,6 +83,7 @@ public class Client {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Client client = (Client) o;
-        return Objects.equal(id, client.id);
+        return Objects.equals(id, client.id);
     }
+
 }

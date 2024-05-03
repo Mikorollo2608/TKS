@@ -52,10 +52,10 @@ public class ReservationMongoRepositoryAdapterTest {
         courtList = new ArrayList<>();
         courtList.add(court1);
         courtList.add(court2);
-        testClient = new Client(UUID.randomUUID(), "Adam", "Niezgodka", "testLoginKlient", "Haslo1234!", "normal");
-        testClient2 = new Client(UUID.randomUUID(), "NieAdam", "Zgodka", "testLoginKlient2", "Haslo1234!", "normal");
+        testClient = new Client(UUID.randomUUID(), "testLoginKlient","normal");
+        testClient2 = new Client(UUID.randomUUID(), "testLoginKlient2", "normal");
         reservationBlank = new Reservation(null,
-                new Client(testClient2.getId(), "", "", "", "", ""),
+                new Client(testClient2.getId(), "", ""),
                 new Court(court2.getId(), 0, 0, 0),
                 null);
         reservationCurrent = new Reservation(UUID.randomUUID(), testClient, court1, null);

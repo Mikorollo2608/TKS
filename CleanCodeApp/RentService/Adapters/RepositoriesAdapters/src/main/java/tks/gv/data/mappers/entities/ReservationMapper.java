@@ -17,11 +17,10 @@ public class ReservationMapper {
 
     public static Reservation fromReservationEntity(ReservationEntity reservationMapper) {
         if (reservationMapper == null) return null;
-        Reservation reservation = new Reservation(UUID.fromString(reservationMapper.getId()),
-                new Client(UUID.fromString(reservationMapper.getClientId()), "", "", "", "", ""),
+
+        return new Reservation(UUID.fromString(reservationMapper.getId()),
+                new Client(UUID.fromString(reservationMapper.getClientId()), "", ""),
                 new Court(UUID.fromString(reservationMapper.getCourtId()), 0, 0, 0),
                 reservationMapper.getBeginTime(), reservationMapper.getEndTime(), reservationMapper.getReservationCost());
-
-        return reservation;
     }
 }

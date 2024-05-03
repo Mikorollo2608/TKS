@@ -71,9 +71,9 @@ public class ReservationMongoRepositoryTest extends SetupTestContainer {
         cleanFirstAndLastTimeDB();
         testClientType = "normal";
 
-        testClient1 = ClientMapper.fromEntity(clientRepository.create(ClientMapper.toEntity(new Client(UUID.randomUUID(), "John", "Smith", "12345678901", "12345678901", testClientType))));
-        testClient2 = ClientMapper.fromEntity(clientRepository.create(ClientMapper.toEntity(new Client(UUID.randomUUID(), "Eva", "Brown", "12345678902", "12345678902", testClientType))));
-        testClient3 = ClientMapper.fromEntity(clientRepository.create(ClientMapper.toEntity(new Client(UUID.randomUUID(), "Adam", "Long", "12345678903", "12345678903", testClientType))));
+        testClient1 = ClientMapper.fromEntity(clientRepository.create(ClientMapper.toEntity(new Client(UUID.randomUUID(),"12345678901", testClientType))));
+        testClient2 = ClientMapper.fromEntity(clientRepository.create(ClientMapper.toEntity(new Client(UUID.randomUUID(),"12345678902", testClientType))));
+        testClient3 = ClientMapper.fromEntity(clientRepository.create(ClientMapper.toEntity(new Client(UUID.randomUUID(), "12345678903", testClientType))));
 
         testCourt1 = CourtMapper.fromMongoCourt(courtRepository.create(CourtMapper.toMongoCourt(new Court(UUID.randomUUID(), 1000, 100, 1))));
         testCourt2 = CourtMapper.fromMongoCourt(courtRepository.create(CourtMapper.toMongoCourt(new Court(UUID.randomUUID(), 1000, 100, 2))));
@@ -117,8 +117,8 @@ public class ReservationMongoRepositoryTest extends SetupTestContainer {
 
         //No client in the database
         assertThrows(ReservationException.class, () -> reservationRepository.create(
-                ReservationMapper.toReservationEntity(new Reservation(UUID.randomUUID(), new Client(UUID.randomUUID(), "John", "Blade",
-                        "12345678911", "12345678911", "normal"), testCourt3, testTimeStart))));
+                ReservationMapper.toReservationEntity(new Reservation(UUID.randomUUID(), new Client(UUID.randomUUID(),
+                        "12345678911", "normal"), testCourt3, testTimeStart))));
 
         //No court in the database
         assertThrows(ReservationException.class, () -> reservationRepository.create(

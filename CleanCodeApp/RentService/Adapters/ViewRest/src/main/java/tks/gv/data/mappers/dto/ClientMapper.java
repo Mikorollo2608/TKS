@@ -15,10 +15,7 @@ public class ClientMapper {
         }
 
         return new ClientDTO(client.getId().toString(),
-                client.getFirstName(),
-                client.getLastName(),
                 client.getLogin(),
-                client.getPassword(),
                 client.isArchive(),
                 client.getClientTypeName());
     }
@@ -29,10 +26,7 @@ public class ClientMapper {
         }
 
         Client clientModel = new Client(clientDTO.getId() != null ? UUID.fromString(clientDTO.getId()) : null,
-                clientDTO.getFirstName(),
-                clientDTO.getLastName(),
                 clientDTO.getLogin(),
-                clientDTO.getPassword(),
                 clientDTO.getClientType());
         clientModel.setArchive(clientDTO.isArchive());
         return clientModel;

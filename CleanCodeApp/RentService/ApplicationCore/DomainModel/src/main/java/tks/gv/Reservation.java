@@ -13,9 +13,7 @@ import java.util.UUID;
 public class Reservation {
     private final UUID id;
 
-    @NotNull
     private final Client client;
-    @NotNull
     private final Court court;
     private final LocalDateTime beginTime;
 

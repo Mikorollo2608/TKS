@@ -1,7 +1,7 @@
 package tks.gv.data.mappers.dto;
 
 import tks.gv.Reservation;
-import tks.gv.restapi.data.dto.ReservationDTO;
+import tks.gv.data.dto.ReservationDTO;
 
 import java.util.UUID;
 

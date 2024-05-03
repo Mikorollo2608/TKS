@@ -205,8 +205,8 @@ public class CourtMongoRepositoryTest extends SetupTestContainer {
 
         ReservationMongoRepository reservationMongoRepository = new ReservationMongoRepository(mongoClient, mongoDatabase);
         ClientMongoRepository clientMongoRepository = new ClientMongoRepository(mongoClient, mongoDatabase);
-        ClientEntity testClient1 = clientMongoRepository.create(new ClientEntity(UUID.randomUUID().toString(), "John",
-                "Smith", "999999999999", "999999999999", false, "normal"));
+        ClientEntity testClient1 = clientMongoRepository.create(new ClientEntity(UUID.randomUUID().toString(),
+                "999999999999", false, "normal"));
         ReservationEntity testReservation1 = new ReservationEntity(UUID.randomUUID().toString(), testClient1.getId(),
                 testCourt1.getId(), testTimeStart, null, 0);
         reservationMongoRepository.create(testReservation1);

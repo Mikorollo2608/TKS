@@ -17,29 +17,17 @@ public class ClientEntity implements Entity {
     private String login;
     @BsonProperty("archive")
     private boolean archive;
-    @BsonProperty("password")
-    private String password;
-    @BsonProperty("firstname")
-    private String firstName;
-    @BsonProperty("lastname")
-    private String lastName;
     @BsonProperty("clienttype")
     private String clientType;
 
     @BsonCreator
     public ClientEntity(@BsonProperty("_id") String id,
-                        @BsonProperty("firstname") String firstName,
-                        @BsonProperty("lastname") String lastName,
                         @BsonProperty("login") String login,
-                        @BsonProperty("password") String password,
                         @BsonProperty("archive") boolean archive,
                         @BsonProperty("clienttype") String clientType) {
         this.id = id;
         this.login = login;
-        this.password = password;
         this.archive = archive;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.clientType = clientType;
     }
 
@@ -52,8 +40,6 @@ public class ClientEntity implements Entity {
                 Objects.equals(login, that.login) &&
                 isArchive() == that.isArchive() &&
                 Objects.equals(getId(), that.getId()) &&
-                Objects.equals(firstName, that.firstName) &&
-                Objects.equals(lastName, that.lastName) &&
                 Objects.equals(getLogin(), that.getLogin()) &&
                 Objects.equals(clientType, that.clientType);
     }

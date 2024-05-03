@@ -53,9 +53,9 @@ public class ClientServiceTest {
 
     @BeforeEach
     void init() {
-        testClient = new Client(UUID.randomUUID(), "Adam", "Niezgodka", "testKlient", testClientPass, testClientType);
-        testClient2 = new Client(UUID.randomUUID(), "Tobiasz", "Niezgodka", "testLoginKlient2", testClientPass, testClientType);
-        testClient3 = new Client(UUID.randomUUID(), "Adam", "Kociol", "testLoginKlient3", testClientPass, testClientType);
+        testClient = new Client(UUID.randomUUID(), "testKlient", testClientType);
+        testClient2 = new Client(UUID.randomUUID(), "testLoginKlient2", testClientType);
+        testClient3 = new Client(UUID.randomUUID(), "testLoginKlient3", testClientType);
     }
 
     @Test
