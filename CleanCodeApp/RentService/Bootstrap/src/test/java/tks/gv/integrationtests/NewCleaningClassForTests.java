@@ -69,7 +69,7 @@ public class NewCleaningClassForTests {
             ))
             .build();
 
-    private static final String testDBName = "testmongodb1";
+    private static final String testDBName = "testmongodb_rent1";
 
     static {
         Map<String, String> map = new HashMap<>(

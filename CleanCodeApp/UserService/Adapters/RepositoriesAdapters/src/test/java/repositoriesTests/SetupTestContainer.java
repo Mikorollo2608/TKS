@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class SetupTestContainer {
 
-    static final String testDBName = "testmongodb1";
+    static final String testDBName = "testmongodb_user1";
 
     static DBConfig dbconfig;
     static MongoClient mongoClient;

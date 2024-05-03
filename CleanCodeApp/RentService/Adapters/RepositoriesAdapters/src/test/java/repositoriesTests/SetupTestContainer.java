@@ -9,7 +9,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
-import tks.gv.repositories.CourtMongoRepository;
 import tks.gv.repositories.config.DBConfig;
 
 import java.io.IOException;
@@ -19,7 +18,7 @@ import java.util.Map;
 
 public class SetupTestContainer {
 
-    static final String testDBName = "testmongodb1";
+    static final String testDBName = "testmongodb_rent1";
 
     static DBConfig dbconfig;
     static MongoClient mongoClient;

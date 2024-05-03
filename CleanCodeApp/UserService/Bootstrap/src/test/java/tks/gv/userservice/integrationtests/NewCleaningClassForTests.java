@@ -15,22 +15,21 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
+import tks.gv.userservice.Admin;
+import tks.gv.userservice.AdminService;
+import tks.gv.userservice.Client;
+import tks.gv.userservice.ClientService;
+import tks.gv.userservice.ResourceAdmin;
+import tks.gv.userservice.ResourceAdminService;
 import tks.gv.userservice.data.dto.AdminDTO;
 import tks.gv.userservice.data.dto.ClientDTO;
 import tks.gv.userservice.data.dto.ResourceAdminDTO;
 import tks.gv.userservice.data.mappers.dto.AdminMapper;
 import tks.gv.userservice.data.mappers.dto.ClientMapper;
 import tks.gv.userservice.data.mappers.dto.ResourceAdminMapper;
-import tks.gv.userservice.Admin;
-import tks.gv.userservice.Client;
-import tks.gv.userservice.ResourceAdmin;
-import tks.gv.userservice.AdminService;
-import tks.gv.userservice.ClientService;
-import tks.gv.userservice.ResourceAdminService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -58,7 +57,7 @@ public class NewCleaningClassForTests {
             ))
             .build();
 
-    private static final String testDBName = "testmongodb1";
+    private static final String testDBName = "testmongodb_user1";
 
     static {
         Map<String, String> map = new HashMap<>(
