@@ -83,6 +83,8 @@ public class AdminControllerTests {
         NewCleaningClassForTests.cleanUsers();
         String JSON = """
                 {
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "login": "johnBravo",
                   "password": "testTO1"
                 }
@@ -109,6 +111,8 @@ public class AdminControllerTests {
     void createAdminTestNegInvalidData() throws URISyntaxException {
         String json = """
                 {
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "login": " ",
                   "password": "testTO1"
                 }
@@ -135,6 +139,8 @@ public class AdminControllerTests {
     void createAdminTestNegSameLogin() throws URISyntaxException {
         String json = """
                 {
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "login": "adminek1@1234",
                   "password": "testTO1"
                 }
@@ -230,6 +236,8 @@ public class AdminControllerTests {
     void modifyAdminTest() throws URISyntaxException {
         String JSON = """
                 {
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "archive": true,
                   "id": "fd60c176-d427-4591-ac13-6fb84d904862",
                   "login": "loginekAdm"
@@ -271,6 +279,8 @@ public class AdminControllerTests {
     void modifyAdminTestNegInvalidData() throws URISyntaxException {
         String JSON = """
                 {
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "archive": true,
                   "id": "fd60c176-d427-4591-ac13-6fb84d904862",
                   "login": " "
@@ -312,6 +322,8 @@ public class AdminControllerTests {
     void modifyAdminTestNegRepeatLoginOfAnotherAdmin() throws URISyntaxException {
         String JSON = """
                 {
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "archive": true,
                   "id": "fd60c176-d427-4591-ac13-6fb84d904862",
                   "login": "adminek2@9876"

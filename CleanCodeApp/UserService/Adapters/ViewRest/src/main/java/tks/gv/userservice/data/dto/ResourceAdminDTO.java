@@ -14,9 +14,11 @@ public class ResourceAdminDTO extends UserDTO {
 
     @JsonCreator
     public ResourceAdminDTO(@JsonProperty("id") String id,
+                            @JsonProperty("firstName") String firstName,
+                            @JsonProperty("lastName") String lastName,
                             @JsonProperty("login") String login,
                             @JsonProperty("password") String password,
                             @JsonProperty("archive") boolean archive) {
-        super(id, login, password, archive);
+        super(id, firstName, lastName, login, password, archive);
     }
 }

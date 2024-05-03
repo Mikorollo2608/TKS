@@ -15,9 +15,11 @@ public class AdminEntity extends UserEntity {
 
     @BsonCreator
     public AdminEntity(@BsonProperty("_id") String id,
+                       @BsonProperty("firstname") String firstName,
+                       @BsonProperty("lastname") String lastName,
                        @BsonProperty("login") String login,
                        @BsonProperty("password") String password,
                        @BsonProperty("archive") boolean archive) {
-        super(id, login, password, archive);
+        super(id, firstName, lastName, login, password, archive);
     }
 }

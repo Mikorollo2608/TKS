@@ -12,8 +12,14 @@ public class AdminMapper {
             return null;
         }
 
-        return new AdminDTO(admin.getId().toString(), admin.getLogin(),
-                admin.getPassword(), admin.isArchive());
+        return new AdminDTO(
+                admin.getId().toString(),
+                admin.getFirstName(),
+                admin.getLastName(),
+                admin.getLogin(),
+                admin.getPassword(),
+                admin.isArchive()
+        );
     }
 
     public static Admin fromUserDTO(AdminDTO adminDTO) {
@@ -21,9 +27,13 @@ public class AdminMapper {
             return null;
         }
 
-        Admin newAdmin = new Admin(adminDTO.getId() != null ? UUID.fromString(adminDTO.getId()) : null,
+        Admin newAdmin = new Admin(
+                adminDTO.getId() != null ? UUID.fromString(adminDTO.getId()) : null,
+                adminDTO.getFirstName(),
+                adminDTO.getLastName(),
                 adminDTO.getLogin(),
-                adminDTO.getPassword());
+                adminDTO.getPassword()
+        );
         newAdmin.setArchive(adminDTO.isArchive());
         return newAdmin;
     }

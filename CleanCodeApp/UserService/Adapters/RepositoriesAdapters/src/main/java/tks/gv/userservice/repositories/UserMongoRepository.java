@@ -94,6 +94,8 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
             } else if (initUser instanceof AdminEntity adminEntity) {
                 initUser = new AdminEntity(
                         UUID.randomUUID().toString(),
+                        adminEntity.getFirstName(),
+                        adminEntity.getLastName(),
                         adminEntity.getLogin(),
                         adminEntity.getPassword(),
                         adminEntity.isArchive()
@@ -101,6 +103,8 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
             } else if (initUser instanceof ResourceAdminEntity resourceAdminEntity) {
                 initUser = new ResourceAdminEntity(
                         UUID.randomUUID().toString(),
+                        resourceAdminEntity.getFirstName(),
+                        resourceAdminEntity.getLastName(),
                         resourceAdminEntity.getLogin(),
                         resourceAdminEntity.getPassword(),
                         resourceAdminEntity.isArchive()
@@ -146,6 +150,8 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
                 case "admin" -> list.add(
                         new AdminEntity(
                                 doc.getString("_id"),
+                                doc.getString("firstname"),
+                                doc.getString("lastname"),
                                 doc.getString("login"),
                                 doc.getString("password"),
                                 doc.getBoolean("archive")
@@ -154,6 +160,8 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
                 case "resourceadmin" -> list.add(
                         new ResourceAdminEntity(
                                 doc.getString("_id"),
+                                doc.getString("firstname"),
+                                doc.getString("lastname"),
                                 doc.getString("login"),
                                 doc.getString("password"),
                                 doc.getBoolean("archive")
@@ -181,11 +189,11 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
         create(ClientMapper.toUserEntity(new Client(UUID.fromString("3a722080-9668-42a2-9788-4695a4b9f5a7"), "Krzysztof", "Scala", "scKrzy", "haselko")));
         create(ClientMapper.toUserEntity(new Client(UUID.fromString("126778af-0e19-46d4-b329-0b6b92548f9a"), "Adam", "Scout", "scAdam", "haselko")));
 
-        create(AdminMapper.toUserEntity(new Admin(UUID.fromString("3b197615-6931-4aad-941a-44f78f527053"), "mainAdmin1@example", "haselko")));
-        create(AdminMapper.toUserEntity(new Admin(UUID.fromString("4844c398-5cf1-44e0-a6d8-34c8a939d2ea"), "secondAdmin2@example", "haselko")));
+        create(AdminMapper.toUserEntity(new Admin(UUID.fromString("3b197615-6931-4aad-941a-44f78f527053"), "John", "Smith", "mainAdmin1@example", "haselko")));
+        create(AdminMapper.toUserEntity(new Admin(UUID.fromString("4844c398-5cf1-44e0-a6d8-34c8a939d2ea"), "Eva", "Eve", "secondAdmin2@example", "haselko")));
 
-        create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("83b29a7a-aa96-4ff2-823d-f3d0d6372c94"), "admRes1@test", "haselko")));
-        create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("a2f6cb49-5e9d-4069-ab91-f337224e833a"), "admRes2@test", "haselko")));
+        create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("83b29a7a-aa96-4ff2-823d-f3d0d6372c94"), "Adam", "Key", "admRes1@test", "haselko")));
+        create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("a2f6cb49-5e9d-4069-ab91-f337224e833a"), "Henry", "Beer", "admRes2@test", "haselko")));
     }
 
     @PreDestroy

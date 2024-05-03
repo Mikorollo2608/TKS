@@ -66,9 +66,9 @@ public class ResourceAdminServiceTest {
 
     @BeforeEach
     void init() {
-        testResourceAdmin = new ResourceAdmin(UUID.randomUUID(), testLogin1, testPass);
-        testResourceAdmin2 = new ResourceAdmin(UUID.randomUUID(), testLogin2, testPass);
-        testResourceAdmin3 = new ResourceAdmin(UUID.randomUUID(), testLogin3, testPass);
+        testResourceAdmin = new ResourceAdmin(UUID.randomUUID(), "John", "Smith", testLogin1, testPass);
+        testResourceAdmin2 = new ResourceAdmin(UUID.randomUUID(), "Jeo", "Ball", testLogin2, testPass);
+        testResourceAdmin3 = new ResourceAdmin(UUID.randomUUID(), "Henry", "Key", testLogin3, testPass);
     }
 
     @Test

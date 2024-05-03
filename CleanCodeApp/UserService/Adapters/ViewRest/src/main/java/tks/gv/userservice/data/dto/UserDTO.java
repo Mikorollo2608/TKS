@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Getter
 @FieldDefaults(makeFinal = true)
-@JsonPropertyOrder({"archive", "id", "login"})
+@JsonPropertyOrder({"archive", "id", "login", "firstName", "lastName"})
 public class UserDTO {
 
     public interface BasicUserValidation {}
@@ -28,16 +28,27 @@ public class UserDTO {
     private String login;
     @JsonProperty("archive")
     private boolean archive;
+    @JsonProperty("firstName")
+    @NotBlank(groups = {BasicUserValidation.class})
+    private String firstName;
+    @JsonProperty("lastName")
+    @NotBlank(groups = {BasicUserValidation.class})
+    private String lastName;
     @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(groups = {PasswordValidation.class})
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{5,}$", groups = {PasswordValidation.class})
     private String password;
+
     @JsonCreator
     public UserDTO(@JsonProperty("id") String id,
+                   @JsonProperty("firstName") String firstName,
+                   @JsonProperty("lastName") String lastName,
                    @JsonProperty("login") String login,
                    @JsonProperty("password") String password,
                    @JsonProperty("archive") boolean archive) {
         this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.login = login;
         this.password = password;
         this.archive = archive;
@@ -53,6 +64,7 @@ public class UserDTO {
         if (!Objects.equals(id, userDTO.id)) return false;
         if (archive != userDTO.archive) return false;
         if (!Objects.equals(login, userDTO.login)) return false;
-        return Objects.equals(password, userDTO.password);
+        if (!Objects.equals(firstName, userDTO.firstName)) return false;
+        return Objects.equals(lastName, userDTO.lastName);
     }
 }

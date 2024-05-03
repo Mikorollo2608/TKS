@@ -134,6 +134,8 @@ public class ResourceAdminController {
             modifyResourceAdminUseCase.modifyResourceAdmin(ResourceAdminMapper.fromUserDTO(
                     new ResourceAdminDTO(
                             modifyResourceAdmin.getId(),
+                            modifyResourceAdmin.getFirstName(),
+                            modifyResourceAdmin.getLastName(),
                             modifyResourceAdmin.getLogin(),
                             null,
                             modifyResourceAdmin.isArchive())

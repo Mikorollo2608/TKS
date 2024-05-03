@@ -12,10 +12,14 @@ public class ResourceAdminMapper {
             return null;
         }
 
-        return new ResourceAdminDTO(resourceAdmin.getId().toString(),
+        return new ResourceAdminDTO(
+                resourceAdmin.getId().toString(),
+                resourceAdmin.getFirstName(),
+                resourceAdmin.getLastName(),
                 resourceAdmin.getLogin(),
                 resourceAdmin.getPassword(),
-                resourceAdmin.isArchive());
+                resourceAdmin.isArchive()
+        );
     }
 
     public static ResourceAdmin fromUserDTO(ResourceAdminDTO resourceAdminDTO) {
@@ -23,8 +27,13 @@ public class ResourceAdminMapper {
             return null;
         }
 
-        ResourceAdmin newAdmin = new ResourceAdmin(resourceAdminDTO.getId() != null ? UUID.fromString(resourceAdminDTO.getId()) : null,
-                resourceAdminDTO.getLogin(), resourceAdminDTO.getPassword());
+        ResourceAdmin newAdmin = new ResourceAdmin(
+                resourceAdminDTO.getId() != null ? UUID.fromString(resourceAdminDTO.getId()) : null,
+                resourceAdminDTO.getFirstName(),
+                resourceAdminDTO.getLastName(),
+                resourceAdminDTO.getLogin(),
+                resourceAdminDTO.getPassword()
+        );
         newAdmin.setArchive(resourceAdminDTO.isArchive());
         return newAdmin;
     }

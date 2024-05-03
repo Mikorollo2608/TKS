@@ -13,10 +13,7 @@ import java.util.Objects;
 @FieldDefaults(makeFinal = true)
 @BsonDiscriminator(key = "_clazz", value = "client")
 public class ClientEntity extends UserEntity {
-    @BsonProperty("firstname")
-    private String firstName;
-    @BsonProperty("lastname")
-    private String lastName;
+
 
     @BsonCreator
     public ClientEntity(@BsonProperty("_id") String id,
@@ -25,9 +22,7 @@ public class ClientEntity extends UserEntity {
                         @BsonProperty("login") String login,
                         @BsonProperty("password") String password,
                         @BsonProperty("archive") boolean archive) {
-        super(id, login, password, archive);
-        this.firstName = firstName;
-        this.lastName = lastName;
+        super(id, firstName, lastName, login, password, archive);
     }
 
     @Override
@@ -37,8 +32,8 @@ public class ClientEntity extends UserEntity {
         ClientEntity that = (ClientEntity) o;
         return isArchive() == that.isArchive() &&
                 Objects.equals(getId(), that.getId()) &&
-                Objects.equals(firstName, that.firstName) &&
-                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(getFirstName(), that.getFirstName()) &&
+                Objects.equals(getLastName(), that.getLastName()) &&
                 Objects.equals(getLogin(), that.getLogin());
     }
 }

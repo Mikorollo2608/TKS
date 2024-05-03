@@ -65,9 +65,9 @@ public class AdminServiceTest {
 
     @BeforeEach
     void init() {
-        testAdmin = new Admin(UUID.randomUUID(), testLogin1, testPass);
-        testAdmin2 = new Admin(UUID.randomUUID(), testLogin2, testPass);
-        testAdmin3 = new Admin(UUID.randomUUID(), testLogin3, testPass);
+        testAdmin = new Admin(UUID.randomUUID(), "John", "Smith", testLogin1, testPass);
+        testAdmin2 = new Admin(UUID.randomUUID(), "Jeo", "Ball",testLogin2, testPass);
+        testAdmin3 = new Admin(UUID.randomUUID(), "Henry", "Key",testLogin3, testPass);
     }
 
     @Test

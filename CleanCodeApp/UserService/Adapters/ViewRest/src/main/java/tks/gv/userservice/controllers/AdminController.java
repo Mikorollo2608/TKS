@@ -133,6 +133,8 @@ public class AdminController {
             modifyAdminUseCase.modifyAdmin(AdminMapper.fromUserDTO(
                     new AdminDTO(
                             modifiedAdmin.getId(),
+                            modifiedAdmin.getFirstName(),
+                            modifiedAdmin.getLastName(),
                             modifiedAdmin.getLogin(),
                             null,
                             modifiedAdmin.isArchive())

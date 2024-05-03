@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
@@ -15,12 +14,7 @@ import java.util.Objects;
 @FieldDefaults(makeFinal = true)
 @JsonPropertyOrder({"archive", "id", "login", "firstName", "lastName"})
 public class ClientDTO extends UserDTO {
-    @JsonProperty("firstName")
-    @NotBlank(groups = {BasicUserValidation.class})
-    private String firstName;
-    @JsonProperty("lastName")
-    @NotBlank(groups = {BasicUserValidation.class})
-    private String lastName;
+
 
     @JsonCreator
     public ClientDTO(@JsonProperty("id") String id,
@@ -29,9 +23,7 @@ public class ClientDTO extends UserDTO {
                      @JsonProperty("login") String login,
                      @JsonProperty("password") String password,
                      @JsonProperty("archive") boolean archive) {
-        super(id, login, password, archive);
-        this.firstName = firstName;
-        this.lastName = lastName;
+        super(id, firstName, lastName, login, password, archive);
     }
 
     @Override
@@ -41,8 +33,8 @@ public class ClientDTO extends UserDTO {
         ClientDTO that = (ClientDTO) o;
         return isArchive() == that.isArchive() &&
                 Objects.equals(getId(), that.getId()) &&
-                Objects.equals(firstName, that.firstName) &&
-                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(getFirstName(), that.getFirstName()) &&
+                Objects.equals(getLastName(), that.getLastName()) &&
                 Objects.equals(getLogin(), that.getLogin());
     }
 }

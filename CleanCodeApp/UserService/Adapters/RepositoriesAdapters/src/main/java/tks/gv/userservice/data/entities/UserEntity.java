@@ -15,16 +15,25 @@ public class UserEntity implements Entity {
     private String id;
     @BsonProperty("login")
     private String login;
-    @BsonProperty("archive")
-    private boolean archive;
     @BsonProperty("password")
     private String password;
+    @BsonProperty("firstname")
+    private String firstName;
+    @BsonProperty("lastname")
+    private String lastName;
+    @BsonProperty("archive")
+    private boolean archive;
+
     @BsonCreator
     public UserEntity(@BsonProperty("_id") String id,
+                      @BsonProperty("firstname") String firstName,
+                      @BsonProperty("lastname") String lastName,
                       @BsonProperty("login") String login,
                       @BsonProperty("password") String password,
                       @BsonProperty("archive") boolean archive) {
         this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.login = login;
         this.password = password;
         this.archive = archive;

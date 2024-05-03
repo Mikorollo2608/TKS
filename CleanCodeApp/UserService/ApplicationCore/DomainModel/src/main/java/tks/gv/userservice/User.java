@@ -17,10 +17,16 @@ public abstract class User {
     @Setter
     private String password;
     @Setter
+    private String firstName;
+    @Setter
+    private String lastName;
+    @Setter
     private boolean archive = false;
 
-    public User(UUID id, String login, String password) {
+    public User(UUID id, String firstName, String lastName, String login, String password) {
         this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.login = login;
         this.password = password;
     }

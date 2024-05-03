@@ -9,15 +9,23 @@ import java.util.UUID;
 public class ResourceAdminMapper {
 
     public static ResourceAdminEntity toUserEntity(ResourceAdmin resourceAdmin) {
-        return new ResourceAdminEntity(Objects.requireNonNullElse(resourceAdmin.getId(), "").toString(),
+        return new ResourceAdminEntity(
+                Objects.requireNonNullElse(resourceAdmin.getId(), "").toString(),
+                resourceAdmin.getFirstName(),
+                resourceAdmin.getLastName(),
                 resourceAdmin.getLogin(),
                 resourceAdmin.getPassword(),
                 resourceAdmin.isArchive());
     }
 
     public static ResourceAdmin fromUserEntity(ResourceAdminEntity resourceAdminEntity) {
-        ResourceAdmin newResourceAdmin = new ResourceAdmin(UUID.fromString(resourceAdminEntity.getId()),
-                resourceAdminEntity.getLogin(), resourceAdminEntity.getPassword());
+        ResourceAdmin newResourceAdmin = new ResourceAdmin(
+                UUID.fromString(resourceAdminEntity.getId()),
+                resourceAdminEntity.getFirstName(),
+                resourceAdminEntity.getLastName(),
+                resourceAdminEntity.getLogin(),
+                resourceAdminEntity.getPassword()
+        );
         newResourceAdmin.setArchive(resourceAdminEntity.isArchive());
         return newResourceAdmin;
     }

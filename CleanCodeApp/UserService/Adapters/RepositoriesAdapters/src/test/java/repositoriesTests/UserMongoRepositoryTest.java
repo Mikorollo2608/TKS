@@ -97,7 +97,7 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
         );
 
         assertNotNull(clientRepository.create(
-                new AdminEntity(null, "tobiaszTrab", "Haslo1234!", false)));
+                new AdminEntity(null, "Tobiasz", "Trabka", "tobiaszTrab", "Haslo1234!", false)));
         assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.getDatabase()
                 .getCollection(clientRepository.getCollectionName())
@@ -108,7 +108,7 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
 
 
         assertNotNull(clientRepository.create(
-                new ResourceAdminEntity(null, "tobiaszTrabRes", "Haslo1234!", false)));
+                new ResourceAdminEntity(null, "Tobiasz", "Trabka", "tobiaszTrabRes", "Haslo1234!", false)));
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.getDatabase()
                 .getCollection(clientRepository.getCollectionName())
@@ -133,7 +133,7 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
         );
 
         assertNotNull(clientRepository.create(
-                new AdminEntity("", "tobiaszTrab", "Haslo1234!", false)));
+                new AdminEntity("", "Tobiasz", "Trabka", "tobiaszTrab", "Haslo1234!", false)));
         assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.getDatabase()
                 .getCollection(clientRepository.getCollectionName())
@@ -144,7 +144,7 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
 
 
         assertNotNull(clientRepository.create(
-                new ResourceAdminEntity("", "tobiaszTrabRes", "Haslo1234!", false)));
+                new ResourceAdminEntity("", "Tobiasz", "Trabka", "tobiaszTrabRes", "Haslo1234!", false)));
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.getDatabase()
                 .getCollection(clientRepository.getCollectionName())
@@ -157,13 +157,13 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
     @Test
     void testAddingNewDocumentToDBWithEmptyStringIdNewUserType() {
         class NewUserEnt extends UserEntity {
-            public NewUserEnt(String id, String login, String password, boolean archive) {
-                super(id, login, password, archive);
+            public NewUserEnt(String id, String firstName, String lastName, String login, String password, boolean archive) {
+                super(id, firstName, lastName, login, password, archive);
             }
         }
 
         assertThrows(UnexpectedUserTypeException.class,
-                () -> clientRepository.create(new NewUserEnt("", "tobiaszTrabRes", "Haslo1234!", false)));
+                () -> clientRepository.create(new NewUserEnt("", "Tobiasz", "Trabka", "tobiaszTrabRes", "Haslo1234!", false)));
     }
 
     @Test
@@ -343,10 +343,10 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
     void testAddingNewDocumentAdminToDBPositive() {
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.create(
-                AdminMapper.toUserEntity(new Admin(UUID.randomUUID(), "testowyAdmin", "Haslo1234!"))));
+                AdminMapper.toUserEntity(new Admin(UUID.randomUUID(), "Tobiasz", "Trabka", "testowyAdmin", "Haslo1234!"))));
         assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.create(
-                AdminMapper.toUserEntity(new Admin(UUID.randomUUID(), "testowyAdmin2", "Haslo1234!"))));
+                AdminMapper.toUserEntity(new Admin(UUID.randomUUID(), "Karl", "Scout", "testowyAdmin2", "Haslo1234!"))));
         assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
     }
 
@@ -355,7 +355,7 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
         // Adding Admin document
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
         AdminEntity testAdminEnt = AdminMapper.toUserEntity(
-                new Admin(UUID.randomUUID(), "testowyAdmin", "Haslo1234!"));
+                new Admin(UUID.randomUUID(), "Tobiasz", "Trabka", "testowyAdmin", "Haslo1234!"));
         assertNotNull(clientRepository.create(testAdminEnt));
         assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
 
@@ -368,10 +368,10 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
     void testAddingNewDocumentResAdminToDBPositive() {
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.create(
-                ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.randomUUID(), "testowyResAdmin", "Haslo1234!"))));
+                ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.randomUUID(), "Tobiasz", "Trabka", "testowyResAdmin", "Haslo1234!"))));
         assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
         assertNotNull(clientRepository.create(
-                ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.randomUUID(), "testowyResAdmin2", "Haslo1234!"))));
+                ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.randomUUID(), "Karl", "Key", "testowyResAdmin2", "Haslo1234!"))));
         assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
     }
 
@@ -380,7 +380,7 @@ public class UserMongoRepositoryTest extends SetupTestContainer {
         // Adding Admin document
         assertEquals(0, getTestCollection().find().into(new ArrayList<>()).size());
         ResourceAdminEntity testResAdminEnt = ResourceAdminMapper.toUserEntity(
-                new ResourceAdmin(UUID.randomUUID(), "testowyResAdmin", "Haslo1234!"));
+                new ResourceAdmin(UUID.randomUUID(), "Tobiasz", "Trabka", "testowyResAdmin", "Haslo1234!"));
         assertNotNull(clientRepository.create(testResAdminEnt));
         assertEquals(1, getTestCollection().find().into(new ArrayList<>()).size());
 

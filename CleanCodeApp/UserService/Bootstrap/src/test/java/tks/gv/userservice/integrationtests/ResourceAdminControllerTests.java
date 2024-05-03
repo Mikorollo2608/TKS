@@ -83,6 +83,8 @@ public class ResourceAdminControllerTests {
         NewCleaningClassForTests.cleanUsers();
         String JSON = """
                 {
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "login": "johnBravo2",
                   "password": "testTO1"
                 }
@@ -109,6 +111,8 @@ public class ResourceAdminControllerTests {
     void createAdminTestNegInvalidData() throws URISyntaxException {
         String json = """
                 {
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "login": " ",
                   "password": "testTO1"
                 }
@@ -135,6 +139,8 @@ public class ResourceAdminControllerTests {
     void createAdminTestNegSameLogin() throws URISyntaxException {
         String json = """
                 {
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "login": "adminekRes1@1234",
                   "password": "testTO1"
                 }
@@ -230,6 +236,8 @@ public class ResourceAdminControllerTests {
     void modifyAdminTest() throws URISyntaxException {
         String JSON = """
                 {
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "archive": true,
                   "id": "0c5f74c8-5a7e-4809-a6d3-bed663083b07",
                   "login": "loginekAdm"
@@ -271,6 +279,8 @@ public class ResourceAdminControllerTests {
     void modifyAdminTestNegInvalidData() throws URISyntaxException {
         String JSON = """
                 {
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "archive": true,
                   "id": "0c5f74c8-5a7e-4809-a6d3-bed663083b07",
                   "login": " "
@@ -312,6 +322,8 @@ public class ResourceAdminControllerTests {
     void modifyAdminTestNegRepeatLoginOfAnotherAdmin() throws URISyntaxException {
         String JSON = """
                 {
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "archive": true,
                   "id": "0c5f74c8-5a7e-4809-a6d3-bed663083b07",
                   "login": "adminekRes2@9876"

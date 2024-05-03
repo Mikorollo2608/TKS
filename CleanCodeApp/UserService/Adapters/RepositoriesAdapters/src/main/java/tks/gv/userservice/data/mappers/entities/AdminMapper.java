@@ -9,14 +9,24 @@ import java.util.UUID;
 public class AdminMapper {
 
     public static AdminEntity toUserEntity(Admin admin) {
-        return new AdminEntity(Objects.requireNonNullElse(admin.getId(), "").toString(),
+        return new AdminEntity(
+                Objects.requireNonNullElse(admin.getId(), "").toString(),
+                admin.getFirstName(),
+                admin.getLastName(),
                 admin.getLogin(),
                 admin.getPassword(),
-                admin.isArchive());
+                admin.isArchive()
+        );
     }
 
     public static Admin fromUserEntity(AdminEntity adminDTO) {
-        Admin newAdmin = new Admin(UUID.fromString(adminDTO.getId()), adminDTO.getLogin(), adminDTO.getPassword());
+        Admin newAdmin = new Admin(
+                UUID.fromString(adminDTO.getId()),
+                adminDTO.getFirstName(),
+                adminDTO.getLastName(),
+                adminDTO.getLogin(),
+                adminDTO.getPassword()
+        );
         newAdmin.setArchive(adminDTO.isArchive());
         return newAdmin;
     }

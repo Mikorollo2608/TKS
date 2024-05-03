@@ -156,8 +156,8 @@ public class NewCleaningClassForTests {
 
     void initAdmins() {
         cleanUsers();
-        admin1 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("fd60c176-d427-4591-ac13-6fb84d904862"), "adminek1@1234", testPass)));
-        admin2 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("6f736fcc-d19d-4bcc-b1da-966b3c7c9758"), "adminek2@9876", testPass)));
+        admin1 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("fd60c176-d427-4591-ac13-6fb84d904862"), "Henry", "Long", "adminek1@1234", testPass)));
+        admin2 = AdminMapper.toUserDTO(adminServiceServiceTest.registerAdmin(new Admin(UUID.fromString("6f736fcc-d19d-4bcc-b1da-966b3c7c9758"), "Kurt", "Craft", "adminek2@9876", testPass)));
     }
 
     static ResourceAdminDTO adminRes1;
@@ -168,7 +168,7 @@ public class NewCleaningClassForTests {
 
     void initResAdmins() {
         cleanUsers();
-        adminRes1 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("0c5f74c8-5a7e-4809-a6d3-bed663083b07"),"adminekRes1@1234", testPass)));
-        adminRes2 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("ce9f05b5-fb28-4b07-9bee-9e069b6965ba"),"adminekRes2@9876", testPass)));
+        adminRes1 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("0c5f74c8-5a7e-4809-a6d3-bed663083b07"), "Jack", "White", "adminekRes1@1234", testPass)));
+        adminRes2 = ResourceAdminMapper.toUserDTO(resourceAdminServiceTest.registerResourceAdmin(new ResourceAdmin(UUID.fromString("ce9f05b5-fb28-4b07-9bee-9e069b6965ba"), "John", "Black", "adminekRes2@9876", testPass)));
     }
 }

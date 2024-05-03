@@ -1,7 +1,5 @@
 package tks.gv.userservice.data.mappers.dto;
 
-
-
 import tks.gv.userservice.data.dto.ClientDTO;
 import tks.gv.userservice.Client;
 
@@ -14,12 +12,14 @@ public class ClientMapper {
             return null;
         }
 
-        return new ClientDTO(client.getId().toString(),
+        return new ClientDTO(
+                client.getId().toString(),
                 client.getFirstName(),
                 client.getLastName(),
                 client.getLogin(),
                 client.getPassword(),
-                client.isArchive());
+                client.isArchive()
+        );
     }
 
     public static Client fromUserDTO(ClientDTO clientDTO) {
@@ -27,11 +27,13 @@ public class ClientMapper {
             return null;
         }
 
-        Client clientModel = new Client(clientDTO.getId() != null ? UUID.fromString(clientDTO.getId()) : null,
+        Client clientModel = new Client(
+                clientDTO.getId() != null ? UUID.fromString(clientDTO.getId()) : null,
                 clientDTO.getFirstName(),
                 clientDTO.getLastName(),
                 clientDTO.getLogin(),
-                clientDTO.getPassword());
+                clientDTO.getPassword()
+        );
         clientModel.setArchive(clientDTO.isArchive());
 
         return clientModel;

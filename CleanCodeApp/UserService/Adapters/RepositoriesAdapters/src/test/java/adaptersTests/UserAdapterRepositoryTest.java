@@ -50,8 +50,8 @@ public class UserAdapterRepositoryTest {
     @BeforeEach
     void init() {
         testClient = new Client(UUID.randomUUID(), "Adam", "Niezgodka", "testLoginKlient", "Haslo1234!");
-        testAdmin = new Admin(UUID.randomUUID(), "testLoginAdmin", "Haslo1234!");
-        testResourceAdmin = new ResourceAdmin(UUID.randomUUID(), "testResAdmin", "Haslo1234!");
+        testAdmin = new Admin(UUID.randomUUID(), "John", "Long", "testLoginAdmin", "Haslo1234!");
+        testResourceAdmin = new ResourceAdmin(UUID.randomUUID(), "Henry", "Key","testResAdmin", "Haslo1234!");
 
         testClientEntity = ClientMapper.toUserEntity(testClient);
         testAdminEntity = AdminMapper.toUserEntity(testAdmin);
