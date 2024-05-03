@@ -17,8 +17,6 @@ public class ClientEntity extends UserEntity {
     private String firstName;
     @BsonProperty("lastname")
     private String lastName;
-    @BsonProperty("clienttype")
-    private String clientType;
 
     @BsonCreator
     public ClientEntity(@BsonProperty("_id") String id,
@@ -26,12 +24,10 @@ public class ClientEntity extends UserEntity {
                         @BsonProperty("lastname") String lastName,
                         @BsonProperty("login") String login,
                         @BsonProperty("password") String password,
-                        @BsonProperty("archive") boolean archive,
-                        @BsonProperty("clienttype") String clientType) {
+                        @BsonProperty("archive") boolean archive) {
         super(id, login, password, archive);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.clientType = clientType;
     }
 
     @Override
@@ -39,8 +35,10 @@ public class ClientEntity extends UserEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClientEntity that = (ClientEntity) o;
-        return isArchive() == that.isArchive() && Objects.equals(getId(), that.getId()) && Objects.equals(firstName,
-                that.firstName) && Objects.equals(lastName, that.lastName)
-                && Objects.equals(getLogin(), that.getLogin()) && Objects.equals(clientType, that.clientType);
+        return isArchive() == that.isArchive() &&
+                Objects.equals(getId(), that.getId()) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(getLogin(), that.getLogin());
     }
 }

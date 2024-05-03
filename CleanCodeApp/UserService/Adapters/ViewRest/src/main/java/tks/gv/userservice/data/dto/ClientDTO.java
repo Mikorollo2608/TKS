@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Getter
 @FieldDefaults(makeFinal = true)
-@JsonPropertyOrder({"archive", "id", "login", "clientTypeName", "firstName", "lastName"})
+@JsonPropertyOrder({"archive", "id", "login", "firstName", "lastName"})
 public class ClientDTO extends UserDTO {
     @JsonProperty("firstName")
     @NotBlank(groups = {BasicUserValidation.class})
@@ -21,8 +21,6 @@ public class ClientDTO extends UserDTO {
     @JsonProperty("lastName")
     @NotBlank(groups = {BasicUserValidation.class})
     private String lastName;
-    @JsonProperty("clientTypeName")
-    private String clientType;
 
     @JsonCreator
     public ClientDTO(@JsonProperty("id") String id,
@@ -30,12 +28,10 @@ public class ClientDTO extends UserDTO {
                      @JsonProperty("lastName") String lastName,
                      @JsonProperty("login") String login,
                      @JsonProperty("password") String password,
-                     @JsonProperty("archive") boolean archive,
-                     @JsonProperty("clientTypeName") String clientType) {
+                     @JsonProperty("archive") boolean archive) {
         super(id, login, password, archive);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.clientType = clientType;
     }
 
     @Override
@@ -43,8 +39,10 @@ public class ClientDTO extends UserDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClientDTO that = (ClientDTO) o;
-        return isArchive() == that.isArchive() && Objects.equals(getId(), that.getId()) && Objects.equals(firstName,
-                that.firstName) && Objects.equals(lastName, that.lastName)
-                && Objects.equals(getLogin(), that.getLogin()) && Objects.equals(clientType, that.clientType);
+        return isArchive() == that.isArchive() &&
+                Objects.equals(getId(), that.getId()) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(getLogin(), that.getLogin());
     }
 }

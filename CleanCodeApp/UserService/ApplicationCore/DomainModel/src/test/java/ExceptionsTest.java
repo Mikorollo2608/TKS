@@ -1,5 +1,5 @@
 import org.junit.jupiter.api.Test;
-import tks.gv.userservice.exceptions.MainException;
+import tks.gv.userservice.exceptions.MainUserServiceException;
 import tks.gv.userservice.exceptions.MyMongoException;
 import tks.gv.userservice.exceptions.RepositoryException;
 import tks.gv.userservice.exceptions.UserException;
@@ -12,8 +12,8 @@ public class ExceptionsTest {
 
     @Test
     void testMainException() {
-        RuntimeException mainException = new MainException("TEST");
-        assertThrows(MainException.class, () -> {throw mainException;});
+        RuntimeException mainException = new MainUserServiceException("TEST");
+        assertThrows(MainUserServiceException.class, () -> {throw mainException;});
         assertEquals("TEST", mainException.getMessage());
     }
 

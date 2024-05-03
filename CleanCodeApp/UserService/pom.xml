@@ -192,13 +192,6 @@
             <version>1.18.30</version>
             <scope>provided</scope>
         </dependency>
-
-        <!--Google Guava-->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>32.1.3-jre</version>
-        </dependency>
     </dependencies>
 
 </project>

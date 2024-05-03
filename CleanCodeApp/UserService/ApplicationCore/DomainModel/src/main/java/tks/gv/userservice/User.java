@@ -1,13 +1,11 @@
 package tks.gv.userservice;
 
-import com.google.common.base.Objects;
-import jakarta.validation.constraints.NotBlank;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.UUID;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
@@ -15,7 +13,6 @@ public abstract class User {
 
     private UUID id;
     @Setter
-    @NotBlank
     private String login;
     @Setter
     private String password;
@@ -33,6 +30,6 @@ public abstract class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equal(id, user.id);
+        return Objects.equals(id, user.id);
     }
 }

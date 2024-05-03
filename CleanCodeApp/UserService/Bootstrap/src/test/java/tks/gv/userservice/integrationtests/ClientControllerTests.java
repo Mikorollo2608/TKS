@@ -54,13 +54,11 @@ public class ClientControllerTests {
         assertTrue(responseString.contains("\"archive\":false"));
         assertTrue(responseString.contains("\"id\":\""));
         assertTrue(responseString.contains("\"login\":\"loginek\""));
-        assertTrue(responseString.contains("\"clientTypeName\":\"normal\""));
         assertTrue(responseString.contains("\"firstName\":\"Adam\""));
         assertTrue(responseString.contains("\"lastName\":\"Smith\""));
 
         //Third Client
         assertTrue(responseString.contains("\"login\":\"michas13\""));
-        assertTrue(responseString.contains("\"clientTypeName\":\"coach\""));
         assertTrue(responseString.contains("\"firstName\":\"Michal\""));
         assertTrue(responseString.contains("\"lastName\":\"Pi\""));
 
@@ -86,8 +84,7 @@ public class ClientControllerTests {
                   "firstName": "John",
                   "lastName": "Bravo",
                   "login": "johnBravo",
-                  "password": "johnBravo1",
-                  "clientTypeName": "normal"
+                  "password": "johnBravo1"
                 }
                 """;
         RequestSpecification requestPost = RestAssured.given();
@@ -106,7 +103,6 @@ public class ClientControllerTests {
         responseString = requestGet.get(new URI(appUrlClient)).asString();
 
         assertTrue(responseString.contains("\"login\":\"johnBravo\""));
-        assertTrue(responseString.contains("\"clientTypeName\":\"normal\""));
         assertTrue(responseString.contains("\"firstName\":\"John\""));
         assertTrue(responseString.contains("\"lastName\":\"Bravo\""));
     }
@@ -118,8 +114,7 @@ public class ClientControllerTests {
                   "firstName": "John",
                   "lastName": "  ",
                   "login": "johnBravo",
-                  "password": "johnBravo1",
-                  "clientTypeName": "normal"
+                  "password": "johnBravo1"
                 }
                 """;
         RequestSpecification requestPost = RestAssured.given();
@@ -149,8 +144,7 @@ public class ClientControllerTests {
                   "firstName": "John",
                   "lastName": "Bravo",
                   "login": "michas13",
-                  "password": "michaS13",
-                  "clientTypeName": "normal"
+                  "password": "michaS13"
                 }
                 """;
         RequestSpecification requestPost = RestAssured.given();
@@ -181,7 +175,7 @@ public class ClientControllerTests {
         Response response = request.get(new URI(appUrlClient + "/get?login=michas13"));
         String responseString = response.asString();
 
-        assertTrue(responseString.contains("\"login\":\"michas13\",\"clientTypeName\":\"coach\",\"firstName\":\"Michal\",\"lastName\":\"Pi\""));
+        assertTrue(responseString.contains("\"login\":\"michas13\",\"firstName\":\"Michal\",\"lastName\":\"Pi\""));
 
         assertEquals(200, response.getStatusCode());
     }
@@ -208,7 +202,7 @@ public class ClientControllerTests {
         Response responseById = request.get(new URI(appUrlClient + "/" + clientId));
         String responseByIdString = responseById.asString();
 
-        assertTrue(responseByIdString.contains("\"login\":\"michas13\",\"clientTypeName\":\"coach\",\"firstName\":\"Michal\",\"lastName\":\"Pi\""));
+        assertTrue(responseByIdString.contains("\"login\":\"michas13\",\"firstName\":\"Michal\",\"lastName\":\"Pi\""));
 
         assertEquals(200, responseById.getStatusCode());
     }
@@ -236,14 +230,12 @@ public class ClientControllerTests {
         //First Client
         assertTrue(splitRespStr[0].contains(
                 "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
                         "\"firstName\":\"Adam\"," +
                         "\"lastName\":\"Smith\""));
 
         //Second Client
         assertTrue(splitRespStr[1].contains(
                 "\"login\":\"loginek13\"," +
-                        "\"clientTypeName\":\"athlete\"," +
                         "\"firstName\":\"Eva\"," +
                         "\"lastName\":\"Braun\""));
 
@@ -269,8 +261,7 @@ public class ClientControllerTests {
                   "id": "8d83bbda-e38a-4cf2-9136-40e5310c5761",
                   "firstName": "John",
                   "lastName": "Smith",
-                  "login": "loginek",
-                  "clientTypeName": "coach"
+                  "login": "loginek"
                 }
                 """;
         RequestSpecification requestPut = RestAssured.given();
@@ -290,14 +281,12 @@ public class ClientControllerTests {
                 "\"archive\":false," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
                         "\"firstName\":\"Adam\"," +
                         "\"lastName\":\"Smith\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"coach\"," +
                         "\"firstName\":\"John\"," +
                         "\"lastName\":\"Smith\""));
 
@@ -311,14 +300,12 @@ public class ClientControllerTests {
                 "\"archive\":false," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
                         "\"firstName\":\"Adam\"," +
                         "\"lastName\":\"Smith\""));
         assertTrue(responseString.contains(
                 "\"archive\":true," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"coach\"," +
                         "\"firstName\":\"John\"," +
                         "\"lastName\":\"Smith\""));
     }
@@ -331,8 +318,7 @@ public class ClientControllerTests {
                   "id": "8d83bbda-e38a-4cf2-9136-40e5310c5761",
                   "firstName": "   ",
                   "lastName": "Smith",
-                  "login": "loginek",
-                  "clientTypeName": "coach"
+                  "login": "loginek"
                 }
                 """;
         RequestSpecification requestPut = RestAssured.given();
@@ -352,14 +338,12 @@ public class ClientControllerTests {
                 "\"archive\":false," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
                         "\"firstName\":\"Adam\"," +
                         "\"lastName\":\"Smith\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"coach\"," +
                         "\"firstName\":\"John\"," +
                         "\"lastName\":\"Smith\""));
 
@@ -373,14 +357,12 @@ public class ClientControllerTests {
                 "\"archive\":false," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
                         "\"firstName\":\"Adam\"," +
                         "\"lastName\":\"Smith\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"coach\"," +
                         "\"firstName\":\"John\"," +
                         "\"lastName\":\"Smith\""));
     }
@@ -393,8 +375,7 @@ public class ClientControllerTests {
                   "id": "8d83bbda-e38a-4cf2-9136-40e5310c5761",
                   "firstName": "John",
                   "lastName": "Smith",
-                  "login": "michas13",
-                  "clientTypeName": "coach"
+                  "login": "michas13"
                 }
                 """;
         RequestSpecification requestPut = RestAssured.given();
@@ -416,14 +397,12 @@ public class ClientControllerTests {
                 "\"archive\":false," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
                         "\"firstName\":\"Adam\"," +
                         "\"lastName\":\"Smith\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"michas13\"," +
-                        "\"clientTypeName\":\"coach\"," +
                         "\"firstName\":\"John\"," +
                         "\"lastName\":\"Smith\""));
 
@@ -439,14 +418,12 @@ public class ClientControllerTests {
                 "\"archive\":false," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"loginek\"," +
-                        "\"clientTypeName\":\"normal\"," +
                         "\"firstName\":\"Adam\"," +
                         "\"lastName\":\"Smith\""));
         assertFalse(responseString.contains(
                 "\"archive\":true," +
                         "\"id\":\"" + clientId + "\"," +
                         "\"login\":\"michas13\"," +
-                        "\"clientTypeName\":\"coach\"," +
                         "\"firstName\":\"John\"," +
                         "\"lastName\":\"Smith\""));
     }

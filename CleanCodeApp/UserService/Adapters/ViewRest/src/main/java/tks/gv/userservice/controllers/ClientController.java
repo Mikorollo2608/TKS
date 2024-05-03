@@ -136,8 +136,7 @@ public class ClientController {
                             modifiedClient.getLastName(),
                             modifiedClient.getLogin(),
                             null,
-                            modifiedClient.isArchive(),
-                            modifiedClient.getClientType())
+                            modifiedClient.isArchive())
             ));
 
         } catch (UserLoginException ule) {

@@ -64,9 +64,9 @@ public class ClientControllerTests {
 
     @BeforeAll
     static void init() {
-        client1 = new Client(UUID.randomUUID(), "Adam", "Smith", "loginek", testPass, "normal");
-        client2 = new Client(UUID.randomUUID(), "Eva", "Braun", "loginek13", testPass, "athlete");
-        client3 = new Client(UUID.randomUUID(),"Michal", "Pi", "michas13", testPass, "coach");
+        client1 = new Client(UUID.randomUUID(), "Adam", "Smith", "loginek", testPass);
+        client2 = new Client(UUID.randomUUID(), "Eva", "Braun", "loginek13", testPass);
+        client3 = new Client(UUID.randomUUID(),"Michal", "Pi", "michas13", testPass);
     }
 
     @Test
@@ -100,8 +100,7 @@ public class ClientControllerTests {
                                   "firstName": "John",
                                   "lastName": "Bravo",
                                   "login": "michas13",
-                                  "password": "michaS13",
-                                  "clientTypeName": "normal"
+                                  "password": "michaS13"
                                 }
                                 """))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
@@ -117,8 +116,7 @@ public class ClientControllerTests {
                                   "firstName": "John",
                                   "lastName": "Bravo",
                                   "login": " ",
-                                  "password": "michaS13",
-                                  "clientTypeName": "normal"
+                                  "password": "michaS13"
                                 }
                                 """))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -136,8 +134,7 @@ public class ClientControllerTests {
                                   "firstName": "John",
                                   "lastName": "Bravo",
                                   "login": "michaS13",
-                                  "password": "michaS13",
-                                  "clientTypeName": "normal"
+                                  "password": "michaS13"
                                 }
                                 """))
                 .andExpect(MockMvcResultMatchers.status().isConflict())
@@ -217,8 +214,7 @@ public class ClientControllerTests {
                           "id": "8d83bbda-e38a-4cf2-9136-40e5310c5761",
                           "firstName": "John",
                           "lastName": "Smith",
-                          "login": "loginek",
-                          "clientTypeName": "coach"
+                          "login": "loginek"
                         }
                         """))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
@@ -237,8 +233,7 @@ public class ClientControllerTests {
                           "id": "8d83bbda-e38a-4cf2-9136-40e5310c5761",
                           "firstName": "John",
                           "lastName": " ",
-                          "login": "loginek",
-                          "clientTypeName": "coach"
+                          "login": "loginek"
                         }
                         """))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -257,8 +252,7 @@ public class ClientControllerTests {
                                   "id": "8d83bbda-e38a-4cf2-9136-40e5310c5761",
                                   "firstName": "John",
                                   "lastName": "Smith",
-                                  "login": "loginek",
-                                  "clientTypeName": "coach"
+                                  "login": "loginek"
                                 }
                                 """))
                 .andExpect(MockMvcResultMatchers.status().isConflict())

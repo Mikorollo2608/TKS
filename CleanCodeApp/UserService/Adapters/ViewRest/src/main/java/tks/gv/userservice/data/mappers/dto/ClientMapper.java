@@ -19,8 +19,7 @@ public class ClientMapper {
                 client.getLastName(),
                 client.getLogin(),
                 client.getPassword(),
-                client.isArchive(),
-                client.getClientTypeName());
+                client.isArchive());
     }
 
     public static Client fromUserDTO(ClientDTO clientDTO) {
@@ -32,9 +31,9 @@ public class ClientMapper {
                 clientDTO.getFirstName(),
                 clientDTO.getLastName(),
                 clientDTO.getLogin(),
-                clientDTO.getPassword(),
-                clientDTO.getClientType());
+                clientDTO.getPassword());
         clientModel.setArchive(clientDTO.isArchive());
+
         return clientModel;
     }
 }
