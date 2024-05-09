@@ -7,6 +7,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import com.mongodb.client.model.ValidationOptions;
 
 import com.mongodb.client.result.UpdateResult;
@@ -43,13 +44,27 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
+public class UserMongoRepository implements AutoCloseable {
+    private final MongoClient mongoClient;
+    private final MongoDatabase mongoDatabase;
+
+    public MongoDatabase getDatabase() {
+        return mongoDatabase;
+    }
+
+    @Override
+    public void close() {
+        mongoClient.close();
+    }
+
 
     static final String COLLECTION_NAME = "users";
 
     @Autowired
     public UserMongoRepository(MongoClient mongoClient, MongoDatabase mongoDatabase) {
-        super(mongoClient, mongoDatabase);
+        this.mongoClient = mongoClient;
+        this.mongoDatabase = mongoDatabase;
+
         boolean collectionExists = getDatabase().listCollectionNames().into(new ArrayList<>()).contains(COLLECTION_NAME);
         if (!collectionExists) {
             ValidationOptions validationOptions = new ValidationOptions().validator(
@@ -69,17 +84,14 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
         }
     }
 
-    @Override
     protected MongoCollection<UserEntity> getCollection() {
         return getDatabase().getCollection(COLLECTION_NAME, UserEntity.class);
     }
 
-    @Override
     public String getCollectionName() {
         return COLLECTION_NAME;
     }
 
-    @Override
     public UserEntity create(UserEntity initUser) {
         if (initUser.getId() == null || initUser.getId().isBlank()) {
             if (initUser instanceof ClientEntity clientEntity) {
@@ -130,7 +142,6 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
         return initUser;
     }
 
-    @Override
     public List<UserEntity> read(Bson filter) {
         List<UserEntity> list = new ArrayList<>();
         String dispatcher;
@@ -172,11 +183,36 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
         return list;
     }
 
-    @Override
+    public List<UserEntity> readAll() {
+        return this.read(Filters.empty());
+    }
+
+    public UserEntity readByUUID(UUID uuid) {
+        Bson filter = Filters.eq("_id", uuid.toString());
+        var list = this.read(filter);
+        return !list.isEmpty() ? list.get(0) : null;
+    }
+
     public boolean updateByReplace(UUID uuid, UserEntity user) {
         UpdateResult result = getCollection().replaceOne(Filters.eq("_id", uuid.toString()), user);
 
         return result.getModifiedCount() != 0;
+    }
+
+    public boolean update(UUID uuid, String fieldName, Object value) {
+        if (fieldName.equals("_id")) {
+            throw new MyMongoException("Proba zmiany UUID!");
+        }
+        Bson filter = Filters.eq("_id", uuid.toString());
+        Bson setUpdate = Updates.set(fieldName, value);
+        UpdateResult result = this.getCollection().updateOne(filter, setUpdate);
+        return result.getModifiedCount() != 0;
+    }
+
+    public boolean delete(UUID uuid) {
+        Bson filter = Filters.eq("_id", uuid.toString());
+        var deletedObj = this.getCollection().findOneAndDelete(filter);
+        return deletedObj != null;
     }
 
     @PostConstruct
@@ -195,6 +231,7 @@ public class UserMongoRepository extends AbstractMongoRepository<UserEntity> {
         create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("83b29a7a-aa96-4ff2-823d-f3d0d6372c94"), "Adam", "Key", "admRes1@test", "haselko")));
         create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("a2f6cb49-5e9d-4069-ab91-f337224e833a"), "Henry", "Beer", "admRes2@test", "haselko")));
     }
+
 
     @PreDestroy
     private void destroy() {
