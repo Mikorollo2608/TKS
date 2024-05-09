@@ -35,7 +35,6 @@ public class Client {
     @Setter
     @Getter
     private String login;
-    ///FIXME maybe delete???
     @Setter
     @Getter
     private boolean archive = false;
