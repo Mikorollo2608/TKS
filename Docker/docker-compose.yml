@@ -87,5 +87,13 @@ services:
       );
       '
 
+  rabbitmq:
+    container_name: 'tks-rabbit'
+    image: 'rabbitmq:latest'
+    environment:
+      - 'RABBITMQ_DEFAULT_PASS=admin'
+      - 'RABBITMQ_DEFAULT_USER=adminpassword'
+    ports:
+      - '5672:5672'
 networks:
   mongonet: {}

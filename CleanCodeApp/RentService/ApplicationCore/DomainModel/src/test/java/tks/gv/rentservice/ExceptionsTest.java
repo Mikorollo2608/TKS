@@ -1,0 +1,65 @@
+package tks.gv.rentservice;
+
+import org.junit.jupiter.api.Test;
+import tks.gv.rentservice.exceptions.CourtException;
+import tks.gv.rentservice.exceptions.MainRentServiceException;
+import tks.gv.rentservice.exceptions.MyMongoException;
+import tks.gv.rentservice.exceptions.RepositoryException;
+import tks.gv.rentservice.exceptions.ReservationException;
+import tks.gv.rentservice.exceptions.ClientException;
+import tks.gv.rentservice.exceptions.RepositoryAdapterException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class ExceptionsTest {
+
+    @Test
+    void testMainException() {
+        RuntimeException mainException = new MainRentServiceException("TEST");
+        assertThrows(MainRentServiceException.class, () -> {throw mainException;});
+        assertEquals("TEST", mainException.getMessage());
+    }
+
+    @Test
+    void testClientException() {
+        RuntimeException clientException = new ClientException("TEST");
+        assertThrows(ClientException.class, () -> {throw clientException;});
+        assertEquals("TEST", clientException.getMessage());
+    }
+
+    @Test
+    void testCourtException() {
+        RuntimeException courtException = new CourtException("TEST");
+        assertThrows(CourtException.class, () -> {throw courtException;});
+        assertEquals("TEST", courtException.getMessage());
+    }
+
+    @Test
+    void testRepositoryException() {
+        RuntimeException repositoryException = new RepositoryException("TEST");
+        assertThrows(RepositoryException.class, () -> {throw repositoryException;});
+        assertEquals("TEST", repositoryException.getMessage());
+    }
+
+    @Test
+    void testReservationException() {
+        RuntimeException reservationException = new ReservationException("TEST");
+        assertThrows(ReservationException.class, () -> {throw reservationException;});
+        assertEquals("TEST", reservationException.getMessage());
+    }
+
+    @Test
+    void testRepositoryAdapterException() {
+        RuntimeException jakartaException = new RepositoryAdapterException("TEST");
+        assertThrows(RepositoryAdapterException.class, () -> {throw jakartaException;});
+        assertEquals("TEST", jakartaException.getMessage());
+    }
+
+    @Test
+    void testMyMongoException() {
+        RuntimeException myMongoException = new MyMongoException("TEST");
+        assertThrows(MyMongoException.class, () -> {throw myMongoException;});
+        assertEquals("TEST", myMongoException.getMessage());
+    }
+}
