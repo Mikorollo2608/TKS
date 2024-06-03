@@ -16,6 +16,7 @@
     <modules>
         <module>RepositoriesAdapters</module>
         <module>ViewRest</module>
+        <module>MessageBroker</module>
     </modules>
 
     <dependencies>
