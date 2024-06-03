@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestPropertySource(locations = {"classpath:application-integrationtest.properties"})
 public class CourtControllerIT {
 
-    static final String appUrlCourt = "http://localhost:8081/api-test/v1/courts";
+    static final String appUrlCourt = "http://localhost:8183/api-test/v1/courts";
 
     @Autowired
     NewCleaningClassForTests newCleaningClassForTests;

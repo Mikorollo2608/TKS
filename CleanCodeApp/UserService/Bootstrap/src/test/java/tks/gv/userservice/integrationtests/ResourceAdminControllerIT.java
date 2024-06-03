@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestPropertySource(locations = {"classpath:application-integrationtest.properties"})
 public class ResourceAdminControllerIT {
 
-    static final String appUrlResAdmins = "http://localhost:8182/api-test/v2/resAdmins";
+    static final String appUrlResAdmins = "http://localhost:8182/api-test/v1/resAdmins";
 
     @Autowired
     NewCleaningClassForTests newCleaningClassForTests;

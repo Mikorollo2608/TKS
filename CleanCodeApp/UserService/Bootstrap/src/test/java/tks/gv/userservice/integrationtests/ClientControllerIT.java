@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestPropertySource(locations = {"classpath:application-integrationtest.properties"})
 public class ClientControllerIT {
 
-    final String appUrlClient = "http://localhost:8182/api-test/v2/clients";
+    final String appUrlClient = "http://localhost:8182/api-test/v1/clients";
 
     @AfterAll
     static void cleanAtTheEnd() {
