@@ -243,7 +243,7 @@ public class UserMongoRepositoryIT extends SetupTestContainer {
         ClientEntity client3 = (ClientEntity) clientRepository.create(this.client3);
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
 
-        assertTrue(clientRepository.delete(UUID.fromString(client2.getId())));
+        assertTrue(clientRepository.delete(client2.getLogin()));
         assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
 
         //Check the rest
@@ -261,10 +261,10 @@ public class UserMongoRepositoryIT extends SetupTestContainer {
         ClientEntity client = (ClientEntity) clientRepository.create(client3);
         assertEquals(3, getTestCollection().find().into(new ArrayList<>()).size());
 
-        assertTrue(clientRepository.delete(UUID.fromString(client.getId())));
+        assertTrue(clientRepository.delete(client.getLogin()));
         assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
 
-        assertFalse(clientRepository.delete(UUID.fromString(client.getId())));
+        assertFalse(clientRepository.delete(client.getLogin()));
         assertEquals(2, getTestCollection().find().into(new ArrayList<>()).size());
     }
 

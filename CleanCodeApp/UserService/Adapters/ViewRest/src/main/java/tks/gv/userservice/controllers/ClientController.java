@@ -10,6 +10,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import tks.gv.userservice.UserServicePublisher;
 import tks.gv.userservice.data.dto.ClientDTO;
 import tks.gv.userservice.data.mappers.dto.ClientMapper;
 import tks.gv.userservice.data.dto.UserDTO;
@@ -28,6 +30,7 @@ import tks.gv.userservice.exceptions.UserException;
 import tks.gv.userservice.exceptions.UserLoginException;
 
 import tks.gv.userservice.userinterface.ports.clients.ChangeClientStatusUseCase;
+import tks.gv.userservice.userinterface.ports.clients.DeleteClientUseCase;
 import tks.gv.userservice.userinterface.ports.clients.GetAllClientsUseCase;
 import tks.gv.userservice.userinterface.ports.clients.GetClientByIdUseCase;
 import tks.gv.userservice.userinterface.ports.clients.GetClientByLoginUseCase;
@@ -47,6 +50,9 @@ public class ClientController {
     private final GetClientByLoginUseCase getClientByLoginUseCase;
     private final ModifyClientUseCase modifyClientUseCase;
     private final ChangeClientStatusUseCase changeClientStatusUseCase;
+    private final DeleteClientUseCase deleteClientUseCase;
+
+    private final UserServicePublisher publisher;
 
     @PostMapping(value = "/addClient")
     public ResponseEntity<String> addClient(@Validated({UserDTO.BasicUserValidation.class, UserDTO.PasswordValidation.class}) @RequestBody ClientDTO client,
@@ -62,7 +68,10 @@ public class ClientController {
         }
 
         try {
-            registerClientUseCase.registerClient(ClientMapper.fromUserDTO(client));
+            Client createdClient = registerClientUseCase.registerClient(ClientMapper.fromUserDTO(client));
+            if (createdClient != null) {
+                publisher.sendCreate(createdClient);
+            }
         } catch (UserLoginException ule) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ule.getMessage());
         } catch (UserException ue) {
@@ -160,5 +169,11 @@ public class ClientController {
         response.setStatus(HttpStatus.NO_CONTENT.value());
     }
 
+    @DeleteMapping("/delete/{login}")
+    public void deleteClient(@PathVariable("login") String login, HttpServletResponse response) {
+        deleteClientUseCase.deleteClient(login);
+        publisher.sendDelete(login);
+        response.setStatus(HttpStatus.NO_CONTENT.value());
+    }
 }
 

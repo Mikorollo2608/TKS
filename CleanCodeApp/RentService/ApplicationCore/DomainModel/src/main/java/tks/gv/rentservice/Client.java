@@ -59,6 +59,10 @@ public class Client {
         this.clientTypeName = this.clientType.toString();
     }
 
+    public Client(UUID id, String login) {
+        this(id, login, null);
+    }
+
     public double applyDiscount() {
         return clientType.applyDiscount();
     }

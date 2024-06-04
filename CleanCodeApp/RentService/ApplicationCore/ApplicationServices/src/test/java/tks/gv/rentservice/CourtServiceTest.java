@@ -7,17 +7,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import tks.gv.rentservice.Court;
 
-import tks.gv.rentservice.CourtService;
-import tks.gv.rentservice.infrastructure.courts.ports.ActivateCourtPort;
-import tks.gv.rentservice.infrastructure.courts.ports.AddCourtPort;
-import tks.gv.rentservice.infrastructure.courts.ports.DeactivateCourt;
-import tks.gv.rentservice.infrastructure.courts.ports.DeleteCourtPort;
-import tks.gv.rentservice.infrastructure.courts.ports.GetAllCourtsPort;
-import tks.gv.rentservice.infrastructure.courts.ports.GetCourtByCourtNumberPort;
-import tks.gv.rentservice.infrastructure.courts.ports.GetCourtByIdPort;
-import tks.gv.rentservice.infrastructure.courts.ports.ModifyCourtPort;
+import tks.gv.rentservice.infrastructure.court.ports.ActivateCourtPort;
+import tks.gv.rentservice.infrastructure.court.ports.AddCourtPort;
+import tks.gv.rentservice.infrastructure.court.ports.DeactivateCourt;
+import tks.gv.rentservice.infrastructure.court.ports.DeleteCourtPort;
+import tks.gv.rentservice.infrastructure.court.ports.GetAllCourtsPort;
+import tks.gv.rentservice.infrastructure.court.ports.GetCourtByCourtNumberPort;
+import tks.gv.rentservice.infrastructure.court.ports.GetCourtByIdPort;
+import tks.gv.rentservice.infrastructure.court.ports.ModifyCourtPort;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -13,13 +13,14 @@ import tks.gv.rentservice.exceptions.RepositoryAdapterException;
 
 import tks.gv.rentservice.exceptions.ClientException;
 import tks.gv.rentservice.exceptions.ClientLoginException;
-import tks.gv.rentservice.infrastructure.clients.ports.AddClientPort;
-import tks.gv.rentservice.infrastructure.clients.ports.ChangeClientStatusPort;
-import tks.gv.rentservice.infrastructure.clients.ports.GetAllClientsPort;
+import tks.gv.rentservice.infrastructure.client.ports.AddClientPort;
+import tks.gv.rentservice.infrastructure.client.ports.ChangeClientStatusPort;
+import tks.gv.rentservice.infrastructure.client.ports.DeleteClientPort;
+import tks.gv.rentservice.infrastructure.client.ports.GetAllClientsPort;
 
-import tks.gv.rentservice.infrastructure.clients.ports.GetClientByIdPort;
-import tks.gv.rentservice.infrastructure.clients.ports.GetClientByLoginPort;
-import tks.gv.rentservice.infrastructure.clients.ports.ModifyClientPort;
+import tks.gv.rentservice.infrastructure.client.ports.GetClientByIdPort;
+import tks.gv.rentservice.infrastructure.client.ports.GetClientByLoginPort;
+import tks.gv.rentservice.infrastructure.client.ports.ModifyClientPort;
 import tks.gv.rentservice.repositories.ClientMongoRepository;
 
 import tks.gv.rentservice.Client;
@@ -29,7 +30,13 @@ import java.util.UUID;
 
 @Component
 public class ClientMongoRepositoryAdapter implements
-        AddClientPort, GetAllClientsPort, GetClientByIdPort, GetClientByLoginPort, ModifyClientPort, ChangeClientStatusPort {
+        AddClientPort,
+        GetAllClientsPort,
+        GetClientByIdPort,
+        GetClientByLoginPort,
+        ModifyClientPort,
+        ChangeClientStatusPort,
+        DeleteClientPort {
 
     private final ClientMongoRepository repository;
 
@@ -97,6 +104,11 @@ public class ClientMongoRepositoryAdapter implements
     @Override
     public void deactivateClient(UUID id) {
         repository.update(id, "archive", true);
+    }
+
+    @Override
+    public void deleteClientPort(String login) {
+        repository.deleteByLogin(login);
     }
 
     protected Client autoMap(ClientEntity clientEntity) {

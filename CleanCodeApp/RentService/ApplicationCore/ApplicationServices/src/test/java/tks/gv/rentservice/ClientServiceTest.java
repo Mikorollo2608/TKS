@@ -9,14 +9,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tks.gv.rentservice.exceptions.ClientLoginException;
-import tks.gv.rentservice.infrastructure.clients.ports.AddClientPort;
-import tks.gv.rentservice.infrastructure.clients.ports.ChangeClientStatusPort;
-import tks.gv.rentservice.infrastructure.clients.ports.GetAllClientsPort;
-import tks.gv.rentservice.infrastructure.clients.ports.GetClientByIdPort;
-import tks.gv.rentservice.infrastructure.clients.ports.GetClientByLoginPort;
-import tks.gv.rentservice.infrastructure.clients.ports.ModifyClientPort;
-import tks.gv.rentservice.Client;
-import tks.gv.rentservice.ClientService;
+import tks.gv.rentservice.infrastructure.client.ports.AddClientPort;
+import tks.gv.rentservice.infrastructure.client.ports.ChangeClientStatusPort;
+import tks.gv.rentservice.infrastructure.client.ports.DeleteClientPort;
+import tks.gv.rentservice.infrastructure.client.ports.GetAllClientsPort;
+import tks.gv.rentservice.infrastructure.client.ports.GetClientByIdPort;
+import tks.gv.rentservice.infrastructure.client.ports.GetClientByLoginPort;
+import tks.gv.rentservice.infrastructure.client.ports.ModifyClientPort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +43,8 @@ public class ClientServiceTest {
     ModifyClientPort modifyClientPort;
     @Mock
     ChangeClientStatusPort changeClientStatusPort;
+    @Mock
+    DeleteClientPort deleteClientPort;
     @InjectMocks
     final ClientService cm = new ClientService();
 
@@ -69,7 +70,7 @@ public class ClientServiceTest {
     @Test
     void testCreatingClientManagerAllArgs() {
         ClientService clientService = new ClientService(addClientPort, getAllClientsPort, getClientByIdPort,
-                getClientByLoginPort, modifyClientPort, changeClientStatusPort);
+                getClientByLoginPort, modifyClientPort, changeClientStatusPort, deleteClientPort);
         assertNotNull(clientService);
     }
 

@@ -209,8 +209,8 @@ public class UserMongoRepository implements AutoCloseable {
         return result.getModifiedCount() != 0;
     }
 
-    public boolean delete(UUID uuid) {
-        Bson filter = Filters.eq("_id", uuid.toString());
+    public boolean delete(String login) {
+        Bson filter = Filters.eq("login", login);
         var deletedObj = this.getCollection().findOneAndDelete(filter);
         return deletedObj != null;
     }

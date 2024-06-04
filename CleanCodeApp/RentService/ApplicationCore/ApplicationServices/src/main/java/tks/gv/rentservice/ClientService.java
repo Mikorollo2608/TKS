@@ -3,14 +3,15 @@ package tks.gv.rentservice;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tks.gv.rentservice.Client;
-import tks.gv.rentservice.infrastructure.clients.ports.AddClientPort;
-import tks.gv.rentservice.infrastructure.clients.ports.ChangeClientStatusPort;
-import tks.gv.rentservice.infrastructure.clients.ports.GetAllClientsPort;
-import tks.gv.rentservice.infrastructure.clients.ports.GetClientByIdPort;
-import tks.gv.rentservice.infrastructure.clients.ports.GetClientByLoginPort;
-import tks.gv.rentservice.infrastructure.clients.ports.ModifyClientPort;
+import tks.gv.rentservice.infrastructure.client.ports.AddClientPort;
+import tks.gv.rentservice.infrastructure.client.ports.ChangeClientStatusPort;
+import tks.gv.rentservice.infrastructure.client.ports.DeleteClientPort;
+import tks.gv.rentservice.infrastructure.client.ports.GetAllClientsPort;
+import tks.gv.rentservice.infrastructure.client.ports.GetClientByIdPort;
+import tks.gv.rentservice.infrastructure.client.ports.GetClientByLoginPort;
+import tks.gv.rentservice.infrastructure.client.ports.ModifyClientPort;
 import tks.gv.rentservice.ui.clients.ports.ChangeClientStatusUseCase;
+import tks.gv.rentservice.ui.clients.ports.DeleteClientUseCase;
 import tks.gv.rentservice.ui.clients.ports.GetAllClientsUseCase;
 import tks.gv.rentservice.ui.clients.ports.GetClientByIdUseCase;
 import tks.gv.rentservice.ui.clients.ports.GetClientByLoginUseCase;
@@ -28,7 +29,8 @@ public class ClientService implements
         GetClientByIdUseCase,
         GetClientByLoginUseCase,
         ModifyClientUseCase,
-        ChangeClientStatusUseCase {
+        ChangeClientStatusUseCase,
+        DeleteClientUseCase {
 
     private AddClientPort addClientPort;
     private GetAllClientsPort getAllClientsPort;
@@ -36,17 +38,19 @@ public class ClientService implements
     private GetClientByLoginPort getClientByLoginPort;
     private ModifyClientPort modifyClientPort;
     private ChangeClientStatusPort changeClientStatusPort;
+    private DeleteClientPort deleteClientPort;
 
     @Autowired
     public ClientService(AddClientPort addClientPort, GetAllClientsPort getAllClientsPort, GetClientByIdPort getClientByIdPort,
                          GetClientByLoginPort getClientByLoginPort, ModifyClientPort modifyClientPort,
-                         ChangeClientStatusPort changeClientStatusPort) {
+                         ChangeClientStatusPort changeClientStatusPort, DeleteClientPort deleteClientPort) {
         this.addClientPort = addClientPort;
         this.getAllClientsPort = getAllClientsPort;
         this.getClientByIdPort = getClientByIdPort;
         this.getClientByLoginPort = getClientByLoginPort;
         this.modifyClientPort = modifyClientPort;
         this.changeClientStatusPort = changeClientStatusPort;
+        this.deleteClientPort = deleteClientPort;
     }
 
     @Override
@@ -89,4 +93,8 @@ public class ClientService implements
         changeClientStatusPort.deactivateClient(clientId);
     }
 
+    @Override
+    public void deleteClient(String login) {
+        deleteClientPort.deleteClientPort(login);
+    }
 }

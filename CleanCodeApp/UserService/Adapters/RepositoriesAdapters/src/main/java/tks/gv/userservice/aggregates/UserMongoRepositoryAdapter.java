@@ -10,6 +10,7 @@ import tks.gv.userservice.data.entities.UserEntity;
 import tks.gv.userservice.data.mappers.entities.AdminMapper;
 import tks.gv.userservice.data.mappers.entities.ClientMapper;
 import tks.gv.userservice.data.mappers.entities.ResourceAdminMapper;
+import tks.gv.userservice.infrastructure.ports.DeleteUserPort;
 import tks.gv.userservice.repositories.UserMongoRepository;
 import tks.gv.userservice.data.entities.ResourceAdminEntity;
 
@@ -37,7 +38,13 @@ import java.util.UUID;
 
 @Component
 public class UserMongoRepositoryAdapter implements
-        AddUserPort, GetAllUsersPort, GetUserByIdPort, GetUserByLoginPort, ModifyUserPort, ChangeUserStatusPort {
+        AddUserPort,
+        GetAllUsersPort,
+        GetUserByIdPort,
+        GetUserByLoginPort,
+        ModifyUserPort,
+        ChangeUserStatusPort,
+        DeleteUserPort {
 
     private final UserMongoRepository repository;
 
@@ -105,6 +112,11 @@ public class UserMongoRepositoryAdapter implements
     @Override
     public void deactivateUser(UUID id) {
         repository.update(id, "archive", true);
+    }
+
+    @Override
+    public void deleteUser(String login) {
+        repository.delete(login);
     }
 
     protected User autoMap(UserEntity userEntity) {

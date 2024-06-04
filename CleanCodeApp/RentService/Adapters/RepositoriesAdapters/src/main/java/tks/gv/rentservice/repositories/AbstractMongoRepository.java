@@ -83,4 +83,10 @@ public abstract class AbstractMongoRepository<T> implements AutoCloseable {
         var deletedObj = this.getCollection().findOneAndDelete(filter);
         return deletedObj != null;
     }
+
+    public boolean deleteByLogin(String login) {
+        Bson filter = Filters.eq("login", login);
+        var deletedObj = this.getCollection().findOneAndDelete(filter);
+        return deletedObj != null;
+    }
 }
