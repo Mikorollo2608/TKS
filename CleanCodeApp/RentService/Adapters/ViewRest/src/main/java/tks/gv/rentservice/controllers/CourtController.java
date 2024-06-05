@@ -1,5 +1,6 @@
 package tks.gv.rentservice.controllers;
 
+import io.micrometer.core.annotation.Timed;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/courts")
 @PreAuthorize("hasRole('ROLE_RESOURCE_ADMIN')")
+@Timed
 public class CourtController {
     private final ActivateCourtUseCase activateCourt;
     private final AddCourtUseCase addCourt;
@@ -89,6 +91,8 @@ public class CourtController {
     }
 
     @GetMapping
+    @Timed(extraTags = {"region", "us-east-1"})
+    @Timed(value = "all.courts", longTask = true)
     public List<CourtDTO> getAllCourts(HttpServletResponse response) {
         List<CourtDTO> resultList = getAllCourts.getAllCourts().stream().map(CourtMapper::toJsonCourt).toList();
         if (resultList.isEmpty()) {

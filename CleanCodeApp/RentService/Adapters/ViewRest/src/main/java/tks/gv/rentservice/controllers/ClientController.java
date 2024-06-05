@@ -1,5 +1,6 @@
 package tks.gv.rentservice.controllers;
 
+import io.micrometer.core.annotation.Timed;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -40,6 +41,7 @@ import java.util.List;
 @RequestMapping("/clients")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
+@Timed
 public class ClientController {
     private final RegisterClientUseCase registerClientUseCase;
     private final GetAllClientsUseCase getAllClientsUseCase;
