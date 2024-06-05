@@ -16,22 +16,21 @@ public class UserEntity {
     private final String password;
     @BsonProperty("archive")
     private final Boolean archive;
-//    @BsonProperty("_clazz")
-    private final String role = "CLIENT";
+    @BsonProperty("_clazz")
+    private final String role;
 
     @BsonCreator
     public UserEntity(@BsonProperty("_id") String id,
                       @BsonProperty("login") String login,
                       @BsonProperty("password") String password,
-                      @BsonProperty("archive") Boolean archive
-//            ,
-//                      @BsonProperty("_clazz") String role
+                      @BsonProperty("archive") Boolean archive,
+                      @BsonProperty("_clazz") String role
     ) {
         this.id = id;
         this.login = login;
         this.password = password;
         this.archive = archive;
-//        this.role = role;
+        this.role = role;
     }
 
     @Override

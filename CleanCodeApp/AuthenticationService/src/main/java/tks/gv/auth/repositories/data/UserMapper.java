@@ -13,9 +13,9 @@ public class UserMapper {
                 UUID.fromString(userEntity.getId()),
                 userEntity.getLogin(),
                 userEntity.getPassword(),
-                switch (userEntity.getRole()) {
+                switch (userEntity.getRole().toUpperCase()) {
                     case "ADMIN" -> Role.ADMIN;
-                    case "STAFF" -> Role.STAFF;
+                    case "RESOURCEADMIN" -> Role.RESOURCE_ADMIN;
                     case "CLIENT" -> Role.CLIENT;
                     default -> throw new IllegalStateException("Unexpected value: " + userEntity.getRole());
                 }

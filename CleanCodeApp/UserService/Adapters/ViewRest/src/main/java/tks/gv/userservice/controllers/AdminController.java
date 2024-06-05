@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
@@ -40,6 +41,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admins")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AdminController {
 
     private final RegisterAdminUseCase registerAdminUseCase;
@@ -48,7 +50,7 @@ public class AdminController {
     private final GetAdminByLoginUseCase getAdminByLoginUseCase;
     private final ModifyAdminUseCase modifyAdminUseCase;
     private final ChangeAdminStatusUseCase changeAdminStatusUseCase;
-    
+
     @PostMapping("/addAdmin")
     public ResponseEntity<String> addAdmin(@Validated({UserDTO.BasicUserValidation.class, UserDTO.PasswordValidation.class}) @RequestBody AdminDTO admin,
                                            Errors errors) {
