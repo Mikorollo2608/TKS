@@ -3,9 +3,12 @@ package tks.gv.userservice.controllers;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
@@ -40,6 +43,7 @@ import tks.gv.userservice.Client;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/clients")
 @RequiredArgsConstructor
@@ -83,6 +87,9 @@ public class ClientController {
 
     @GetMapping
     public List<ClientDTO> getAllClients(HttpServletResponse response) {
+        log.warn(SecurityContextHolder.getContext().getAuthentication().getName());
+        SecurityContextHolder.getContext().getAuthentication().getAuthorities().forEach(System.out::println);
+
         List<Client> resultList = getAllClientsUseCase.getAllClients();
         if (resultList.isEmpty()) {
             response.setStatus(HttpStatus.NO_CONTENT.value());

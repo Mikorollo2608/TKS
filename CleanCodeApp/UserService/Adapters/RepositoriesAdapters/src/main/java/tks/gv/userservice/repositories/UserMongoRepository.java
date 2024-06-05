@@ -229,7 +229,7 @@ public class UserMongoRepository implements AutoCloseable {
         create(AdminMapper.toUserEntity(new Admin(UUID.fromString("4844c398-5cf1-44e0-a6d8-34c8a939d2ea"), "Eva", "Eve", "secondAdmin2@example", "haselko")));
 
         create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("83b29a7a-aa96-4ff2-823d-f3d0d6372c94"), "Adam", "Key", "admRes1@test", "haselko")));
-        create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("a2f6cb49-5e9d-4069-ab91-f337224e833a"), "Henry", "Beer", "admRes2@test", "haselko")));
+        create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("a2f6cb49-5e9d-4069-ab91-f337224e833a"), "Henry", "Beer", "admRes2@test", "$2a$12$WWSjEV/HEiZ.wqxkVI7/LehYqQS0CUDyqv9kqKGJ4.ERi..Lewqwq")));
     }
 
 

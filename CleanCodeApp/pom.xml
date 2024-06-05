@@ -19,6 +19,7 @@
     <modules>
         <module>RentService</module>
         <module>UserService</module>
+        <module>AuthenticationService</module>
     </modules>
 
     <properties>
