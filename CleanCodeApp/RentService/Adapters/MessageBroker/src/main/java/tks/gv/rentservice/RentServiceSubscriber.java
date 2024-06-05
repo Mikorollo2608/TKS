@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
-import tks.gv.rentservice.config.RabbitConfiguration;
+import tks.gv.rentservice.security.config.RabbitConfiguration;
 import tks.gv.rentservice.data.dto.ClientRegisterDTO;
 import tks.gv.rentservice.data.dto.LoginDTO;
 import tks.gv.rentservice.data.mappers.dto.ClientMessageMapper;

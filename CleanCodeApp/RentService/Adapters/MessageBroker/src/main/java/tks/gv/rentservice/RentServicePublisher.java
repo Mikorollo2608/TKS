@@ -7,7 +7,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tks.gv.rentservice.config.RabbitConfiguration;
+import tks.gv.rentservice.security.config.RabbitConfiguration;
 import tks.gv.rentservice.data.dto.LoginDTO;
 
 @Slf4j

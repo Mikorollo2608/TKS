@@ -197,6 +197,8 @@
             <version>1.18.30</version>
             <scope>provided</scope>
         </dependency>
+
+        <!--Security-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>

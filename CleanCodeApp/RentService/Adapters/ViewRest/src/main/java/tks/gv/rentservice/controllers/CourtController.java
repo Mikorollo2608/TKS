@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
@@ -37,6 +38,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/courts")
+@PreAuthorize("hasRole('ROLE_RESOURCE_ADMIN')")
 public class CourtController {
     private final ActivateCourtUseCase activateCourt;
     private final AddCourtUseCase addCourt;

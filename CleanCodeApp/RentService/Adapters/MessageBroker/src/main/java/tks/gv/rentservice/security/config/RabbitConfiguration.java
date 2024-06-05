@@ -1,4 +1,4 @@
-package tks.gv.rentservice.config;
+package tks.gv.rentservice.security.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

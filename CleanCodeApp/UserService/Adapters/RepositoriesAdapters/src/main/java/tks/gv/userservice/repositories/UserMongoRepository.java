@@ -219,16 +219,16 @@ public class UserMongoRepository implements AutoCloseable {
     private void init() {
         destroy();
 
-        create(ClientMapper.toUserEntity(new Client(UUID.fromString("80e62401-6517-4392-856c-e22ef5f3d6a2"), "Johnny", "Brown", "login", "haselko")));
-        create(ClientMapper.toUserEntity(new Client(UUID.fromString("b6f5bcb8-7f01-4470-8238-cc3320326157"), "Rose", "Tetris", "login15", "haselko")));
-        create(ClientMapper.toUserEntity(new Client(UUID.fromString("6dc63417-0a21-462c-a97a-e0bf6055a3ea"), "John", "Lee", "leeJo15", "haselko")));
-        create(ClientMapper.toUserEntity(new Client(UUID.fromString("3a722080-9668-42a2-9788-4695a4b9f5a7"), "Krzysztof", "Scala", "scKrzy", "haselko")));
-        create(ClientMapper.toUserEntity(new Client(UUID.fromString("126778af-0e19-46d4-b329-0b6b92548f9a"), "Adam", "Scout", "scAdam", "haselko")));
+        create(ClientMapper.toUserEntity(new Client(UUID.fromString("80e62401-6517-4392-856c-e22ef5f3d6a2"), "Johnny", "Brown", "login", "$2a$12$WWSjEV/HEiZ.wqxkVI7/LehYqQS0CUDyqv9kqKGJ4.ERi..Lewqwq")));
+        create(ClientMapper.toUserEntity(new Client(UUID.fromString("b6f5bcb8-7f01-4470-8238-cc3320326157"), "Rose", "Tetris", "login15", "$2a$12$WWSjEV/HEiZ.wqxkVI7/LehYqQS0CUDyqv9kqKGJ4.ERi..Lewqwq")));
+        create(ClientMapper.toUserEntity(new Client(UUID.fromString("6dc63417-0a21-462c-a97a-e0bf6055a3ea"), "John", "Lee", "leeJo15", "$2a$12$WWSjEV/HEiZ.wqxkVI7/LehYqQS0CUDyqv9kqKGJ4.ERi..Lewqwq")));
+        create(ClientMapper.toUserEntity(new Client(UUID.fromString("3a722080-9668-42a2-9788-4695a4b9f5a7"), "Krzysztof", "Scala", "scKrzy", "$2a$12$WWSjEV/HEiZ.wqxkVI7/LehYqQS0CUDyqv9kqKGJ4.ERi..Lewqwq")));
+        create(ClientMapper.toUserEntity(new Client(UUID.fromString("126778af-0e19-46d4-b329-0b6b92548f9a"), "Adam", "Scout", "scAdam", "$2a$12$WWSjEV/HEiZ.wqxkVI7/LehYqQS0CUDyqv9kqKGJ4.ERi..Lewqwq")));
 
-        create(AdminMapper.toUserEntity(new Admin(UUID.fromString("3b197615-6931-4aad-941a-44f78f527053"), "John", "Smith", "mainAdmin1@example", "haselko")));
-        create(AdminMapper.toUserEntity(new Admin(UUID.fromString("4844c398-5cf1-44e0-a6d8-34c8a939d2ea"), "Eva", "Eve", "secondAdmin2@example", "haselko")));
+        create(AdminMapper.toUserEntity(new Admin(UUID.fromString("3b197615-6931-4aad-941a-44f78f527053"), "John", "Smith", "mainAdmin1@example", "$2a$12$WWSjEV/HEiZ.wqxkVI7/LehYqQS0CUDyqv9kqKGJ4.ERi..Lewqwq")));
+        create(AdminMapper.toUserEntity(new Admin(UUID.fromString("4844c398-5cf1-44e0-a6d8-34c8a939d2ea"), "Eva", "Eve", "secondAdmin2@example", "$2a$12$WWSjEV/HEiZ.wqxkVI7/LehYqQS0CUDyqv9kqKGJ4.ERi..Lewqwq")));
 
-        create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("83b29a7a-aa96-4ff2-823d-f3d0d6372c94"), "Adam", "Key", "admRes1@test", "haselko")));
+        create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("83b29a7a-aa96-4ff2-823d-f3d0d6372c94"), "Adam", "Key", "admRes1@test", "$2a$12$WWSjEV/HEiZ.wqxkVI7/LehYqQS0CUDyqv9kqKGJ4.ERi..Lewqwq")));
         create(ResourceAdminMapper.toUserEntity(new ResourceAdmin(UUID.fromString("a2f6cb49-5e9d-4069-ab91-f337224e833a"), "Henry", "Beer", "admRes2@test", "$2a$12$WWSjEV/HEiZ.wqxkVI7/LehYqQS0CUDyqv9kqKGJ4.ERi..Lewqwq")));
     }
 

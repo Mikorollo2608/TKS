@@ -12,6 +12,10 @@
     <artifactId>Bootstrap</artifactId>
     <packaging>war</packaging>
 
+    <properties>
+        <jwt.version>0.11.5</jwt.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>tks.gv.rentservice</groupId>
@@ -70,6 +74,23 @@
             <artifactId>mongodb</artifactId>
             <version>1.19.3</version>
             <scope>test</scope>
+        </dependency>
+
+        <!--JWT-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jwt.version}</version>
         </dependency>
     </dependencies>
 
