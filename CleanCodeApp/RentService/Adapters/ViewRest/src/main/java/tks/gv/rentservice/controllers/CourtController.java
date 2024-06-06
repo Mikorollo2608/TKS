@@ -91,8 +91,7 @@ public class CourtController {
     }
 
     @GetMapping
-    @Timed(extraTags = {"region", "us-east-1"})
-    @Timed(value = "all.courts", longTask = true)
+    @Timed("courts")
     public List<CourtDTO> getAllCourts(HttpServletResponse response) {
         List<CourtDTO> resultList = getAllCourts.getAllCourts().stream().map(CourtMapper::toJsonCourt).toList();
         if (resultList.isEmpty()) {

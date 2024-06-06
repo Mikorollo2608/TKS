@@ -75,6 +75,7 @@ public class ClientController {
     }
 
     @GetMapping
+    @Timed("clients")
     public List<ClientDTO> getAllClients(HttpServletResponse response) {
         List<Client> resultList = getAllClientsUseCase.getAllClients();
         if (resultList.isEmpty()) {
